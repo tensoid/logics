@@ -4,6 +4,7 @@ use bevy_prototype_lyon::prelude::*;
 use bevy_pancam::PanCamPlugin;
 
 mod ui;
+mod test;
 mod simulation;
 mod camera;
 

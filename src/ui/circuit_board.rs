@@ -1,6 +1,6 @@
 use crate::simulation::chip::{Chip, ChipExtents};
 use bevy::prelude::*;
-use bevy_prototype_lyon::{prelude::*, render::Shape, shapes::Rectangle};
+use bevy_prototype_lyon::prelude::*;
 
 #[derive(Resource, PartialEq)]
 pub enum CursorState {
@@ -10,7 +10,7 @@ pub enum CursorState {
 
 pub fn spawn_chip_at_cursor(
     input: Res<Input<MouseButton>>,
-    mut commands: Commands,
+    commands: Commands,
     windows: Res<Windows>,
     q_camera: Query<(&Camera, &GlobalTransform)>,
 ) {
@@ -67,7 +67,7 @@ pub fn screen_to_world_space(
 pub fn drag_chip(
     input: Res<Input<MouseButton>>,
     windows: Res<Windows>,
-    q_camera: Query<(&Camera, &GlobalTransform), (Without<Chip>)>,
+    q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
     mut q_chips: Query<
         (&GlobalTransform, &mut Transform, &ChipExtents, Entity),
         (With<Chip>, Without<Camera>),
