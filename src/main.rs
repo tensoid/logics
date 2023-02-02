@@ -7,7 +7,7 @@ mod ui;
 mod simulation;
 mod camera;
 
-use ui::ui::UIPlugin;
+use ui::{ui::UIPlugin, circuit_board::CursorState};
 use simulation::simulation::SimulationPlugin;
 use camera::CameraPlugin;
 
@@ -18,6 +18,7 @@ fn main() {
             //     title: "Logics".to_string(),
             //     ..Default::default()
             // })
+        .insert_resource(CursorState::Idle)
         .add_plugins(DefaultPlugins)
         .add_plugin(PanCamPlugin::default())
         .add_plugin(ShapePlugin)
