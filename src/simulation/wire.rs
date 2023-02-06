@@ -1,6 +1,6 @@
-use super::pin::Pin; 
+use bevy::prelude::*;
 
+#[derive(Component)]
 pub struct Wire {
-    pub src_pin: Pin,
-    pub dest_pin: Pin
+    pub dest_pin: Option<Entity>,
 }

@@ -1,4 +1,4 @@
 pub enum PinState {
-    HIGH,
-    LOW
+    High,
+    Low,
 }
