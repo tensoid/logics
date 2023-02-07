@@ -54,22 +54,3 @@ fn display_fps(diagnostics: Res<Diagnostics>, mut windows: ResMut<Windows>) {
             .unwrap_or(0.0)
     ));
 }
-
-//TODO: on chip deletion, delete wires connected to input pins
-//TODO: drag wires from dest pin
-//TODO: Sim state resource(needs sim, paused, etc...)
-//TODO: support multiple chip outputs (multiple expressions)
-//TODO: implement snap to grid (grid.rs)
-//TODO: background squares to indicate parts of circuit
-//TODO: cursor.rs (cursor icon)
-//TODO: group select
-//TODO: saving / loading scenes / circuit boards
-//TODO: egui as editor ui
-//TODO: rückkopplung (merker oder so)
-//TODO: group chips to one chip, save as .schem and .expr maybe
-//TODO: convert to printable pcb xdd
-
-//TODO: OPTIMISATIONS
-
-//TODO: POSSIBLE ERRORS
-// - Unwrap child elements, instead destructure result (if let Ok(_))

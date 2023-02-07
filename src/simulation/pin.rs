@@ -2,8 +2,6 @@ use bevy::prelude::*;
 
 use super::{chip::ChipSpec, pin_state::PinState};
 
-//TODO: for color change, add marker component pin state changed and add a system that queries for it or event based
-
 #[derive(Component)]
 pub struct ChipInputPin(pub PinState);
 

@@ -14,9 +14,6 @@ const CHIP_PIN_GAP: f32 = 25.0;
 const CHIP_PIN_RADIUS: f32 = 7.0;
 const WIRE_LINE_WIDTH: f32 = 1.0;
 
-#[derive(Component)]
-pub struct EntityMoved;
-
 #[derive(Resource, PartialEq)]
 pub enum CursorState {
     Idle,
@@ -54,8 +51,6 @@ pub fn spawn_chip_event(
     asset_server: Res<AssetServer>,
 ) {
     for ev in spawn_ev.iter() {
-        //TODO: take max of input and output pins and adjust size accordingly
-
         let chip_spec = chip_specs
             .0
             .iter()
@@ -104,7 +99,6 @@ pub fn spawn_chip_event(
             .with_children(|chip| {
                 //Chip Name
                 chip.spawn(Text2dBundle {
-                    //TODO: chip name marker component
                     text: Text::from_section(&ev.chip_name.to_uppercase(), text_style)
                         .with_alignment(TextAlignment::CENTER),
                     transform: Transform::from_xyz(0.0, 0.0, DrawLayer::ChipName.get_z()),
@@ -200,7 +194,6 @@ pub fn drag_chip(
                 }
 
                 //window.set_cursor_icon(CursorIcon::Grab);
-                commands.entity(chip_entity).insert(EntityMoved);
                 *cursor_state = CursorState::DraggingChip(chip_entity);
                 return;
             }
@@ -336,8 +329,6 @@ pub fn update_wires(
             }
         }
     }
-
-    //for (chip_transform, chip_entity) in q_moved_chips.iter_mut() {}
 }
 
 pub fn delete_chip(
