@@ -10,9 +10,6 @@ pub struct ChipInputPin(pub PinState);
 #[derive(Component)]
 pub struct ChipOutputPin(pub PinState);
 
-#[derive(Component)]
-pub struct PinRadius(pub f32);
-
 impl ChipInputPin {
     pub fn num_input_pins_from_chip_spec(chip_spec: &ChipSpec) -> u16 {
         2

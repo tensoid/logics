@@ -54,3 +54,14 @@ fn display_fps(diagnostics: Res<Diagnostics>, mut windows: ResMut<Windows>) {
             .unwrap_or(0.0)
     ));
 }
+
+//TODO: display chip names
+//TODO: implement snap to grid
+//TODO: cursor.rs
+//TODO: Sim state resource(needs sim, paused, etc...)
+//TODO: group select
+//TODO: group chips to one chip, save as .schem and .expr maybe
+//TODO: rückkopplung (merker oder so)
+//TODO: convert to printable pcb xdd
+//TODO: egui as editor ui
+//TODO: background squares to indicate parts of circuit

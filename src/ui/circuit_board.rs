@@ -1,11 +1,13 @@
 use crate::simulation::{
     chip::{Chip, ChipExtents, ChipSpecs, SpawnChipEvent},
-    pin::{ChipInputPin, ChipOutputPin, PinRadius},
+    pin::{ChipInputPin, ChipOutputPin},
     pin_state::PinState,
     wire::Wire,
 };
 use bevy::prelude::*;
 use bevy_prototype_lyon::{prelude::*, render::Shape};
+
+use super::draw_layer::DrawLayer;
 
 //TODO: maybe make resource
 const CHIP_PIN_GAP: f32 = 25.0;
@@ -46,6 +48,7 @@ pub fn spawn_chip_event(
     mut spawn_ev: EventReader<SpawnChipEvent>,
     mut commands: Commands,
     chip_specs: Res<ChipSpecs>,
+    asset_server: Res<AssetServer>,
 ) {
     for ev in spawn_ev.iter() {
         //TODO: take max of input and output pins and adjust size accordingly
@@ -75,6 +78,14 @@ pub fn spawn_chip_event(
 
         let wire_shape = shapes::Line(Vec2::ZERO, Vec2::ZERO);
 
+        let font: Handle<Font> = asset_server.load("fonts/OpenSans-ExtraBold.ttf");
+
+        let text_style = TextStyle {
+            font_size: 30.0,
+            color: Color::BLACK,
+            font,
+        };
+
         commands
             .spawn(GeometryBuilder::build_as(
                 &chip_shape,
@@ -82,12 +93,22 @@ pub fn spawn_chip_event(
                     options: FillOptions::default(),
                     color: Color::YELLOW,
                 }),
-                Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
+                Transform::from_xyz(ev.position.x, ev.position.y, DrawLayer::Chip.get_z()),
             ))
             .insert(Chip)
             .insert(ChipExtents(chip_extents))
             .insert(chip_spec.clone())
             .with_children(|chip| {
+                //Chip Name
+                chip.spawn(Text2dBundle {
+                    //TODO: chip name marker component
+                    text: Text::from_section(&ev.chip_name.to_uppercase(), text_style)
+                        .with_alignment(TextAlignment::CENTER),
+                    transform: Transform::from_xyz(0.0, 0.0, DrawLayer::ChipName.get_z()),
+                    ..default()
+                });
+
+                // Input pins
                 for i in 0..num_input_pins {
                     chip.spawn(GeometryBuilder::build_as(
                         &pin_shape,
@@ -96,29 +117,29 @@ pub fn spawn_chip_event(
                             color: Color::RED,
                         }),
                         Transform::from_xyz(
-                            -(chip_extents.x / 2.0) - CHIP_PIN_RADIUS,
+                            -(chip_extents.x / 2.0),
                             (i as f32 * CHIP_PIN_GAP) - (chip_extents.y / 2.0) + CHIP_PIN_GAP,
-                            0.0,
+                            DrawLayer::Pin.get_z(),
                         ),
                     ))
                     .insert(ChipInputPin(PinState::Low));
                 }
 
+                // Output pins
                 chip.spawn(GeometryBuilder::build_as(
                     &pin_shape,
                     DrawMode::Fill(FillMode {
                         options: FillOptions::default(),
                         color: Color::RED,
                     }),
-                    Transform::from_xyz((chip_extents.x / 2.0) + CHIP_PIN_RADIUS, 0.0, 0.0),
+                    Transform::from_xyz((chip_extents.x / 2.0), 0.0, DrawLayer::Pin.get_z()),
                 ))
                 .insert(ChipOutputPin(PinState::Low))
-                .insert(PinRadius(CHIP_PIN_RADIUS))
                 .with_children(|pin| {
                     pin.spawn(GeometryBuilder::build_as(
                         &wire_shape,
                         DrawMode::Stroke(StrokeMode::new(Color::GREEN, WIRE_LINE_WIDTH)),
-                        Transform::IDENTITY,
+                        Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
                     ))
                     .insert(Wire {
                         dest_pin: Option::None,
@@ -204,11 +225,9 @@ pub fn drag_wire(
     input: Res<Input<MouseButton>>,
     windows: Res<Windows>,
     q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
-    mut q_pins: Query<
-        (&GlobalTransform, &PinRadius, &Children),
-        (With<ChipOutputPin>, Without<Camera>),
-    >,
-    mut q_wires: Query<(&mut Path, &GlobalTransform), With<Wire>>,
+    mut q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
+    mut q_input_pins: Query<(&GlobalTransform, Entity), (With<ChipInputPin>, Without<Camera>)>,
+    mut q_wires: Query<(&mut Path, &GlobalTransform, &mut Wire)>,
     mut cursor_state: ResMut<CursorState>,
 ) {
     let window = windows.get_primary().unwrap();
@@ -219,8 +238,10 @@ pub fn drag_wire(
             screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
 
         if input.just_pressed(MouseButton::Left) {
-            for (pin_transform, pin_radius, pin_children) in q_pins.iter() {
-                if cursor_position.distance(pin_transform.translation().truncate()) > pin_radius.0 {
+            for (pin_transform, pin_children) in q_output_pins.iter() {
+                if cursor_position.distance(pin_transform.translation().truncate())
+                    > CHIP_PIN_RADIUS
+                {
                     continue;
                 }
 
@@ -232,19 +253,38 @@ pub fn drag_wire(
         }
 
         if let CursorState::DraggingWire(wire_entity) = *cursor_state {
-            let (mut path, pin_transform) = q_wires.get_mut(wire_entity).unwrap();
+            let (mut path, output_pin_transform, mut wire) = q_wires.get_mut(wire_entity).unwrap();
             let mut new_wire = shapes::Line(Vec2::ZERO, Vec2::ZERO);
 
             if input.pressed(MouseButton::Left) {
-                new_wire.1 = cursor_position - pin_transform.translation().truncate();
+                new_wire.1 = cursor_position - output_pin_transform.translation().truncate();
                 *path = ShapePath::build_as(&new_wire);
             } else if input.just_released(MouseButton::Left) {
-                // TODO: check if over input pin, and set in wire dest pin
+                for (input_pin_transform, pin_entity) in q_input_pins.iter() {
+                    if cursor_position.distance(input_pin_transform.translation().truncate())
+                        > CHIP_PIN_RADIUS
+                    {
+                        continue;
+                    }
 
-                // if not reset
+                    // connect wire to pin
+                    wire.dest_pin = Some(pin_entity);
+                    new_wire.1 = input_pin_transform.translation().truncate()
+                        - output_pin_transform.translation().truncate();
+                    *path = ShapePath::build_as(&new_wire);
+                    *cursor_state = CursorState::Idle;
+                    return;
+                }
+
+                // reset wire if dragged on nothing
                 *path = ShapePath::build_as(&new_wire);
                 *cursor_state = CursorState::Idle;
             }
         }
     }
+}
+
+pub fn update_wires() {
+    // get moved circits
+    // set wires to new location
 }
