@@ -5,7 +5,7 @@ use crate::simulation::{
     wire::Wire,
 };
 use bevy::prelude::*;
-use bevy_prototype_lyon::{prelude::*, render::Shape};
+use bevy_prototype_lyon::prelude::*;
 
 use super::draw_layer::DrawLayer;
 
@@ -13,6 +13,9 @@ use super::draw_layer::DrawLayer;
 const CHIP_PIN_GAP: f32 = 25.0;
 const CHIP_PIN_RADIUS: f32 = 7.0;
 const WIRE_LINE_WIDTH: f32 = 1.0;
+
+#[derive(Component)]
+pub struct EntityMoved;
 
 #[derive(Resource, PartialEq)]
 pub enum CursorState {
@@ -132,13 +135,13 @@ pub fn spawn_chip_event(
                         options: FillOptions::default(),
                         color: Color::RED,
                     }),
-                    Transform::from_xyz((chip_extents.x / 2.0), 0.0, DrawLayer::Pin.get_z()),
+                    Transform::from_xyz(chip_extents.x / 2.0, 0.0, DrawLayer::Pin.get_z()),
                 ))
                 .insert(ChipOutputPin(PinState::Low))
                 .with_children(|pin| {
                     pin.spawn(GeometryBuilder::build_as(
                         &wire_shape,
-                        DrawMode::Stroke(StrokeMode::new(Color::GREEN, WIRE_LINE_WIDTH)),
+                        DrawMode::Stroke(StrokeMode::new(Color::RED, WIRE_LINE_WIDTH)),
                         Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
                     ))
                     .insert(Wire {
@@ -163,13 +166,14 @@ pub fn screen_to_world_space(
 
 pub fn drag_chip(
     input: Res<Input<MouseButton>>,
-    windows: Res<Windows>,
+    windows: ResMut<Windows>,
     q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
     mut q_chips: Query<
         (&GlobalTransform, &mut Transform, &ChipExtents, Entity),
         (With<Chip>, Without<Camera>),
     >,
     mut cursor_state: ResMut<CursorState>,
+    mut commands: Commands,
 ) {
     let window = windows.get_primary().unwrap();
     let (camera, camera_transform) = q_camera.single();
@@ -195,6 +199,8 @@ pub fn drag_chip(
                     continue;
                 }
 
+                //window.set_cursor_icon(CursorIcon::Grab);
+                commands.entity(chip_entity).insert(EntityMoved);
                 *cursor_state = CursorState::DraggingChip(chip_entity);
                 return;
             }
@@ -216,6 +222,7 @@ pub fn drag_chip(
 
             if input.just_released(MouseButton::Left) {
                 *cursor_state = CursorState::Idle;
+                //window.set_cursor_icon(CursorIcon::Default);
             }
         }
     }
@@ -225,8 +232,8 @@ pub fn drag_wire(
     input: Res<Input<MouseButton>>,
     windows: Res<Windows>,
     q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
-    mut q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
-    mut q_input_pins: Query<(&GlobalTransform, Entity), (With<ChipInputPin>, Without<Camera>)>,
+    q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
+    q_input_pins: Query<(&GlobalTransform, Entity), (With<ChipInputPin>, Without<Camera>)>,
     mut q_wires: Query<(&mut Path, &GlobalTransform, &mut Wire)>,
     mut cursor_state: ResMut<CursorState>,
 ) {
@@ -277,6 +284,7 @@ pub fn drag_wire(
                 }
 
                 // reset wire if dragged on nothing
+                wire.dest_pin = None;
                 *path = ShapePath::build_as(&new_wire);
                 *cursor_state = CursorState::Idle;
             }
@@ -284,7 +292,87 @@ pub fn drag_wire(
     }
 }
 
-pub fn update_wires() {
-    // get moved circits
-    // set wires to new location
+pub fn update_wires(
+    q_moved_chips: Query<(Entity, &Children), (With<Chip>, Changed<GlobalTransform>)>,
+    q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
+    q_input_pins: Query<&GlobalTransform, (With<ChipInputPin>, Without<Camera>)>,
+    mut q_wires: Query<(&Wire, &mut Path, &GlobalTransform)>,
+) {
+    for (_, chip_children) in q_moved_chips.iter() {
+        // Output pins
+        for &output_pin_entity in chip_children.iter() {
+            if let Ok(output_pin) = q_output_pins.get(output_pin_entity) {
+                let output_pin_wire_entity = output_pin.1.first().unwrap();
+                let (wire, mut wire_path, _) = q_wires.get_mut(*output_pin_wire_entity).unwrap();
+                if let Some(wire_dest_pin_entity) = wire.dest_pin {
+                    let wire_dest_pin_transform = q_input_pins.get(wire_dest_pin_entity).unwrap();
+                    let new_wire = shapes::Line(
+                        Vec2::ZERO,
+                        wire_dest_pin_transform.translation().truncate()
+                            - output_pin.0.translation().truncate(),
+                    );
+                    *wire_path = ShapePath::build_as(&new_wire);
+                }
+            }
+        }
+
+        // Input pins
+        for &input_pin_entity in chip_children.iter() {
+            if let Ok(input_pin_transform) = q_input_pins.get(input_pin_entity) {
+                for (wire, mut wire_path, wire_transform) in q_wires.iter_mut() {
+                    if let Some(wire_dest_pin) = wire.dest_pin {
+                        if wire_dest_pin != input_pin_entity {
+                            continue;
+                        }
+
+                        let new_wire = shapes::Line(
+                            Vec2::ZERO,
+                            input_pin_transform.translation().truncate()
+                                - wire_transform.translation().truncate(),
+                        );
+                        *wire_path = ShapePath::build_as(&new_wire);
+                    }
+                }
+            }
+        }
+    }
+
+    //for (chip_transform, chip_entity) in q_moved_chips.iter_mut() {}
+}
+
+pub fn delete_chip(
+    input: Res<Input<KeyCode>>,
+    q_chips: Query<(Entity, &GlobalTransform, &ChipExtents), With<Chip>>,
+    q_camera: Query<(&Camera, &GlobalTransform)>,
+    mut commands: Commands,
+    windows: Res<Windows>,
+) {
+    let window = windows.get_primary().unwrap();
+    let (camera, camera_transform) = q_camera.single();
+
+    if let Some(cursor_screen_pos) = window.cursor_position() {
+        let cursor_position: Vec2 =
+            screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
+
+        if input.just_pressed(KeyCode::D) {
+            for (chip_entity, chip_transform, chip_extents) in q_chips.iter() {
+                let chip_position: Vec2 = Vec2::new(
+                    chip_transform.translation().x,
+                    chip_transform.translation().y,
+                );
+
+                let cursor_on_chip: bool = cursor_position.x
+                    >= chip_position.x - (chip_extents.0.x / 2.0)
+                    && cursor_position.x <= chip_position.x + (chip_extents.0.x / 2.0)
+                    && cursor_position.y >= chip_position.y - (chip_extents.0.y / 2.0)
+                    && cursor_position.y <= chip_position.y + (chip_extents.0.y / 2.0);
+
+                if !cursor_on_chip {
+                    continue;
+                }
+
+                commands.entity(chip_entity).despawn_recursive();
+            }
+        }
+    }
 }

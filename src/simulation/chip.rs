@@ -22,7 +22,3 @@ pub struct ChipSpec {
     //pub expressions: Vec<Expr>,
     pub expression: Expr,
 }
-
-pub trait Evaluation {
-    fn evaluate() -> bool;
-}
