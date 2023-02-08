@@ -176,7 +176,27 @@ pub fn drag_chip(
         let cursor_position: Vec2 =
             screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
 
-        if input.just_pressed(MouseButton::Left) {
+        if let CursorState::DraggingChip(dragged_chip_entity) = *cursor_state {
+            if input.pressed(MouseButton::Left) {
+                for (_, mut chip_transform, _, chip_entity) in q_chips.iter_mut() {
+                    if chip_entity != dragged_chip_entity {
+                        continue;
+                    }
+
+                    chip_transform.translation =
+                        cursor_position.extend(chip_transform.translation.z);
+                }
+
+                return;
+            }
+
+            if input.just_released(MouseButton::Left) {
+                *cursor_state = CursorState::Idle;
+                //window.set_cursor_icon(CursorIcon::Default);
+            }
+        }
+
+        if input.just_pressed(MouseButton::Left) && *cursor_state == CursorState::Idle {
             for (chip_global_transform, _, chip_extents, chip_entity) in q_chips.iter_mut() {
                 let chip_position: Vec2 = Vec2::new(
                     chip_global_transform.translation().x,
@@ -198,26 +218,6 @@ pub fn drag_chip(
                 return;
             }
         }
-
-        if let CursorState::DraggingChip(dragged_chip_entity) = *cursor_state {
-            if input.pressed(MouseButton::Left) {
-                for (_, mut chip_transform, _, chip_entity) in q_chips.iter_mut() {
-                    if chip_entity != dragged_chip_entity {
-                        continue;
-                    }
-
-                    chip_transform.translation =
-                        cursor_position.extend(chip_transform.translation.z);
-                }
-
-                return;
-            }
-
-            if input.just_released(MouseButton::Left) {
-                *cursor_state = CursorState::Idle;
-                //window.set_cursor_icon(CursorIcon::Default);
-            }
-        }
     }
 }
 
@@ -237,7 +237,7 @@ pub fn drag_wire(
         let cursor_position: Vec2 =
             screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
 
-        if input.just_pressed(MouseButton::Left) {
+        if input.just_pressed(MouseButton::Left) && *cursor_state == CursorState::Idle {
             for (pin_transform, pin_children) in q_output_pins.iter() {
                 if cursor_position.distance(pin_transform.translation().truncate())
                     > CHIP_PIN_RADIUS
@@ -253,33 +253,35 @@ pub fn drag_wire(
         }
 
         if let CursorState::DraggingWire(wire_entity) = *cursor_state {
-            let (mut path, output_pin_transform, mut wire) = q_wires.get_mut(wire_entity).unwrap();
-            let mut new_wire = shapes::Line(Vec2::ZERO, Vec2::ZERO);
+            if let Ok(wire_components) = q_wires.get_mut(wire_entity) {
+                let (mut path, output_pin_transform, mut wire) = wire_components;
+                let mut new_wire = shapes::Line(Vec2::ZERO, Vec2::ZERO);
 
-            if input.pressed(MouseButton::Left) {
-                new_wire.1 = cursor_position - output_pin_transform.translation().truncate();
-                *path = ShapePath::build_as(&new_wire);
-            } else if input.just_released(MouseButton::Left) {
-                for (input_pin_transform, pin_entity) in q_input_pins.iter() {
-                    if cursor_position.distance(input_pin_transform.translation().truncate())
-                        > CHIP_PIN_RADIUS
-                    {
-                        continue;
+                if input.pressed(MouseButton::Left) {
+                    new_wire.1 = cursor_position - output_pin_transform.translation().truncate();
+                    *path = ShapePath::build_as(&new_wire);
+                } else if input.just_released(MouseButton::Left) {
+                    for (input_pin_transform, pin_entity) in q_input_pins.iter() {
+                        if cursor_position.distance(input_pin_transform.translation().truncate())
+                            > CHIP_PIN_RADIUS
+                        {
+                            continue;
+                        }
+
+                        // connect wire to pin
+                        wire.dest_pin = Some(pin_entity);
+                        new_wire.1 = input_pin_transform.translation().truncate()
+                            - output_pin_transform.translation().truncate();
+                        *path = ShapePath::build_as(&new_wire);
+                        *cursor_state = CursorState::Idle;
+                        return;
                     }
 
-                    // connect wire to pin
-                    wire.dest_pin = Some(pin_entity);
-                    new_wire.1 = input_pin_transform.translation().truncate()
-                        - output_pin_transform.translation().truncate();
+                    // reset wire if dragged on nothing
+                    wire.dest_pin = None;
                     *path = ShapePath::build_as(&new_wire);
                     *cursor_state = CursorState::Idle;
-                    return;
                 }
-
-                // reset wire if dragged on nothing
-                wire.dest_pin = None;
-                *path = ShapePath::build_as(&new_wire);
-                *cursor_state = CursorState::Idle;
             }
         }
     }
@@ -333,20 +335,26 @@ pub fn update_wires(
 
 pub fn delete_chip(
     input: Res<Input<KeyCode>>,
-    q_chips: Query<(Entity, &GlobalTransform, &ChipExtents), With<Chip>>,
+    q_chips: Query<(Entity, &GlobalTransform, &ChipExtents, &Children), With<Chip>>,
     q_camera: Query<(&Camera, &GlobalTransform)>,
     mut commands: Commands,
     windows: Res<Windows>,
+    mut q_wires: Query<(&mut Wire, &mut Path), With<Wire>>,
+    cursor_state: Res<CursorState>,
 ) {
     let window = windows.get_primary().unwrap();
     let (camera, camera_transform) = q_camera.single();
+
+    if *cursor_state != CursorState::Idle {
+        return;
+    }
 
     if let Some(cursor_screen_pos) = window.cursor_position() {
         let cursor_position: Vec2 =
             screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
 
         if input.just_pressed(KeyCode::D) {
-            for (chip_entity, chip_transform, chip_extents) in q_chips.iter() {
+            for (chip_entity, chip_transform, chip_extents, chip_children) in q_chips.iter() {
                 let chip_position: Vec2 = Vec2::new(
                     chip_transform.translation().x,
                     chip_transform.translation().y,
@@ -362,6 +370,20 @@ pub fn delete_chip(
                     continue;
                 }
 
+                // Despawn wires connected to chip
+                for (mut wire, mut wire_path) in q_wires.iter_mut() {
+                    if let Some(dest_pin) = wire.dest_pin {
+                        for &chip_child in chip_children.iter() {
+                            if dest_pin == chip_child {
+                                wire.dest_pin = None;
+                                *wire_path =
+                                    ShapePath::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO));
+                            }
+                        }
+                    }
+                }
+
+                // Despawn chip and children
                 commands.entity(chip_entity).despawn_recursive();
             }
         }
