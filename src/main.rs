@@ -14,9 +14,10 @@ use camera::CameraPlugin;
 use simulation::{
     chip::{ChipSpec, ChipSpecs, SpawnChipEvent},
     expressions::Expr,
+    pin::SpawnIOPinEvent,
     simulation::SimulationPlugin,
 };
-use ui::{circuit_board::CursorState, ui::UIPlugin};
+use ui::{circuit_board::CircuitBoardRenderingSettings, cursor::CursorState, ui::UIPlugin};
 
 fn main() {
     App::new()
@@ -31,7 +32,14 @@ fn main() {
             //expressions: vec![Expr::from_string("0 & 1").unwrap()],
             expression: Expr::from_string("0 & 1").unwrap(),
         }]))
+        .insert_resource(CircuitBoardRenderingSettings {
+            chip_pin_gap: 25.0,
+            chip_pin_radius: 7.0,
+            io_pin_radius: 10.0,
+            wire_line_width: 1.0,
+        })
         .add_event::<SpawnChipEvent>()
+        .add_event::<SpawnIOPinEvent>()
         .add_plugins(DefaultPlugins)
         .add_plugin(PanCamPlugin::default())
         .add_plugin(ShapePlugin)
