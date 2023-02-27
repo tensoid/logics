@@ -31,7 +31,7 @@ pub fn spawn_chip_at_cursor(
             let (camera, camera_transform) = q_camera.single();
 
             let cursor_world_pos: Vec2 =
-                screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
+                screen_to_world_space(camera, camera_transform, cursor_screen_pos);
 
             ev_writer.send(SpawnChipEvent {
                 chip_name: "and".to_string(),
@@ -60,7 +60,7 @@ pub fn spawn_io_pin_at_cursor(
         let (camera, camera_transform) = q_camera.single();
 
         let cursor_world_pos: Vec2 =
-            screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
+            screen_to_world_space(camera, camera_transform, cursor_screen_pos);
 
         ev_writer.send(SpawnIOPinEvent {
             is_input: spawn_input_pin,
@@ -87,7 +87,7 @@ pub fn delete_chip(
 
     if let Some(cursor_screen_pos) = window.cursor_position() {
         let cursor_position: Vec2 =
-            screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
+            screen_to_world_space(camera, camera_transform, cursor_screen_pos);
 
         if input.just_pressed(KeyCode::D) {
             for (chip_entity, chip_transform, chip_extents, chip_children) in q_chips.iter() {
@@ -142,7 +142,7 @@ pub fn drag_chip(
 
     if let Some(cursor_screen_pos) = window.cursor_position() {
         let cursor_position: Vec2 =
-            screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
+            screen_to_world_space(camera, camera_transform, cursor_screen_pos);
 
         if let CursorState::DraggingChip(dragged_chip_entity) = *cursor_state {
             if input.pressed(MouseButton::Left) {
@@ -204,7 +204,7 @@ pub fn drag_wire(
 
     if let Some(cursor_screen_pos) = window.cursor_position() {
         let cursor_position: Vec2 =
-            screen_to_world_space(window, camera, camera_transform, cursor_screen_pos);
+            screen_to_world_space(camera, camera_transform, cursor_screen_pos);
 
         if input.just_pressed(MouseButton::Left) && *cursor_state == CursorState::Idle {
             for (pin_transform, pin_children) in q_output_pins.iter() {
@@ -256,4 +256,46 @@ pub fn drag_wire(
     }
 }
 
+pub fn toggle_board_input_pin(
+    input: Res<Input<MouseButton>>,
+    windows: Res<Windows>,
+    q_camera: Query<(&Camera, &GlobalTransform)>,
+    mut q_input_pins: Query<(&GlobalTransform, &mut BoardInputPin, &mut DrawMode)>,
+    render_settings: Res<CircuitBoardRenderingSettings>,
+) {
+    let window = windows.get_primary().unwrap();
+    let (camera, camera_transform) = q_camera.single();
+
+    if let Some(cursor_screen_pos) = window.cursor_position() {
+        let cursor_position: Vec2 =
+            screen_to_world_space(camera, camera_transform, cursor_screen_pos);
+
+        if input.just_pressed(MouseButton::Left) {
+            for (pin_transform, mut input_pin, mut draw_mode) in q_input_pins.iter_mut() {
+                if cursor_position.distance(pin_transform.translation().truncate())
+                    > render_settings.io_pin_radius
+                {
+                    continue;
+                }
+
+                let new_pin_state = match input_pin.0 {
+                    PinState::High => PinState::Low,
+                    PinState::Low => PinState::High,
+                };
+
+                let new_draw_mode = DrawMode::Fill(FillMode {
+                    options: FillOptions::default(),
+                    color: match new_pin_state {
+                        PinState::High => Color::GREEN,
+                        PinState::Low => Color::RED,
+                    },
+                });
+
+                *draw_mode = new_draw_mode;
+                input_pin.0 = new_pin_state;
+                break;
+            }
+        }
+    }
+}
 //TODO: delete selected / selected marker / drag selected

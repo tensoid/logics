@@ -9,6 +9,7 @@ impl Plugin for UIPlugin {
         app.add_system(spawn_chip_at_cursor)
             .add_system(spawn_io_pin_at_cursor)
             .add_system(spawn_chip_event)
+            .add_system(toggle_board_input_pin)
             .add_system(spawn_io_pin_event)
             .add_system(drag_chip)
             .add_system(drag_wire.before(drag_chip))

@@ -1,6 +1,6 @@
 use crate::simulation::{
     chip::{Chip, ChipExtents, ChipSpecs, SpawnChipEvent},
-    pin::{BoardInputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent},
+    pin::{BoardInputPin, BoardOutputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent},
     pin_state::PinState,
     wire::Wire,
 };
@@ -155,7 +155,7 @@ pub fn spawn_io_pin_event(
         } else {
             commands
                 .entity(pin_entity)
-                .insert(BoardInputPin(PinState::Low));
+                .insert(BoardOutputPin(PinState::Low));
         }
     }
 }
