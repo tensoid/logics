@@ -17,16 +17,18 @@ use simulation::{
     pin::SpawnIOPinEvent,
     simulation::SimulationPlugin,
 };
-use ui::{circuit_board::CircuitBoardRenderingSettings, cursor::CursorState, ui::UIPlugin};
+use ui::{
+    circuit_board::CircuitBoardRenderingSettings,
+    cursor::{Cursor, CursorState},
+    ui::UIPlugin,
+};
+
+const WINDOW_TITLE: &str = "Logics";
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
-        // .insert_resource(WindowDescriptor {
-        //     title: "Logics".to_string(),
-        //     ..Default::default()
-        // })
-        .insert_resource(CursorState::Idle)
+        .insert_resource(Cursor::default())
         .insert_resource(ChipSpecs(vec![ChipSpec {
             name: "and".to_string(),
             //expressions: vec![Expr::from_string("0 & 1").unwrap()],
@@ -55,7 +57,8 @@ fn main() {
 fn display_fps(diagnostics: Res<Diagnostics>, mut windows: ResMut<Windows>) {
     let window = windows.primary_mut();
     window.set_title(format!(
-        "Logics - {:.2}",
+        "{} - {:.2}",
+        WINDOW_TITLE,
         diagnostics
             .get(FrameTimeDiagnosticsPlugin::FPS)
             .and_then(|fps| fps.average())

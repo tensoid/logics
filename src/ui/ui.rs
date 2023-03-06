@@ -14,7 +14,7 @@ impl Plugin for UIPlugin {
             .add_system(drag_chip)
             .add_system(drag_wire.before(drag_chip))
             .add_system(update_wires)
-            .add_system(delete_chip);
-        //.add_system(update_cursor_state);
+            .add_system(delete_chip)
+            .add_system_to_stage(CoreStage::First, update_cursor); //TODO: define own stage
     }
 }
