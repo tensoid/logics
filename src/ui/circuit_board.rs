@@ -152,6 +152,17 @@ pub fn spawn_io_pin_event(
             commands
                 .entity(pin_entity)
                 .insert(BoardInputPin(PinState::Low));
+
+            commands.entity(pin_entity).with_children(|pin| {
+                pin.spawn(GeometryBuilder::build_as(
+                    &shapes::Line(Vec2::ZERO, Vec2::ZERO),
+                    DrawMode::Stroke(StrokeMode::new(Color::RED, render_settings.wire_line_width)),
+                    Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
+                ))
+                .insert(Wire {
+                    dest_pin: Option::None,
+                });
+            });
         } else {
             commands
                 .entity(pin_entity)
