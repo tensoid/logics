@@ -175,8 +175,11 @@ pub fn update_wires(
     q_moved_chips: Query<(Entity, &Children), (With<Chip>, Changed<GlobalTransform>)>,
     q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
     q_input_pins: Query<&GlobalTransform, (With<ChipInputPin>, Without<Camera>)>,
+    q_board_output_pins: Query<&GlobalTransform, (With<BoardOutputPin>, Without<Camera>)>,
+    q_board_input_pins: Query<&GlobalTransform, (With<BoardInputPin>, Without<Camera>)>,
     mut q_wires: Query<(&Wire, &mut Path, &GlobalTransform)>,
 ) {
+    //TODO: impl also for io pins
     for (_, chip_children) in q_moved_chips.iter() {
         // Output pins
         for &output_pin_entity in chip_children.iter() {
@@ -184,20 +187,27 @@ pub fn update_wires(
                 let output_pin_wire_entity = output_pin.1.first().unwrap();
                 let (wire, mut wire_path, _) = q_wires.get_mut(*output_pin_wire_entity).unwrap();
                 if let Some(wire_dest_pin_entity) = wire.dest_pin {
-                    let wire_dest_pin_transform = q_input_pins.get(wire_dest_pin_entity).unwrap();
-                    let new_wire = shapes::Line(
-                        Vec2::ZERO,
-                        wire_dest_pin_transform.translation().truncate()
-                            - output_pin.0.translation().truncate(),
-                    );
-                    *wire_path = ShapePath::build_as(&new_wire);
+                    let wire_dest_pin_transform = q_input_pins
+                        .get(wire_dest_pin_entity)
+                        .or(q_board_output_pins.get(wire_dest_pin_entity));
+                    if let Ok(wire_dest_pin_transform) = wire_dest_pin_transform {
+                        let new_wire = shapes::Line(
+                            Vec2::ZERO,
+                            wire_dest_pin_transform.translation().truncate()
+                                - output_pin.0.translation().truncate(),
+                        );
+                        *wire_path = ShapePath::build_as(&new_wire);
+                    }
                 }
             }
         }
 
         // Input pins
         for &input_pin_entity in chip_children.iter() {
-            if let Ok(input_pin_transform) = q_input_pins.get(input_pin_entity) {
+            if let Ok(input_pin_transform) = q_input_pins
+                .get(input_pin_entity)
+                .or(q_board_output_pins.get(input_pin_entity))
+            {
                 for (wire, mut wire_path, wire_transform) in q_wires.iter_mut() {
                     if let Some(wire_dest_pin) = wire.dest_pin {
                         if wire_dest_pin != input_pin_entity {

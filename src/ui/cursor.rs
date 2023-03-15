@@ -1,6 +1,6 @@
 use crate::simulation::{
-    chip::{Chip, ChipExtents, SpawnChipEvent},
-    pin::{BoardInputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent},
+    chip::{self, Chip, ChipExtents, SpawnChipEvent},
+    pin::{BoardInputPin, BoardOutputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent},
     pin_state::PinState,
     wire::Wire,
 };
@@ -34,6 +34,8 @@ impl Default for Cursor {
         }
     }
 }
+
+//TODO: instead of setting position when dragging set parent, this needs cursor to be an entity
 
 pub fn update_cursor(
     input: Res<Input<MouseButton>>,
@@ -204,6 +206,7 @@ pub fn drag_wire(
     input: Res<Input<MouseButton>>,
     q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
     q_input_pins: Query<(&GlobalTransform, Entity), (With<ChipInputPin>, Without<Camera>)>,
+    q_board_output_pins: Query<(&GlobalTransform, Entity), (With<BoardOutputPin>, Without<Camera>)>,
     q_board_input_pins: Query<
         (&GlobalTransform, &Children),
         (With<BoardInputPin>, Without<Camera>),
@@ -252,16 +255,22 @@ pub fn drag_wire(
                     new_wire.1 = cursor_world_pos - output_pin_transform.translation().truncate();
                     *path = ShapePath::build_as(&new_wire);
                 } else if input.just_released(MouseButton::Left) {
-                    for (input_pin_transform, pin_entity) in q_input_pins.iter() {
-                        if cursor_world_pos.distance(input_pin_transform.translation().truncate())
-                            > render_settings.chip_pin_radius
-                        {
-                            continue;
-                        }
+                    let hovered_chip_pin = q_input_pins.iter().find(|pin| {
+                        cursor_world_pos.distance(pin.0.translation().truncate())
+                            <= render_settings.chip_pin_radius
+                    });
 
+                    let hovered_board_pin = q_board_output_pins.iter().find(|pin| {
+                        cursor_world_pos.distance(pin.0.translation().truncate())
+                            <= render_settings.io_pin_radius
+                    });
+
+                    let hovered_pin = hovered_chip_pin.or(hovered_board_pin);
+
+                    if let Some(hovered_pin) = hovered_pin {
                         // connect wire to pin
-                        wire.dest_pin = Some(pin_entity);
-                        new_wire.1 = input_pin_transform.translation().truncate()
+                        wire.dest_pin = Some(hovered_pin.1);
+                        new_wire.1 = hovered_pin.0.translation().truncate()
                             - output_pin_transform.translation().truncate();
                         *path = ShapePath::build_as(&new_wire);
                         cursor.state = CursorState::Idle;
