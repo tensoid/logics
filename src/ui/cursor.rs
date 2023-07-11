@@ -1,10 +1,11 @@
 use crate::simulation::{
-    chip::{self, Chip, ChipExtents, SpawnChipEvent},
+    chip::{Chip, ChipExtents, SpawnChipEvent},
     pin::{BoardInputPin, BoardOutputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent},
     pin_state::PinState,
     wire::Wire,
 };
-use bevy::{input::mouse::MouseMotion, prelude::*};
+use bevy::{input::mouse::MouseMotion, prelude::*, window::PrimaryWindow};
+use bevy_inspector_egui::egui::Key;
 use bevy_prototype_lyon::prelude::*;
 
 use super::{circuit_board::CircuitBoardRenderingSettings, utils::screen_to_world_space};
@@ -39,12 +40,12 @@ impl Default for Cursor {
 
 pub fn update_cursor(
     input: Res<Input<MouseButton>>,
-    windows: ResMut<Windows>,
+    q_window: Query<&Window, With<PrimaryWindow>>,
     q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
     mut cursor: ResMut<Cursor>,
     mut mouse_motion_ev: EventReader<MouseMotion>,
 ) {
-    if let Some(window) = windows.get_primary() {
+    if let Ok(window) = q_window.get_single() {
         if q_camera.iter().count() > 1 {
             panic!("More than one camera in the scene.");
         }
@@ -62,14 +63,35 @@ pub fn update_cursor(
 }
 
 pub fn spawn_chip_at_cursor(
-    input: Res<Input<MouseButton>>,
+    key_input: Res<Input<KeyCode>>,
     mut ev_writer: EventWriter<SpawnChipEvent>,
     cursor: Res<Cursor>,
 ) {
-    if input.just_pressed(MouseButton::Right) {
+    if key_input.just_pressed(KeyCode::F) {
         if let Some(cursor_world_pos) = cursor.world_pos {
             ev_writer.send(SpawnChipEvent {
                 chip_name: "and".to_string(),
+                position: cursor_world_pos,
+            });
+        }
+    } else if key_input.just_pressed(KeyCode::G) {
+        if let Some(cursor_world_pos) = cursor.world_pos {
+            ev_writer.send(SpawnChipEvent {
+                chip_name: "or".to_string(),
+                position: cursor_world_pos,
+            });
+        }
+    } else if key_input.just_pressed(KeyCode::H) {
+        if let Some(cursor_world_pos) = cursor.world_pos {
+            ev_writer.send(SpawnChipEvent {
+                chip_name: "xor".to_string(),
+                position: cursor_world_pos,
+            });
+        }
+    } else if key_input.just_pressed(KeyCode::J) {
+        if let Some(cursor_world_pos) = cursor.world_pos {
+            ev_writer.send(SpawnChipEvent {
+                chip_name: "not".to_string(),
                 position: cursor_world_pos,
             });
         }
@@ -148,7 +170,6 @@ pub fn delete_chip(
 
 pub fn drag_chip(
     input: Res<Input<MouseButton>>,
-    windows: ResMut<Windows>,
     q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
     mut q_chips: Query<
         (&GlobalTransform, &mut Transform, &ChipExtents, Entity),
@@ -173,7 +194,6 @@ pub fn drag_chip(
 
             if input.just_released(MouseButton::Left) {
                 cursor.state = CursorState::Idle;
-                //window.set_cursor_icon(CursorIcon::Default);
             }
         }
 
@@ -251,21 +271,30 @@ pub fn drag_wire(
                 let (mut path, output_pin_transform, mut wire) = wire_components;
                 let mut new_wire = shapes::Line(Vec2::ZERO, Vec2::ZERO);
 
+                //TODO: nicht jedes mal abfrage? aber juckt glaube nicht
+                if wire.dest_pin != None {
+                    wire.dest_pin = None;
+                }
+
                 if input.pressed(MouseButton::Left) {
                     new_wire.1 = cursor_world_pos - output_pin_transform.translation().truncate();
                     *path = ShapePath::build_as(&new_wire);
                 } else if input.just_released(MouseButton::Left) {
-                    let hovered_chip_pin = q_input_pins.iter().find(|pin| {
-                        cursor_world_pos.distance(pin.0.translation().truncate())
-                            <= render_settings.chip_pin_radius
-                    });
+                    let hovered_chip_pin = || {
+                        q_input_pins.iter().find(|pin| {
+                            cursor_world_pos.distance(pin.0.translation().truncate())
+                                <= render_settings.chip_pin_radius
+                        })
+                    };
 
-                    let hovered_board_pin = q_board_output_pins.iter().find(|pin| {
-                        cursor_world_pos.distance(pin.0.translation().truncate())
-                            <= render_settings.io_pin_radius
-                    });
+                    let hovered_board_pin = || {
+                        q_board_output_pins.iter().find(|pin| {
+                            cursor_world_pos.distance(pin.0.translation().truncate())
+                                <= render_settings.io_pin_radius
+                        })
+                    };
 
-                    let hovered_pin = hovered_chip_pin.or(hovered_board_pin);
+                    let hovered_pin = hovered_chip_pin().or_else(hovered_board_pin);
 
                     if let Some(hovered_pin) = hovered_pin {
                         // connect wire to pin
@@ -278,7 +307,6 @@ pub fn drag_wire(
                     }
 
                     // reset wire if dragged on nothing
-                    wire.dest_pin = None;
                     *path = ShapePath::build_as(&new_wire);
                     cursor.state = CursorState::Idle;
                 }
@@ -289,13 +317,13 @@ pub fn drag_wire(
 
 pub fn toggle_board_input_pin(
     input: Res<Input<KeyCode>>,
-    mut q_input_pins: Query<(&GlobalTransform, &mut BoardInputPin, &mut DrawMode)>,
+    mut q_input_pins: Query<(&GlobalTransform, &mut BoardInputPin, &mut Fill)>,
     render_settings: Res<CircuitBoardRenderingSettings>,
     cursor: Res<Cursor>,
 ) {
     if let Some(cursor_world_pos) = cursor.world_pos {
         if input.just_pressed(KeyCode::Space) {
-            for (pin_transform, mut input_pin, mut draw_mode) in q_input_pins.iter_mut() {
+            for (pin_transform, mut input_pin, mut fill) in q_input_pins.iter_mut() {
                 if cursor_world_pos.distance(pin_transform.translation().truncate())
                     > render_settings.io_pin_radius
                 {
@@ -307,15 +335,12 @@ pub fn toggle_board_input_pin(
                     PinState::Low => PinState::High,
                 };
 
-                let new_draw_mode = DrawMode::Fill(FillMode {
-                    options: FillOptions::default(),
-                    color: match new_pin_state {
-                        PinState::High => Color::GREEN,
-                        PinState::Low => Color::RED,
-                    },
+                let new_fill = Fill::color(match new_pin_state {
+                    PinState::High => Color::GREEN,
+                    PinState::Low => Color::RED,
                 });
 
-                *draw_mode = new_draw_mode;
+                *fill = new_fill;
                 input_pin.0 = new_pin_state;
                 break;
             }

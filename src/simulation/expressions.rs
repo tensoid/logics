@@ -195,18 +195,31 @@ impl AstNode {
 }
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct Expr(AstNode);
+pub struct Expr(AstNode, pub u32);
 
 impl Expr {
     pub fn from_string(s: &str) -> Result<Self, &'static str> {
         let mut tokens: VecDeque<Token> = lex(s)?.into_iter().collect();
+
+        let mut pin_indices: Vec<_> = tokens
+            .iter()
+            .filter_map(|t| match t {
+                Token::PinIndex(index) => Some(index),
+                _ => None,
+            })
+            .collect();
+
+        pin_indices.sort();
+        pin_indices.dedup();
+
+        let input_pin_count = pin_indices.len() as u32;
 
         if tokens.is_empty() {
             return Err("No tokens could be parsed. Is the expression string empty?");
         }
 
         let root_ast_node = AstNode::munch_tokens(&mut tokens, MAX_RECURSION_DEPTH)?;
-        return Ok(Self(root_ast_node));
+        return Ok(Self(root_ast_node, input_pin_count));
     }
 
     pub fn evaluate(&self, inputs: &Vec<bool>) -> bool {
@@ -267,7 +280,7 @@ fn test_invalid_syntax() {
 fn test_simple_negation() {
     assert_eq!(
         Expr::from_string("!1"),
-        Ok(Expr(AstNode::Negate(Box::new(AstNode::PinIndex(1)))))
+        Ok(Expr(AstNode::Negate(Box::new(AstNode::PinIndex(1))), 1))
     );
 }
 

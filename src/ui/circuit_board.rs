@@ -33,7 +33,7 @@ pub fn spawn_chip_event(
             .find(|spec| spec.name == ev.chip_name)
             .unwrap();
 
-        let num_input_pins = ChipInputPin::num_input_pins_from_chip_spec(chip_spec);
+        let num_input_pins = chip_spec.expression.1;
 
         let chip_extents: Vec2 = Vec2::new(
             render_settings.chip_pin_gap * (num_input_pins + 1) as f32,
@@ -61,13 +61,17 @@ pub fn spawn_chip_event(
         };
 
         commands
-            .spawn(GeometryBuilder::build_as(
-                &chip_shape,
-                DrawMode::Fill(FillMode {
-                    options: FillOptions::default(),
-                    color: Color::YELLOW,
-                }),
-                Transform::from_xyz(ev.position.x, ev.position.y, DrawLayer::Chip.get_z()),
+            .spawn((
+                ShapeBundle {
+                    path: GeometryBuilder::build_as(&chip_shape),
+                    transform: Transform::from_xyz(
+                        ev.position.x,
+                        ev.position.y,
+                        DrawLayer::Chip.get_z(),
+                    ),
+                    ..default()
+                },
+                Fill::color(Color::YELLOW),
             ))
             .insert(Chip)
             .insert(ChipExtents(chip_extents))
@@ -76,51 +80,58 @@ pub fn spawn_chip_event(
                 //Chip Name
                 chip.spawn(Text2dBundle {
                     text: Text::from_section(&ev.chip_name.to_uppercase(), text_style)
-                        .with_alignment(TextAlignment::CENTER),
+                        .with_alignment(TextAlignment::Center),
                     transform: Transform::from_xyz(0.0, 0.0, DrawLayer::ChipName.get_z()),
                     ..default()
                 });
 
                 // Input pins
                 for i in 0..num_input_pins {
-                    chip.spawn(GeometryBuilder::build_as(
-                        &pin_shape,
-                        DrawMode::Fill(FillMode {
-                            options: FillOptions::default(),
-                            color: Color::RED,
-                        }),
-                        Transform::from_xyz(
-                            -(chip_extents.x / 2.0),
-                            (i as f32 * render_settings.chip_pin_gap) - (chip_extents.y / 2.0)
-                                + render_settings.chip_pin_gap,
-                            DrawLayer::Pin.get_z(),
-                        ),
-                    ))
-                    .insert(ChipInputPin(PinState::Low));
+                    chip.spawn((
+                        ShapeBundle {
+                            path: GeometryBuilder::build_as(&pin_shape),
+                            transform: Transform::from_xyz(
+                                -(chip_extents.x / 2.0),
+                                (i as f32 * render_settings.chip_pin_gap) - (chip_extents.y / 2.0)
+                                    + render_settings.chip_pin_gap,
+                                DrawLayer::Pin.get_z(),
+                            ),
+                            ..default()
+                        },
+                        Fill::color(Color::RED),
+                        ChipInputPin {
+                            pin_state: PinState::Low,
+                            input_received: false,
+                        },
+                    ));
                 }
 
                 // Output pins
-                chip.spawn(GeometryBuilder::build_as(
-                    &pin_shape,
-                    DrawMode::Fill(FillMode {
-                        options: FillOptions::default(),
-                        color: Color::RED,
-                    }),
-                    Transform::from_xyz(chip_extents.x / 2.0, 0.0, DrawLayer::Pin.get_z()),
+                chip.spawn((
+                    ShapeBundle {
+                        path: GeometryBuilder::build_as(&pin_shape),
+                        transform: Transform::from_xyz(
+                            chip_extents.x / 2.0,
+                            0.0,
+                            DrawLayer::Pin.get_z(),
+                        ),
+                        ..default()
+                    },
+                    Fill::color(Color::RED),
+                    ChipOutputPin(PinState::Low),
                 ))
-                .insert(ChipOutputPin(PinState::Low))
                 .with_children(|pin| {
-                    pin.spawn(GeometryBuilder::build_as(
-                        &wire_shape,
-                        DrawMode::Stroke(StrokeMode::new(
-                            Color::RED,
-                            render_settings.wire_line_width,
-                        )),
-                        Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
-                    ))
-                    .insert(Wire {
-                        dest_pin: Option::None,
-                    });
+                    pin.spawn((
+                        ShapeBundle {
+                            path: GeometryBuilder::build_as(&wire_shape),
+                            transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
+                            ..default()
+                        },
+                        Stroke::new(Color::RED, render_settings.wire_line_width),
+                        Wire {
+                            dest_pin: Option::None,
+                        },
+                    ));
                 });
             });
     }
@@ -138,13 +149,17 @@ pub fn spawn_io_pin_event(
         };
 
         let pin_entity = commands
-            .spawn(GeometryBuilder::build_as(
-                &pin_shape,
-                DrawMode::Fill(FillMode {
-                    options: FillOptions::default(),
-                    color: Color::RED,
-                }),
-                Transform::from_xyz(ev.position.x, ev.position.y, DrawLayer::Pin.get_z()),
+            .spawn((
+                ShapeBundle {
+                    path: GeometryBuilder::build_as(&pin_shape),
+                    transform: Transform::from_xyz(
+                        ev.position.x,
+                        ev.position.y,
+                        DrawLayer::Pin.get_z(),
+                    ),
+                    ..default()
+                },
+                Fill::color(Color::RED),
             ))
             .id();
 
@@ -154,14 +169,17 @@ pub fn spawn_io_pin_event(
                 .insert(BoardInputPin(PinState::Low));
 
             commands.entity(pin_entity).with_children(|pin| {
-                pin.spawn(GeometryBuilder::build_as(
-                    &shapes::Line(Vec2::ZERO, Vec2::ZERO),
-                    DrawMode::Stroke(StrokeMode::new(Color::RED, render_settings.wire_line_width)),
-                    Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
-                ))
-                .insert(Wire {
-                    dest_pin: Option::None,
-                });
+                pin.spawn((
+                    ShapeBundle {
+                        path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
+                        transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
+                        ..default()
+                    },
+                    Stroke::new(Color::RED, render_settings.wire_line_width),
+                    Wire {
+                        dest_pin: Option::None,
+                    },
+                ));
             });
         } else {
             commands

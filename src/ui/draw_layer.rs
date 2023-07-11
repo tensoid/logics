@@ -12,8 +12,8 @@ impl DrawLayer {
             DrawLayer::Grid => 0.0,
             DrawLayer::Chip => 0.1,
             DrawLayer::ChipName => 0.2,
-            DrawLayer::Pin => 0.3,
-            DrawLayer::Wire => 0.4,
+            DrawLayer::Wire => 0.3,
+            DrawLayer::Pin => 0.4,
         }
     }
 }
