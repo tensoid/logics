@@ -71,7 +71,8 @@ pub fn spawn_chip_event(
                     ),
                     ..default()
                 },
-                Fill::color(Color::YELLOW),
+                Fill::color(Color::WHITE),
+                Stroke::new(Color::BLACK, 1.0),
             ))
             .insert(Chip)
             .insert(ChipExtents(chip_extents))
@@ -137,6 +138,7 @@ pub fn spawn_chip_event(
     }
 }
 
+//TODO: io pin with seperate button and wire connector: O-o
 pub fn spawn_io_pin_event(
     mut commands: Commands,
     mut spawn_ev: EventReader<SpawnIOPinEvent>,
@@ -194,7 +196,6 @@ pub fn update_wires(
     q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
     q_input_pins: Query<&GlobalTransform, (With<ChipInputPin>, Without<Camera>)>,
     q_board_output_pins: Query<&GlobalTransform, (With<BoardOutputPin>, Without<Camera>)>,
-    q_board_input_pins: Query<&GlobalTransform, (With<BoardInputPin>, Without<Camera>)>,
     mut q_wires: Query<(&Wire, &mut Path, &GlobalTransform)>,
 ) {
     //TODO: impl also for io pins

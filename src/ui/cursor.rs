@@ -264,8 +264,6 @@ pub fn drag_wire(
             }
         }
 
-        //TODO: drag to board output pin
-
         if let CursorState::DraggingWire(wire_entity) = cursor.state {
             if let Ok(wire_components) = q_wires.get_mut(wire_entity) {
                 let (mut path, output_pin_transform, mut wire) = wire_components;
