@@ -89,96 +89,89 @@ impl AstNode {
         if depth == 0 {
             return Err("expression too deep");
         }
-        loop {
-            let next = match tokens.get(0) {
-                Some(x) => x,
-                None => return Err("unexpected end of expression"),
-            };
-            match next {
-                Token::CloseBracket => return Err("Unexpected closing bracket"),
-                Token::Negate => {
-                    tokens.remove(0);
-                    // Negate exactly the next token
-                    // !a & b -> (!a) & b
-                    match tokens.get(0) {
-                        Some(Token::OpenBracket) => {
-                            return Ok(AstNode::Negate(Box::new(Self::munch_tokens(
-                                tokens,
-                                depth - 1,
-                            )?)));
-                        }
-                        Some(Token::PinIndex(index)) => {
-                            // is it like "!abc" or "!abc & xyz"
-                            let negated =
-                                AstNode::Negate(Box::new(AstNode::PinIndex(index.clone())));
-                            match tokens.get(1) {
-                                Some(Token::BinaryOp(_)) => {
-                                    // "!abc & xyz"
-                                    // convert to unambiguous form and try again
-                                    tokens.insert(0, Token::OpenBracket);
-                                    tokens.insert(1, Token::Negate);
-                                    tokens.insert(2, Token::OpenBracket);
-                                    tokens.insert(4, Token::CloseBracket);
-                                    tokens.insert(5, Token::CloseBracket);
-                                    return Self::munch_tokens(tokens, depth - 1);
-                                }
-                                None | Some(Token::CloseBracket) => {
-                                    // "!abc"
-                                    tokens.remove(0); // remove PinIndex
-                                    return Ok(negated);
-                                }
-                                Some(_) => return Err("invalid token after negated PinIndex"),
+
+        let next = match tokens.get(0) {
+            Some(x) => x,
+            None => return Err("unexpected end of expression"),
+        };
+        match next {
+            Token::CloseBracket => Err("Unexpected closing bracket"),
+            Token::Negate => {
+                tokens.remove(0);
+                // Negate exactly the next token
+                // !a & b -> (!a) & b
+                match tokens.get(0) {
+                    Some(Token::OpenBracket) => Ok(AstNode::Negate(Box::new(Self::munch_tokens(
+                        tokens,
+                        depth - 1,
+                    )?))),
+                    Some(Token::PinIndex(index)) => {
+                        // is it like "!abc" or "!abc & xyz"
+                        let negated = AstNode::Negate(Box::new(AstNode::PinIndex(*index)));
+                        match tokens.get(1) {
+                            Some(Token::BinaryOp(_)) => {
+                                // "!abc & xyz"
+                                // convert to unambiguous form and try again
+                                tokens.insert(0, Token::OpenBracket);
+                                tokens.insert(1, Token::Negate);
+                                tokens.insert(2, Token::OpenBracket);
+                                tokens.insert(4, Token::CloseBracket);
+                                tokens.insert(5, Token::CloseBracket);
+                                Self::munch_tokens(tokens, depth - 1)
                             }
+                            None | Some(Token::CloseBracket) => {
+                                // "!abc"
+                                tokens.remove(0); // remove PinIndex
+                                Ok(negated)
+                            }
+                            Some(_) => Err("invalid token after negated PinIndex"),
                         }
-                        Some(Token::Negate) => {
-                            return Err("can't double Negate, that would be pointless")
-                        }
-                        Some(_) => return Err("expected expression"),
-                        None => return Err("Expected token to Negate, got EOF"),
                     }
+                    Some(Token::Negate) => Err("can't double Negate, that would be pointless"),
+                    Some(_) => Err("expected expression"),
+                    None => Err("Expected token to Negate, got EOF"),
                 }
-                Token::OpenBracket => {
-                    tokens.remove(0); // open bracket
-                    let result = Self::munch_tokens(tokens, depth - 1)?;
-                    match tokens.remove(0) {
-                        // remove closing bracket
-                        Some(Token::CloseBracket) => {}
-                        _ => return Err("expected closing bracket"),
-                    };
-                    // check for binary op afterwards
-                    return match tokens.get(0) {
-                        Some(Token::BinaryOp(op)) => {
-                            let op = op.clone();
-                            tokens.remove(0).unwrap(); // remove binary op
-                            let ret = Ok(AstNode::Binary(
-                                op,
-                                Box::new(result),
-                                Box::new(Self::munch_tokens(tokens, depth - 1)?),
-                            ));
-                            ret
-                        }
-                        Some(Token::CloseBracket) | None => Ok(result),
-                        Some(_) => Err("invald token after closing bracket"),
-                    };
-                }
-                Token::BinaryOp(_) => return Err("Unexpected binary operator"),
-                Token::PinIndex(index) => {
-                    // could be the start of the binary op or just a lone PinIndex
-                    match tokens.get(1) {
-                        Some(Token::BinaryOp(_)) => {
-                            // convert to unambiguous form and try again
-                            tokens.insert(1, Token::CloseBracket);
-                            tokens.insert(0, Token::OpenBracket);
-                            return Self::munch_tokens(tokens, depth - 1);
-                        }
-                        Some(Token::CloseBracket) | None => {
-                            // lone token
-                            let pin_index = index.clone();
-                            tokens.remove(0);
-                            return Ok(AstNode::PinIndex(pin_index));
-                        }
-                        Some(_) => return Err("PinIndex followed by invalid token"),
+            }
+            Token::OpenBracket => {
+                tokens.remove(0); // open bracket
+                let result = Self::munch_tokens(tokens, depth - 1)?;
+                match tokens.remove(0) {
+                    // remove closing bracket
+                    Some(Token::CloseBracket) => {}
+                    _ => return Err("expected closing bracket"),
+                };
+                // check for binary op afterwards
+                return match tokens.get(0) {
+                    Some(Token::BinaryOp(op)) => {
+                        let op = *op;
+                        tokens.remove(0).unwrap(); // remove binary op
+                        Ok(AstNode::Binary(
+                            op,
+                            Box::new(result),
+                            Box::new(Self::munch_tokens(tokens, depth - 1)?),
+                        ))
                     }
+                    Some(Token::CloseBracket) | None => Ok(result),
+                    Some(_) => Err("invald token after closing bracket"),
+                };
+            }
+            Token::BinaryOp(_) => Err("Unexpected binary operator"),
+            Token::PinIndex(index) => {
+                // could be the start of the binary op or just a lone PinIndex
+                match tokens.get(1) {
+                    Some(Token::BinaryOp(_)) => {
+                        // convert to unambiguous form and try again
+                        tokens.insert(1, Token::CloseBracket);
+                        tokens.insert(0, Token::OpenBracket);
+                        return Self::munch_tokens(tokens, depth - 1);
+                    }
+                    Some(Token::CloseBracket) | None => {
+                        // lone token
+                        let pin_index = *index;
+                        tokens.remove(0);
+                        Ok(AstNode::PinIndex(pin_index))
+                    }
+                    Some(_) => Err("PinIndex followed by invalid token"),
                 }
             }
         }
@@ -219,7 +212,7 @@ impl Expr {
         }
 
         let root_ast_node = AstNode::munch_tokens(&mut tokens, MAX_RECURSION_DEPTH)?;
-        return Ok(Self(root_ast_node, input_pin_count));
+        Ok(Self(root_ast_node, input_pin_count))
     }
 
     pub fn evaluate(&self, inputs: &Vec<bool>) -> bool {
@@ -286,50 +279,32 @@ fn test_simple_negation() {
 
 #[test]
 fn test_simple_expressions() {
-    assert_eq!(
-        Expr::from_string("!0 & (1 | 2)")
-            .unwrap()
-            .evaluate(&vec![false, true, false]),
-        true
-    );
+    assert!(Expr::from_string("!0 & (1 | 2)")
+        .unwrap()
+        .evaluate(&vec![false, true, false]));
 
-    assert_eq!(
-        Expr::from_string("!0 & (1 | 2)")
-            .unwrap()
-            .evaluate(&vec![false, true, true]),
-        true
-    );
+    assert!(Expr::from_string("!0 & (1 | 2)")
+        .unwrap()
+        .evaluate(&vec![false, true, true]));
 
-    assert_eq!(
-        Expr::from_string("!0 & (1 | 2)")
-            .unwrap()
-            .evaluate(&vec![true, false, true]),
-        false
-    );
+    assert!(!Expr::from_string("!0 & (1 | 2)")
+        .unwrap()
+        .evaluate(&vec![true, false, true]));
 }
 
 #[test]
 fn test_bracketed_expressions() {
-    assert_eq!(
-        Expr::from_string("0 | (1 & 2)")
-            .unwrap()
-            .evaluate(&vec![true, false, false]),
-        true
-    );
+    assert!(Expr::from_string("0 | (1 & 2)")
+        .unwrap()
+        .evaluate(&vec![true, false, false]));
 
-    assert_eq!(
-        Expr::from_string("(0 & 1) | 2")
-            .unwrap()
-            .evaluate(&vec![false, false, true]),
-        true
-    );
+    assert!(Expr::from_string("(0 & 1) | 2")
+        .unwrap()
+        .evaluate(&vec![false, false, true]));
 
-    assert_eq!(
-        Expr::from_string("(0 & 1) | 2)")
-            .unwrap()
-            .evaluate(&vec![true, true, false]),
-        true
-    );
+    assert!(Expr::from_string("(0 & 1) | 2)")
+        .unwrap()
+        .evaluate(&vec![true, true, false]));
 }
 
 #[test]

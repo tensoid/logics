@@ -1,6 +1,10 @@
 use crate::simulation::{
     chip::{Chip, ChipExtents, ChipSpecs, SpawnChipEvent},
-    pin::{BoardInputPin, BoardOutputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent},
+    pin::{
+        BoardBinaryIOHandleBar, BoardBinaryIOHandleBarExtents, BoardBinaryInput,
+        BoardBinaryInputPin, BoardBinaryInputSwitch, BoardBinaryOutput, BoardBinaryOutputDisplay,
+        BoardBinaryOutputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent,
+    },
     pin_state::PinState,
     wire::Wire,
 };
@@ -11,11 +15,15 @@ use super::draw_layer::DrawLayer;
 
 #[derive(Resource)]
 pub struct CircuitBoardRenderingSettings {
+    pub signal_high_color: Color,
+    pub signal_low_color: Color,
     pub chip_pin_gap: f32,
     pub chip_pin_radius: f32,
-    pub io_pin_radius: f32,
+    pub binary_io_pin_radius: f32,
     pub wire_line_width: f32,
-    //TODO: shapes maybe
+    pub binary_io_handlebar_width: f32,
+    pub binary_io_handlebar_length: f32,
+    pub binary_io_handlebar_color: Color, //TODO: shapes maybe
 }
 
 //TODO: define all geometries in a class or smth to clean up
@@ -99,11 +107,12 @@ pub fn spawn_chip_event(
                             ),
                             ..default()
                         },
-                        Fill::color(Color::RED),
+                        Fill::color(render_settings.signal_low_color),
                         ChipInputPin {
-                            pin_state: PinState::Low,
+                            //TODO: think about making this property a component
                             input_received: false,
                         },
+                        PinState::Low,
                     ));
                 }
 
@@ -118,8 +127,9 @@ pub fn spawn_chip_event(
                         ),
                         ..default()
                     },
-                    Fill::color(Color::RED),
-                    ChipOutputPin(PinState::Low),
+                    Fill::color(render_settings.signal_low_color),
+                    ChipOutputPin,
+                    PinState::Low,
                 ))
                 .with_children(|pin| {
                     pin.spawn((
@@ -128,7 +138,10 @@ pub fn spawn_chip_event(
                             transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
                             ..default()
                         },
-                        Stroke::new(Color::RED, render_settings.wire_line_width),
+                        Stroke::new(
+                            render_settings.signal_low_color,
+                            render_settings.wire_line_width,
+                        ),
                         Wire {
                             dest_pin: Option::None,
                         },
@@ -145,60 +158,127 @@ pub fn spawn_io_pin_event(
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
     for ev in spawn_ev.iter() {
-        let pin_shape = shapes::Circle {
-            radius: render_settings.io_pin_radius,
+        let pin_bundle = (
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Circle {
+                    radius: render_settings.binary_io_pin_radius,
+                    ..default()
+                }),
+                transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Pin.get_z()),
+                ..default()
+            },
+            Fill::color(render_settings.signal_low_color),
+        );
+
+        let wire_bundle = (
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
+                transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
+                ..default()
+            },
+            Stroke::new(
+                render_settings.signal_low_color,
+                render_settings.wire_line_width,
+            ),
+            Wire {
+                dest_pin: Option::None,
+            },
+        );
+
+        let handle_bar_extents: Vec2 = Vec2::new(
+            render_settings.binary_io_handlebar_length,
+            render_settings.binary_io_handlebar_width,
+        );
+
+        let mut handle_bar_bundle = (
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    origin: RectangleOrigin::Center,
+                    extents: handle_bar_extents,
+                }),
+                transform: Transform::from_xyz(0.0, 0.0, DrawLayer::HandleBar.get_z()),
+                ..default()
+            },
+            BoardBinaryIOHandleBarExtents(handle_bar_extents),
+            Fill::color(render_settings.binary_io_handlebar_color),
+        );
+
+        let switch_bundle = (
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Circle {
+                    radius: render_settings.binary_io_pin_radius,
+                    ..default()
+                }),
+                transform: Transform::from_xyz(
+                    -render_settings.binary_io_handlebar_length,
+                    0.0,
+                    DrawLayer::Pin.get_z(),
+                ),
+                ..default()
+            },
+            Fill::color(render_settings.binary_io_handlebar_color),
+        );
+
+        let display_bundle = (
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Circle {
+                    radius: render_settings.binary_io_pin_radius,
+                    ..default()
+                }),
+                transform: Transform::from_xyz(
+                    render_settings.binary_io_handlebar_length,
+                    0.0,
+                    DrawLayer::Pin.get_z(),
+                ),
+                ..default()
+            },
+            Fill::color(render_settings.signal_low_color),
+        );
+
+        let identity_spatial_bundle = SpatialBundle {
+            transform: Transform::from_xyz(ev.position.x, ev.position.y, DrawLayer::Pin.get_z()),
             ..default()
         };
 
-        let pin_entity = commands
-            .spawn((
-                ShapeBundle {
-                    path: GeometryBuilder::build_as(&pin_shape),
-                    transform: Transform::from_xyz(
-                        ev.position.x,
-                        ev.position.y,
-                        DrawLayer::Pin.get_z(),
-                    ),
-                    ..default()
-                },
-                Fill::color(Color::RED),
-            ))
-            .id();
-
         if ev.is_input {
-            commands
-                .entity(pin_entity)
-                .insert(BoardInputPin(PinState::Low));
+            handle_bar_bundle.0.transform.translation.x -=
+                render_settings.binary_io_handlebar_length / 2.0;
 
-            commands.entity(pin_entity).with_children(|pin| {
-                pin.spawn((
-                    ShapeBundle {
-                        path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
-                        transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
-                        ..default()
-                    },
-                    Stroke::new(Color::RED, render_settings.wire_line_width),
-                    Wire {
-                        dest_pin: Option::None,
-                    },
-                ));
-            });
-        } else {
             commands
-                .entity(pin_entity)
-                .insert(BoardOutputPin(PinState::Low));
+                .spawn((BoardBinaryInput, identity_spatial_bundle))
+                .with_children(|parent| {
+                    parent
+                        .spawn((pin_bundle, BoardBinaryInputPin, PinState::Low))
+                        .with_children(|pin| {
+                            pin.spawn(wire_bundle);
+                        });
+
+                    parent.spawn((handle_bar_bundle, BoardBinaryIOHandleBar));
+                    parent.spawn((switch_bundle, BoardBinaryInputSwitch));
+                });
+        } else {
+            handle_bar_bundle.0.transform.translation.x +=
+                render_settings.binary_io_handlebar_length / 2.0;
+
+            commands
+                .spawn((BoardBinaryOutput, identity_spatial_bundle))
+                .with_children(|parent| {
+                    parent.spawn((pin_bundle, BoardBinaryOutputPin, PinState::Low));
+                    parent.spawn((handle_bar_bundle, BoardBinaryIOHandleBar));
+                    parent.spawn((display_bundle, BoardBinaryOutputDisplay));
+                });
         }
     }
 }
 
+#[allow(clippy::type_complexity)]
 pub fn update_wires(
     q_moved_chips: Query<(Entity, &Children), (With<Chip>, Changed<GlobalTransform>)>,
     q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
     q_input_pins: Query<&GlobalTransform, (With<ChipInputPin>, Without<Camera>)>,
-    q_board_output_pins: Query<&GlobalTransform, (With<BoardOutputPin>, Without<Camera>)>,
+    q_board_output_pins: Query<&GlobalTransform, (With<BoardBinaryOutputPin>, Without<Camera>)>,
     mut q_wires: Query<(&Wire, &mut Path, &GlobalTransform)>,
 ) {
-    //TODO: impl also for io pins
     for (_, chip_children) in q_moved_chips.iter() {
         // Output pins
         for &output_pin_entity in chip_children.iter() {

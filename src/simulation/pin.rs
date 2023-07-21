@@ -1,21 +1,38 @@
 use bevy::prelude::*;
 
-use super::{chip::ChipSpec, pin_state::PinState};
-
 #[derive(Component)]
 pub struct ChipInputPin {
-    pub pin_state: PinState,
     pub input_received: bool,
 }
 
+//TODO: split into files
 #[derive(Component)]
-pub struct ChipOutputPin(pub PinState);
+pub struct ChipOutputPin;
 
 #[derive(Component)]
-pub struct BoardInputPin(pub PinState);
+pub struct BoardBinaryIOHandleBar;
+
+//TODO: get rid of extents (also for ChipExtents)
+#[derive(Component)]
+pub struct BoardBinaryIOHandleBarExtents(pub Vec2);
 
 #[derive(Component)]
-pub struct BoardOutputPin(pub PinState);
+pub struct BoardBinaryInput;
+
+#[derive(Component)]
+pub struct BoardBinaryInputPin;
+
+#[derive(Component)]
+pub struct BoardBinaryInputSwitch;
+
+#[derive(Component)]
+pub struct BoardBinaryOutput;
+
+#[derive(Component)]
+pub struct BoardBinaryOutputPin;
+
+#[derive(Component)]
+pub struct BoardBinaryOutputDisplay;
 
 pub struct SpawnIOPinEvent {
     pub is_input: bool,

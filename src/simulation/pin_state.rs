@@ -1,4 +1,6 @@
-#[derive(PartialEq, Clone, Copy)]
+use bevy::prelude::Component;
+
+#[derive(PartialEq, Clone, Copy, Debug, Component)]
 pub enum PinState {
     High,
     Low,
@@ -10,5 +12,12 @@ impl PinState {
             PinState::High => true,
             PinState::Low => false,
         }
+    }
+
+    pub fn toggle(&mut self) {
+        *self = match *self {
+            PinState::High => PinState::Low,
+            PinState::Low => PinState::High,
+        };
     }
 }

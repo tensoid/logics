@@ -2,8 +2,9 @@ pub enum DrawLayer {
     Grid,
     Chip,
     ChipName,
-    Pin,
     Wire,
+    HandleBar,
+    Pin,
 }
 
 impl DrawLayer {
@@ -13,7 +14,8 @@ impl DrawLayer {
             DrawLayer::Chip => 0.1,
             DrawLayer::ChipName => 0.2,
             DrawLayer::Wire => 0.3,
-            DrawLayer::Pin => 0.4,
+            DrawLayer::HandleBar => 0.4,
+            DrawLayer::Pin => 0.5,
         }
     }
 }

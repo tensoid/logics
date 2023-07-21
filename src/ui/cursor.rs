@@ -1,11 +1,14 @@
 use crate::simulation::{
     chip::{Chip, ChipExtents, SpawnChipEvent},
-    pin::{BoardInputPin, BoardOutputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent},
+    pin::{
+        BoardBinaryIOHandleBar, BoardBinaryIOHandleBarExtents, BoardBinaryInput,
+        BoardBinaryInputPin, BoardBinaryInputSwitch, BoardBinaryOutput, BoardBinaryOutputPin,
+        ChipInputPin, ChipOutputPin, SpawnIOPinEvent,
+    },
     pin_state::PinState,
     wire::Wire,
 };
-use bevy::{input::mouse::MouseMotion, prelude::*, window::PrimaryWindow};
-use bevy_inspector_egui::egui::Key;
+use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_prototype_lyon::prelude::*;
 
 use super::{circuit_board::CircuitBoardRenderingSettings, utils::screen_to_world_space};
@@ -15,6 +18,7 @@ pub enum CursorState {
     Idle,
     DraggingChip(Entity), //TODO: put IsBeingDragged component on entity instead or is selected marker component
     DraggingWire(Entity),
+    DraggingBBIO(Entity),
 }
 
 #[derive(Resource)]
@@ -39,11 +43,11 @@ impl Default for Cursor {
 //TODO: instead of setting position when dragging set parent, this needs cursor to be an entity
 
 pub fn update_cursor(
-    input: Res<Input<MouseButton>>,
+    //input: Res<Input<MouseButton>>,
+    //mut mouse_motion_ev: EventReader<MouseMotion>,
     q_window: Query<&Window, With<PrimaryWindow>>,
     q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
     mut cursor: ResMut<Cursor>,
-    mut mouse_motion_ev: EventReader<MouseMotion>,
 ) {
     if let Ok(window) = q_window.get_single() {
         if q_camera.iter().count() > 1 {
@@ -168,13 +172,10 @@ pub fn delete_chip(
     }
 }
 
+//TODO: make one function for dragging everything
 pub fn drag_chip(
     input: Res<Input<MouseButton>>,
-    q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
-    mut q_chips: Query<
-        (&GlobalTransform, &mut Transform, &ChipExtents, Entity),
-        (With<Chip>, Without<Camera>),
-    >,
+    mut q_chips: Query<(&GlobalTransform, &mut Transform, &ChipExtents, Entity), With<Chip>>,
     mut cursor: ResMut<Cursor>,
 ) {
     if let Some(cursor_world_pos) = cursor.world_pos {
@@ -222,14 +223,85 @@ pub fn drag_chip(
     }
 }
 
+#[allow(clippy::type_complexity)]
+pub fn drag_board_binary_io(
+    input: Res<Input<MouseButton>>,
+    mut cursor: ResMut<Cursor>,
+    mut q_bbio_handle_bars: Query<
+        (
+            &GlobalTransform,
+            &BoardBinaryIOHandleBarExtents,
+            Entity,
+            &Parent,
+        ),
+        With<BoardBinaryIOHandleBar>,
+    >,
+    mut q_bbio: Query<&mut Transform, Or<(With<BoardBinaryInput>, With<BoardBinaryOutput>)>>,
+    render_settings: Res<CircuitBoardRenderingSettings>,
+) {
+    if let Some(cursor_world_pos) = cursor.world_pos {
+        if let CursorState::DraggingBBIO(dragged_entity) = cursor.state {
+            if input.pressed(MouseButton::Left) {
+                for (_, _, handle_bar_entity, bbio_entity) in q_bbio_handle_bars.iter() {
+                    if handle_bar_entity != dragged_entity {
+                        continue;
+                    }
+
+                    let mut bbio_transform = q_bbio.get_mut(bbio_entity.get())
+                        .expect("BoardBinaryInputHandleBar has no parent BoardBinaryInput or BoardBinaryOutput.");
+
+                    bbio_transform.translation =
+                        cursor_world_pos.extend(bbio_transform.translation.z);
+                }
+
+                return;
+            }
+
+            if input.just_released(MouseButton::Left) {
+                cursor.state = CursorState::Idle;
+            }
+        }
+
+        if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
+            for (handle_bar_global_transform, handle_bar_extents, handle_bar_entity, _) in
+                q_bbio_handle_bars.iter_mut()
+            {
+                let handle_bar_position: Vec2 = Vec2::new(
+                    handle_bar_global_transform.translation().x,
+                    handle_bar_global_transform.translation().y,
+                );
+
+                let cursor_on_handle_bar: bool = cursor_world_pos.x
+                    >= handle_bar_position.x - (handle_bar_extents.0.x / 2.0)
+                        + render_settings.binary_io_pin_radius // Workaround weil die handle bar unterm switch liegt
+                    && cursor_world_pos.x <= handle_bar_position.x + (handle_bar_extents.0.x / 2.0)
+                    && cursor_world_pos.y >= handle_bar_position.y - (handle_bar_extents.0.y / 2.0)
+                    && cursor_world_pos.y <= handle_bar_position.y + (handle_bar_extents.0.y / 2.0);
+
+                if !cursor_on_handle_bar {
+                    continue;
+                }
+
+                //window.set_cursor_icon(CursorIcon::Grab);
+                cursor.state = CursorState::DraggingBBIO(handle_bar_entity);
+                return;
+            }
+        }
+    }
+}
+
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn drag_wire(
     input: Res<Input<MouseButton>>,
     q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
     q_input_pins: Query<(&GlobalTransform, Entity), (With<ChipInputPin>, Without<Camera>)>,
-    q_board_output_pins: Query<(&GlobalTransform, Entity), (With<BoardOutputPin>, Without<Camera>)>,
+    q_board_output_pins: Query<
+        (&GlobalTransform, Entity),
+        (With<BoardBinaryOutputPin>, Without<Camera>),
+    >,
     q_board_input_pins: Query<
         (&GlobalTransform, &Children),
-        (With<BoardInputPin>, Without<Camera>),
+        (With<BoardBinaryInputPin>, Without<Camera>),
     >,
     mut q_wires: Query<(&mut Path, &GlobalTransform, &mut Wire)>,
     mut cursor: ResMut<Cursor>,
@@ -252,7 +324,7 @@ pub fn drag_wire(
 
             for (pin_transform, pin_children) in q_board_input_pins.iter() {
                 if cursor_world_pos.distance(pin_transform.translation().truncate())
-                    > render_settings.io_pin_radius
+                    > render_settings.binary_io_pin_radius
                 {
                     continue;
                 }
@@ -270,7 +342,7 @@ pub fn drag_wire(
                 let mut new_wire = shapes::Line(Vec2::ZERO, Vec2::ZERO);
 
                 //TODO: nicht jedes mal abfrage? aber juckt glaube nicht
-                if wire.dest_pin != None {
+                if wire.dest_pin.is_some() {
                     wire.dest_pin = None;
                 }
 
@@ -288,7 +360,7 @@ pub fn drag_wire(
                     let hovered_board_pin = || {
                         q_board_output_pins.iter().find(|pin| {
                             cursor_world_pos.distance(pin.0.translation().truncate())
-                                <= render_settings.io_pin_radius
+                                <= render_settings.binary_io_pin_radius
                         })
                     };
 
@@ -314,32 +386,37 @@ pub fn drag_wire(
 }
 
 pub fn toggle_board_input_pin(
-    input: Res<Input<KeyCode>>,
-    mut q_input_pins: Query<(&GlobalTransform, &mut BoardInputPin, &mut Fill)>,
+    input: Res<Input<MouseButton>>,
+    q_inputs: Query<&Children, With<BoardBinaryInput>>,
+    q_input_switches: Query<(&GlobalTransform, &Parent), With<BoardBinaryInputSwitch>>,
+    mut q_input_pins: Query<(&mut BoardBinaryInputPin, &mut PinState)>,
     render_settings: Res<CircuitBoardRenderingSettings>,
     cursor: Res<Cursor>,
 ) {
     if let Some(cursor_world_pos) = cursor.world_pos {
-        if input.just_pressed(KeyCode::Space) {
-            for (pin_transform, mut input_pin, mut fill) in q_input_pins.iter_mut() {
-                if cursor_world_pos.distance(pin_transform.translation().truncate())
-                    > render_settings.io_pin_radius
+        if input.just_pressed(MouseButton::Left) {
+            for (switch_transform, parent) in q_input_switches.iter() {
+                if cursor_world_pos.distance(switch_transform.translation().truncate())
+                    > render_settings.binary_io_pin_radius
                 {
                     continue;
                 }
 
-                let new_pin_state = match input_pin.0 {
-                    PinState::High => PinState::Low,
-                    PinState::Low => PinState::High,
-                };
+                //TODO: find a way to make this easier (Child -> Parent -> Children -> Specific Children)
+                let parent_children = q_inputs
+                    .get(parent.get())
+                    .expect("BoardBinaryInputSwitch has no BoardBinaryInput parent.");
 
-                let new_fill = Fill::color(match new_pin_state {
-                    PinState::High => Color::GREEN,
-                    PinState::Low => Color::RED,
-                });
+                let board_binary_input_pin_entity = parent_children
+                    .iter()
+                    .find(|c| q_input_pins.get(**c).is_ok())
+                    .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
 
-                *fill = new_fill;
-                input_pin.0 = new_pin_state;
+                let (mut board_binary_input_pin, mut board_binary_input_pin_state) = q_input_pins
+                    .get_mut(*board_binary_input_pin_entity)
+                    .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
+
+                board_binary_input_pin_state.toggle();
                 break;
             }
         }

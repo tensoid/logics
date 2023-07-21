@@ -5,7 +5,7 @@ use crate::ui::circuit_board::CircuitBoardRenderingSettings;
 
 use super::{
     chip::{Chip, ChipSpec},
-    pin::{BoardInputPin, BoardOutputPin, ChipInputPin, ChipOutputPin},
+    pin::{BoardBinaryInputPin, BoardBinaryOutputPin, ChipInputPin, ChipOutputPin},
     pin_state::PinState,
     wire::Wire,
 };
@@ -14,8 +14,9 @@ pub struct SimulationPlugin;
 
 impl Plugin for SimulationPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(tick_simulation)
-            .add_system(handle_floating_pins)
+        app.add_system(handle_floating_pins)
+            .add_system(tick_simulation)
+            .add_system(update_signal_colors.after(tick_simulation))
             .add_system(
                 reset_sim_flags
                     .before(handle_floating_pins)
@@ -37,45 +38,67 @@ fn reset_sim_flags(mut q_chip_input_pins: Query<&mut ChipInputPin>) {
  * Flags all floating pins i.e. pins that don´t have a wire attached to them with input received (low).
  */
 fn handle_floating_pins(
-    mut q_chip_input_pins: Query<(&mut ChipInputPin, &mut Fill, Entity)>,
+    mut q_chip_input_pins: Query<(&mut ChipInputPin, &mut PinState, Entity)>,
     q_wires: Query<&Wire>,
 ) {
-    for (mut pin, mut pin_fill, pin_entity) in q_chip_input_pins.iter_mut() {
-        if q_wires
+    for (mut pin, mut pin_state, pin_entity) in q_chip_input_pins.iter_mut() {
+        if !q_wires
             .iter()
-            .find(|w| w.dest_pin.is_some() && w.dest_pin.unwrap() == pin_entity)
-            .is_none()
+            .any(|w| w.dest_pin.is_some() && w.dest_pin.unwrap() == pin_entity)
         {
             pin.input_received = true;
-            pin.pin_state = PinState::Low;
-            *pin_fill = Fill::color(Color::RED);
+            *pin_state = PinState::Low;
         }
     }
 }
 
 //TODO: only check changed board input pins and changed chips
+#[allow(clippy::type_complexity)]
 fn tick_simulation(
     q_chips: Query<(&Children, &ChipSpec), With<Chip>>,
-    q_board_input_pins: Query<(&BoardInputPin, Entity, &Children), With<BoardInputPin>>,
+    q_board_input_pins: Query<
+        (&BoardBinaryInputPin, &mut PinState, Entity, &Children),
+        With<BoardBinaryInputPin>,
+    >,
     mut q_chip_input_pins: Query<
-        (&mut ChipInputPin, &mut Fill, &Parent, Entity),
+        (&mut ChipInputPin, &mut PinState, &Parent, Entity),
         (
             With<ChipInputPin>,
-            (Without<BoardOutputPin>, Without<ChipOutputPin>),
+            (
+                Without<BoardBinaryOutputPin>,
+                Without<ChipOutputPin>,
+                Without<BoardBinaryInputPin>,
+            ),
         ),
     >,
     mut q_chip_output_pins: Query<
-        (&mut ChipOutputPin, &mut Fill, Entity, &Children),
+        (&mut ChipOutputPin, &mut PinState, Entity, &Children),
         (
             With<ChipOutputPin>,
-            (Without<BoardOutputPin>, Without<ChipInputPin>),
+            (
+                Without<BoardBinaryOutputPin>,
+                Without<BoardBinaryInputPin>,
+                Without<ChipInputPin>,
+            ),
         ),
     >,
     mut q_board_output_pins: Query<
-        (&mut BoardOutputPin, &mut Fill),
-        (With<BoardOutputPin>, Without<Wire>),
+        (&mut BoardBinaryOutputPin, &mut PinState),
+        (
+            With<BoardBinaryOutputPin>,
+            Without<ChipInputPin>,
+            Without<ChipOutputPin>,
+            Without<BoardBinaryInputPin>,
+        ),
     >,
-    mut q_wires: Query<(&Wire, &mut Stroke), (With<Wire>, Without<BoardOutputPin>)>,
+    mut q_wires: Query<
+        (&Wire, &mut Stroke),
+        (
+            With<Wire>,
+            Without<BoardBinaryOutputPin>,
+            Without<BoardBinaryInputPin>,
+        ),
+    >,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
     //TODO: after this, find all chips not simulated yet (not flagged) and sim them; happens when they are not connected
@@ -83,61 +106,46 @@ fn tick_simulation(
     // then check if next entity is chip
 
     let mut current_entity_option: Option<Entity>;
-    for (input_pin, input_pin_entity, input_pin_children) in q_board_input_pins.iter() {
+    for (_, input_pin_state, input_pin_entity, _) in q_board_input_pins.iter() {
         current_entity_option = Some(input_pin_entity);
-        let mut pin_state = input_pin.0;
+        let mut signal_state = *input_pin_state;
         while let Some(current_entity) = current_entity_option {
             let next_wire: Option<Entity>;
             current_entity_option = None;
 
+            //TODO: update to match statement maybe
             if let Ok(board_input_pin) = q_board_input_pins.get(current_entity) {
-                next_wire = Some(*board_input_pin.2.first().unwrap());
+                next_wire = Some(*board_input_pin.3.first().unwrap());
             } else if let Ok(board_output_pin) = q_board_output_pins.get_mut(current_entity) {
-                let (mut pin, mut fill) = board_output_pin;
-                let new_fill = Fill::color(match pin_state {
-                    PinState::High => Color::GREEN,
-                    PinState::Low => Color::RED,
-                });
-                *fill = new_fill;
-                pin.0 = pin_state;
+                let (_, mut bbo_pin_state) = board_output_pin;
+                *bbo_pin_state = signal_state;
                 break;
-            } else if let Ok(mut chip_input_pin) = q_chip_input_pins.get_mut(current_entity) {
-                let (mut pin, mut pin_fill, _, _) = chip_input_pin;
+            } else if let Ok(chip_input_pin) = q_chip_input_pins.get_mut(current_entity) {
+                let (mut pin, mut pin_state, parent, _) = chip_input_pin;
 
                 // flag pin, set pinstate, set color
                 pin.input_received = true;
-                pin.pin_state = pin_state;
-                let new_fill = Fill::color(match pin_state {
-                    PinState::High => Color::GREEN,
-                    PinState::Low => Color::RED,
-                });
-                *pin_fill = new_fill;
+                *pin_state = signal_state;
 
-                let parent_chip_entity = q_chip_input_pins.get(current_entity).unwrap().2.get();
+                let chip = q_chips.get(parent.get()).unwrap();
 
-                let chip = q_chips.get(parent_chip_entity).unwrap();
                 let chip_input_pins: Vec<_> = chip
                     .0
                     .iter()
                     .filter_map(|e| q_chip_input_pins.get(*e).ok())
                     .collect();
 
-                let inputs_satisfied = chip_input_pins
-                    .iter()
-                    .find(|p| !p.0.input_received)
-                    .is_none();
+                let inputs_satisfied = !chip_input_pins.iter().any(|p| !p.0.input_received);
 
                 if inputs_satisfied {
                     // -> update output pin
                     // -> set next wire
-                    let inputs: &Vec<bool> = &chip_input_pins
-                        .iter()
-                        .map(|p| p.0.pin_state.as_bool())
-                        .collect();
+                    let inputs: &Vec<bool> =
+                        &chip_input_pins.iter().map(|p| p.1.as_bool()).collect();
 
                     let result = chip.1.expression.evaluate(inputs);
 
-                    pin_state = match result {
+                    signal_state = match result {
                         true => PinState::High,
                         false => PinState::Low,
                     };
@@ -157,10 +165,7 @@ fn tick_simulation(
                     let mut chip_output_pin =
                         q_chip_output_pins.get_mut(*chip_output_pin_entity).unwrap();
 
-                    *chip_output_pin.1 = Fill::color(match pin_state {
-                        PinState::High => Color::GREEN,
-                        PinState::Low => Color::RED,
-                    });
+                    *chip_output_pin.1 = signal_state;
 
                     // todo
                     next_wire = Some(*chip_output_pin.3.first().unwrap());
@@ -168,16 +173,16 @@ fn tick_simulation(
                     next_wire = None;
                 }
             } else {
-                panic!("Found unexpected component.")
+                panic!("Found unexpected entity.")
             }
 
             // Update and follow wire
             if let Some(wire_entity) = next_wire {
                 let (wire, mut stroke) = q_wires.get_mut(wire_entity).unwrap();
                 let new_stroke = Stroke::new(
-                    match pin_state {
-                        PinState::High => Color::GREEN,
-                        PinState::Low => Color::RED,
+                    match signal_state {
+                        PinState::High => render_settings.signal_high_color,
+                        PinState::Low => render_settings.signal_low_color,
                     },
                     render_settings.wire_line_width,
                 );
@@ -188,6 +193,50 @@ fn tick_simulation(
     }
 }
 
-fn update_pin_colors() {
-    //TODO: extract pin color logic
+//TODO: make faster by not updating colors that havent changed.
+/**
+ * Updates all colors that are bound to a signal, e.g. pins or wires.
+ */
+#[allow(clippy::type_complexity)]
+fn update_signal_colors(
+    mut q_pins: Query<
+        (&mut Fill, &PinState, Option<&Children>),
+        Or<(
+            With<ChipInputPin>,
+            With<ChipOutputPin>,
+            With<BoardBinaryInputPin>,
+            With<BoardBinaryOutputPin>,
+        )>,
+    >,
+    mut q_wires: Query<&mut Stroke, With<Wire>>,
+    render_settings: Res<CircuitBoardRenderingSettings>,
+) {
+    for (mut pin_fill, pin_state, children) in q_pins.iter_mut() {
+        let signal_fill = match pin_state {
+            PinState::Low => Fill::color(render_settings.signal_low_color),
+            PinState::High => Fill::color(render_settings.signal_high_color),
+        };
+
+        let signal_wire_stroke = match pin_state {
+            PinState::Low => Stroke::new(
+                render_settings.signal_low_color,
+                render_settings.wire_line_width,
+            ),
+            PinState::High => Stroke::new(
+                render_settings.signal_high_color,
+                render_settings.wire_line_width,
+            ),
+        };
+
+        *pin_fill = signal_fill;
+
+        if let Some(children) = children {
+            for &child in children.iter() {
+                let wire_result = q_wires.get_mut(child);
+                if let Ok(mut wire_stroke) = wire_result {
+                    *wire_stroke = signal_wire_stroke;
+                }
+            }
+        }
+    }
 }
