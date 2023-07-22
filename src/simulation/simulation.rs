@@ -212,19 +212,20 @@ fn update_signal_colors(
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
     for (mut pin_fill, pin_state, children) in q_pins.iter_mut() {
-        let signal_fill = match pin_state {
-            PinState::Low => Fill::color(render_settings.signal_low_color),
-            PinState::High => Fill::color(render_settings.signal_high_color),
-        };
-
-        let signal_wire_stroke = match pin_state {
-            PinState::Low => Stroke::new(
-                render_settings.signal_low_color,
-                render_settings.wire_line_width,
+        let (signal_fill, signal_wire_stroke) = match pin_state {
+            PinState::Low => (
+                Fill::color(render_settings.signal_low_color),
+                Stroke::new(
+                    render_settings.signal_low_color,
+                    render_settings.wire_line_width,
+                ),
             ),
-            PinState::High => Stroke::new(
-                render_settings.signal_high_color,
-                render_settings.wire_line_width,
+            PinState::High => (
+                Fill::color(render_settings.signal_high_color),
+                Stroke::new(
+                    render_settings.signal_high_color,
+                    render_settings.wire_line_width,
+                ),
             ),
         };
 
@@ -232,8 +233,8 @@ fn update_signal_colors(
 
         if let Some(children) = children {
             for &child in children.iter() {
-                let wire_result = q_wires.get_mut(child);
-                if let Ok(mut wire_stroke) = wire_result {
+                let wire = q_wires.get_mut(child);
+                if let Ok(mut wire_stroke) = wire {
                     *wire_stroke = signal_wire_stroke;
                 }
             }
