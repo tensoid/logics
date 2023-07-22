@@ -60,10 +60,11 @@ pub fn spawn_chip_event(
 
         let wire_shape = shapes::Line(Vec2::ZERO, Vec2::ZERO);
 
-        let font: Handle<Font> = asset_server.load("fonts/OpenSans-ExtraBold.ttf");
+        // let font: Handle<Font> = asset_server.load("fonts/OpenSans-ExtraBold.ttf");
+        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
         let text_style = TextStyle {
-            font_size: 30.0,
+            font_size: 20.0,
             color: Color::BLACK,
             font,
         };
