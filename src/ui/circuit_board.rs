@@ -1,4 +1,5 @@
 use crate::simulation::{
+    board_entity::BoardEntity,
     chip::{Chip, ChipExtents, ChipSpecs, SpawnChipEvent},
     pin::{
         BoardBinaryIOHandleBar, BoardBinaryIOHandleBarExtents, BoardBinaryInput,
@@ -82,10 +83,11 @@ pub fn spawn_chip_event(
                 },
                 Fill::color(Color::WHITE),
                 Stroke::new(Color::BLACK, 1.0),
+                Chip,
+                ChipExtents(chip_extents),
+                chip_spec.clone(),
+                BoardEntity,
             ))
-            .insert(Chip)
-            .insert(ChipExtents(chip_extents))
-            .insert(chip_spec.clone())
             .with_children(|chip| {
                 //Chip Name
                 chip.spawn(Text2dBundle {
@@ -246,7 +248,7 @@ pub fn spawn_io_pin_event(
                 render_settings.binary_io_handlebar_length / 2.0;
 
             commands
-                .spawn((BoardBinaryInput, identity_spatial_bundle))
+                .spawn((BoardBinaryInput, identity_spatial_bundle, BoardEntity))
                 .with_children(|parent| {
                     parent
                         .spawn((pin_bundle, BoardBinaryInputPin, PinState::Low))
@@ -262,7 +264,7 @@ pub fn spawn_io_pin_event(
                 render_settings.binary_io_handlebar_length / 2.0;
 
             commands
-                .spawn((BoardBinaryOutput, identity_spatial_bundle))
+                .spawn((BoardBinaryOutput, identity_spatial_bundle, BoardEntity))
                 .with_children(|parent| {
                     parent.spawn((pin_bundle, BoardBinaryOutputPin, PinState::Low));
                     parent.spawn((handle_bar_bundle, BoardBinaryIOHandleBar));
@@ -271,19 +273,23 @@ pub fn spawn_io_pin_event(
         }
     }
 }
+
 /**
  * Updates the wires location to always stay connected to its destination pin.
  * //TODO: Optimisation potential with only updating necessary wires.
  */
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
-    mut q_wires: Query<(&Wire, &mut Path, &GlobalTransform)>,
-    q_dest_pins: Query<&GlobalTransform, (Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>)>,
+    mut q_wires: Query<(&mut Wire, &mut Path, &GlobalTransform)>,
+    q_dest_pins: Query<&GlobalTransform, Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
 ) {
-    for (wire, mut wire_path, wire_transform) in q_wires.iter_mut() {
+    for (mut wire, mut wire_path, wire_transform) in q_wires.iter_mut() {
         if let Some(wire_dest_pin_entity) = wire.dest_pin {
-            if let Ok(wire_dest_pin_transform) = q_dest_pins.get(wire_dest_pin_entity) {
-                println!("Updated wires");
+            if !q_dest_pins.contains(wire_dest_pin_entity) {
+                // Reset wire if dest pin doesnt exist anymore
+                wire.dest_pin = None;
+                *wire_path = ShapePath::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO));
+            } else if let Ok(wire_dest_pin_transform) = q_dest_pins.get(wire_dest_pin_entity) {
                 let new_wire = shapes::Line(
                     Vec2::ZERO,
                     wire_dest_pin_transform.translation().truncate()

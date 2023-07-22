@@ -123,11 +123,18 @@ pub fn spawn_io_pin_at_cursor(
     }
 }
 
-pub fn delete_chip(
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
+pub fn delete_board_entity(
     input: Res<Input<KeyCode>>,
-    q_chips: Query<(Entity, &GlobalTransform, &ChipExtents, &Children), With<Chip>>,
-    mut commands: Commands,
+    q_chips: Query<(Entity, &GlobalTransform, &ChipExtents), With<Chip>>,
+    q_handle_bars: Query<
+        (&Parent, &GlobalTransform, &BoardBinaryIOHandleBarExtents),
+        With<BoardBinaryIOHandleBar>,
+    >,
+    q_board_io: Query<Entity, Or<(With<BoardBinaryInput>, With<BoardBinaryOutput>)>>,
+    q_dest_pins: Query<Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
     mut q_wires: Query<(&mut Wire, &mut Path), With<Wire>>,
+    mut commands: Commands,
     cursor: Res<Cursor>,
 ) {
     if cursor.state != CursorState::Idle {
@@ -135,8 +142,8 @@ pub fn delete_chip(
     }
 
     if let Some(cursor_world_pos) = cursor.world_pos {
-        if input.just_pressed(KeyCode::D) {
-            for (chip_entity, chip_transform, chip_extents, chip_children) in q_chips.iter() {
+        if input.just_pressed(KeyCode::Delete) {
+            for (chip_entity, chip_transform, chip_extents) in q_chips.iter() {
                 let chip_position: Vec2 = Vec2::new(
                     chip_transform.translation().x,
                     chip_transform.translation().y,
@@ -152,21 +159,35 @@ pub fn delete_chip(
                     continue;
                 }
 
-                // Despawn wires connected to chip
-                for (mut wire, mut wire_path) in q_wires.iter_mut() {
-                    if let Some(dest_pin) = wire.dest_pin {
-                        for &chip_child in chip_children.iter() {
-                            if dest_pin == chip_child {
-                                wire.dest_pin = None;
-                                *wire_path =
-                                    ShapePath::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO));
-                            }
-                        }
-                    }
+                // Despawn chip and children
+                commands.entity(chip_entity).despawn_recursive();
+            }
+
+            for (handle_bar_parent, handle_bar_transform, handle_bar_extents) in
+                q_handle_bars.iter()
+            {
+                let handle_bar_position: Vec2 = Vec2::new(
+                    handle_bar_transform.translation().x,
+                    handle_bar_transform.translation().y,
+                );
+
+                let cursor_on_handle_bar: bool = cursor_world_pos.x
+                    >= handle_bar_position.x - (handle_bar_extents.0.x / 2.0)
+                    && cursor_world_pos.x <= handle_bar_position.x + (handle_bar_extents.0.x / 2.0)
+                    && cursor_world_pos.y >= handle_bar_position.y - (handle_bar_extents.0.y / 2.0)
+                    && cursor_world_pos.y <= handle_bar_position.y + (handle_bar_extents.0.y / 2.0);
+
+                if !cursor_on_handle_bar {
+                    continue;
                 }
 
                 // Despawn chip and children
-                commands.entity(chip_entity).despawn_recursive();
+
+                let bbio = q_board_io.get(handle_bar_parent.get()).expect(
+                    "BoardBinaryIOHandleBar has no parent BoardBinaryInput or BoardBinaryOutput",
+                );
+
+                commands.entity(bbio).despawn_recursive();
             }
         }
     }

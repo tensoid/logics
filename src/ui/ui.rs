@@ -15,8 +15,9 @@ impl Plugin for UIPlugin {
             .add_system(drag_chip)
             .add_system(drag_wire.before(drag_board_binary_io))
             .add_system(drag_wire.before(drag_chip))
-            .add_system(update_wires)
-            .add_system(delete_chip)
+            // runs in post update because it requires that all despawning of dest pins has been completed to update the wires
+            .add_system(update_wires.in_base_set(CoreSet::PostUpdate))
+            .add_system(delete_board_entity)
             .add_system(update_cursor); //TODO: run before anything
     }
 }

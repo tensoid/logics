@@ -1,3 +1,4 @@
+pub mod board_entity;
 pub mod chip;
 pub mod expressions;
 pub mod pin;
