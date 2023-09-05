@@ -52,7 +52,8 @@ fn handle_floating_pins(
     }
 }
 
-//TODO: only check changed board input pins and changed chips
+//TODO: LEFT OFF: Follow all wires in simulation
+//TODO: only check changed board input pins and changed chips or rather board input pins
 #[allow(clippy::type_complexity)]
 fn tick_simulation(
     q_chips: Query<(&Children, &ChipSpec), With<Chip>>,
@@ -64,22 +65,18 @@ fn tick_simulation(
         (&mut ChipInputPin, &mut PinState, &Parent, Entity),
         (
             With<ChipInputPin>,
-            (
-                Without<BoardBinaryOutputPin>,
-                Without<ChipOutputPin>,
-                Without<BoardBinaryInputPin>,
-            ),
+            Without<BoardBinaryOutputPin>,
+            Without<ChipOutputPin>,
+            Without<BoardBinaryInputPin>,
         ),
     >,
     mut q_chip_output_pins: Query<
-        (&mut ChipOutputPin, &mut PinState, Entity, &Children),
+        (&mut ChipOutputPin, &mut PinState, Entity),
         (
             With<ChipOutputPin>,
-            (
-                Without<BoardBinaryOutputPin>,
-                Without<BoardBinaryInputPin>,
-                Without<ChipInputPin>,
-            ),
+            Without<BoardBinaryOutputPin>,
+            Without<BoardBinaryInputPin>,
+            Without<ChipInputPin>,
         ),
     >,
     mut q_board_output_pins: Query<
@@ -91,15 +88,14 @@ fn tick_simulation(
             Without<BoardBinaryInputPin>,
         ),
     >,
-    mut q_wires: Query<
-        (&Wire, &mut Stroke),
+    q_wires: Query<
+        &Wire,
         (
             With<Wire>,
             Without<BoardBinaryOutputPin>,
             Without<BoardBinaryInputPin>,
         ),
     >,
-    render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
     //TODO: after this, find all chips not simulated yet (not flagged) and sim them; happens when they are not connected
     //TODO: add floating chips to for loop iterator, or flag all entities that are sim starts and get them
@@ -110,12 +106,14 @@ fn tick_simulation(
         current_entity_option = Some(input_pin_entity);
         let mut signal_state = *input_pin_state;
         while let Some(current_entity) = current_entity_option {
-            let next_wire: Option<Entity>;
+            let next_wire: Option<&Wire>;
             current_entity_option = None;
 
             //TODO: update to match statement maybe
             if let Ok(board_input_pin) = q_board_input_pins.get(current_entity) {
-                next_wire = Some(*board_input_pin.3.first().unwrap());
+                next_wire = q_wires
+                    .iter()
+                    .find(|w| w.src_pin.unwrap().eq(&board_input_pin.2));
             } else if let Ok(board_output_pin) = q_board_output_pins.get_mut(current_entity) {
                 let (_, mut bbo_pin_state) = board_output_pin;
                 *bbo_pin_state = signal_state;
@@ -160,7 +158,7 @@ fn tick_simulation(
                     let chip_output_pin_entity = chip
                         .0
                         .iter()
-                        .find(|e| q_chip_output_pins.get(**e).is_ok())
+                        .find(|e: &&Entity| q_chip_output_pins.get(**e).is_ok())
                         .unwrap();
                     let mut chip_output_pin =
                         q_chip_output_pins.get_mut(*chip_output_pin_entity).unwrap();
@@ -168,7 +166,9 @@ fn tick_simulation(
                     *chip_output_pin.1 = signal_state;
 
                     // todo
-                    next_wire = Some(*chip_output_pin.3.first().unwrap());
+                    next_wire = q_wires
+                        .iter()
+                        .find(|w| w.src_pin.unwrap().eq(&chip_output_pin.2));
                 } else {
                     next_wire = None;
                 }
@@ -177,16 +177,7 @@ fn tick_simulation(
             }
 
             // Update and follow wire
-            if let Some(wire_entity) = next_wire {
-                let (wire, mut stroke) = q_wires.get_mut(wire_entity).unwrap();
-                let new_stroke = Stroke::new(
-                    match signal_state {
-                        PinState::High => render_settings.signal_high_color,
-                        PinState::Low => render_settings.signal_low_color,
-                    },
-                    render_settings.wire_line_width,
-                );
-                *stroke = new_stroke;
+            if let Some(wire) = next_wire {
                 current_entity_option = wire.dest_pin;
             }
         }
@@ -200,7 +191,7 @@ fn tick_simulation(
 #[allow(clippy::type_complexity)]
 fn update_signal_colors(
     mut q_pins: Query<
-        (&mut Fill, &PinState, Option<&Children>),
+        (&mut Fill, &PinState, Entity),
         Or<(
             With<ChipInputPin>,
             With<ChipOutputPin>,
@@ -208,10 +199,10 @@ fn update_signal_colors(
             With<BoardBinaryOutputPin>,
         )>,
     >,
-    mut q_wires: Query<&mut Stroke, With<Wire>>,
+    mut q_wires: Query<(&Wire, &mut Stroke)>,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
-    for (mut pin_fill, pin_state, children) in q_pins.iter_mut() {
+    for (mut pin_fill, pin_state, pin_entity) in q_pins.iter_mut() {
         let (signal_fill, signal_wire_stroke) = match pin_state {
             PinState::Low => (
                 Fill::color(render_settings.signal_low_color),
@@ -231,13 +222,12 @@ fn update_signal_colors(
 
         *pin_fill = signal_fill;
 
-        if let Some(children) = children {
-            for &child in children.iter() {
-                let wire = q_wires.get_mut(child);
-                if let Ok(mut wire_stroke) = wire {
-                    *wire_stroke = signal_wire_stroke;
-                }
-            }
+        let connected_wire = q_wires
+            .iter_mut()
+            .find(|w| w.0.src_pin.unwrap().eq(&pin_entity));
+
+        if let Some(mut wire) = connected_wire {
+            *wire.1 = signal_wire_stroke;
         }
     }
 }

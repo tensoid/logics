@@ -12,7 +12,10 @@ use crate::simulation::{
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
-use super::draw_layer::DrawLayer;
+use super::{
+    cursor::{Cursor, CursorState},
+    draw_layer::DrawLayer,
+};
 
 #[derive(Resource)]
 pub struct CircuitBoardRenderingSettings {
@@ -58,8 +61,6 @@ pub fn spawn_chip_event(
             radius: render_settings.chip_pin_radius,
             ..default()
         };
-
-        let wire_shape = shapes::Line(Vec2::ZERO, Vec2::ZERO);
 
         // let font: Handle<Font> = asset_server.load("fonts/OpenSans-ExtraBold.ttf");
         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
@@ -133,23 +134,7 @@ pub fn spawn_chip_event(
                     Fill::color(render_settings.signal_low_color),
                     ChipOutputPin,
                     PinState::Low,
-                ))
-                .with_children(|pin| {
-                    pin.spawn((
-                        ShapeBundle {
-                            path: GeometryBuilder::build_as(&wire_shape),
-                            transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
-                            ..default()
-                        },
-                        Stroke::new(
-                            render_settings.signal_low_color,
-                            render_settings.wire_line_width,
-                        ),
-                        Wire {
-                            dest_pin: Option::None,
-                        },
-                    ));
-                });
+                ));
             });
     }
 }
@@ -171,21 +156,6 @@ pub fn spawn_io_pin_event(
                 ..default()
             },
             Fill::color(render_settings.signal_low_color),
-        );
-
-        let wire_bundle = (
-            ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
-                transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
-                ..default()
-            },
-            Stroke::new(
-                render_settings.signal_low_color,
-                render_settings.wire_line_width,
-            ),
-            Wire {
-                dest_pin: Option::None,
-            },
         );
 
         let handle_bar_extents: Vec2 = Vec2::new(
@@ -250,12 +220,7 @@ pub fn spawn_io_pin_event(
             commands
                 .spawn((BoardBinaryInput, identity_spatial_bundle, BoardEntity))
                 .with_children(|parent| {
-                    parent
-                        .spawn((pin_bundle, BoardBinaryInputPin, PinState::Low))
-                        .with_children(|pin| {
-                            pin.spawn(wire_bundle);
-                        });
-
+                    parent.spawn((pin_bundle, BoardBinaryInputPin, PinState::Low));
                     parent.spawn((handle_bar_bundle, BoardBinaryIOHandleBar));
                     parent.spawn((switch_bundle, BoardBinaryInputSwitch));
                 });
@@ -275,28 +240,71 @@ pub fn spawn_io_pin_event(
 }
 
 /**
- * Updates the wires location to always stay connected to its destination pin.
- * //TODO: Optimisation potential with only updating necessary wires.
+ * Updates the wires location to always stay connected to its source and destination pins.
+ * If the source or destination pin was deleted or the wire is just not connected this also deletes the wire entirely.
  */
+//TODO: Optimisation potential with only updating necessary wires.
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
-    mut q_wires: Query<(&mut Wire, &mut Path, &GlobalTransform)>,
+    mut q_wires: Query<(&mut Wire, &mut Path, &GlobalTransform, Entity)>,
     q_dest_pins: Query<&GlobalTransform, Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
+    q_src_pins: Query<&GlobalTransform, Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>>,
+    mut cursor: ResMut<Cursor>,
+    mut commands: Commands,
 ) {
-    for (mut wire, mut wire_path, wire_transform) in q_wires.iter_mut() {
-        if let Some(wire_dest_pin_entity) = wire.dest_pin {
-            if !q_dest_pins.contains(wire_dest_pin_entity) {
-                // Reset wire if dest pin doesnt exist anymore
-                wire.dest_pin = None;
-                *wire_path = ShapePath::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO));
-            } else if let Ok(wire_dest_pin_transform) = q_dest_pins.get(wire_dest_pin_entity) {
-                let new_wire = shapes::Line(
-                    Vec2::ZERO,
-                    wire_dest_pin_transform.translation().truncate()
-                        - wire_transform.translation().truncate(),
-                );
+    for (wire, mut wire_path, wire_transform, wire_entity) in q_wires.iter_mut() {
+        // if let (Some(wire_src_pin_entity), Some(wire_dest_pin_entity)) =
+        //     (wire.src_pin, wire.dest_pin)
+        // {
+        //     if let (Ok(wire_src_pin_transform), Ok(wire_dest_pin_transform)) = (
+        //         q_src_pins.get(wire_src_pin_entity),
+        //         q_dest_pins.get(wire_dest_pin_entity),
+        //     ) {
+        //         let new_wire = shapes::Line(
+        //             wire_src_pin_transform.translation().truncate(),
+        //             wire_dest_pin_transform.translation().truncate(),
+        //         );
 
-                *wire_path = ShapePath::build_as(&new_wire);
+        //         *wire_path = ShapePath::build_as(&new_wire);
+        //     }
+        // }
+
+        if let Some(cursor_world_pos) = cursor.world_pos {
+            let Some(wire_src_pin_entity) = wire.src_pin else {
+                commands.entity(wire_entity).despawn();
+                return;
+            };
+
+            if let Some(wire_dest_pin_entity) = wire.dest_pin {
+                if let (Ok(wire_src_pin_transform), Ok(wire_dest_pin_transform)) = (
+                    q_src_pins.get(wire_src_pin_entity),
+                    q_dest_pins.get(wire_dest_pin_entity),
+                ) {
+                    let new_wire = shapes::Line(
+                        wire_src_pin_transform.translation().truncate(),
+                        wire_dest_pin_transform.translation().truncate(),
+                    );
+
+                    *wire_path = ShapePath::build_as(&new_wire);
+                } else {
+                    commands.entity(wire_entity).despawn();
+                    return;
+                }
+            } else if let CursorState::DraggingWire(dragged_wire) = cursor.state {
+                if dragged_wire.eq(&wire_entity) {
+                    if let Ok(wire_src_pin_transform) = q_src_pins.get(wire_src_pin_entity) {
+                        let new_wire = shapes::Line(
+                            wire_src_pin_transform.translation().truncate(),
+                            cursor_world_pos,
+                        );
+
+                        *wire_path = ShapePath::build_as(&new_wire);
+                    }
+                } else {
+                    commands.entity(wire_entity).despawn();
+                }
+            } else {
+                commands.entity(wire_entity).despawn();
             }
         }
     }

@@ -54,7 +54,7 @@ fn main() {
             binary_io_handlebar_width: 8.0,
             binary_io_handlebar_length: 40.0,
             binary_io_handlebar_color: Color::BLACK,
-            wire_line_width: 1.0,
+            wire_line_width: 2.0,
         })
         .add_event::<SpawnChipEvent>()
         .add_event::<SpawnIOPinEvent>()
@@ -63,7 +63,7 @@ fn main() {
         .add_plugin(ShapePlugin)
         .add_plugin(CameraPlugin)
         .add_plugin(WorldInspectorPlugin::default())
-        .add_plugin(SimulationPlugin)
+        //.add_plugin(SimulationPlugin)
         .add_plugin(UIPlugin)
         .add_plugin(FrameTimeDiagnosticsPlugin)
         .add_system(display_fps)

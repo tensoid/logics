@@ -6,12 +6,15 @@ use crate::simulation::{
         ChipInputPin, ChipOutputPin, SpawnIOPinEvent,
     },
     pin_state::PinState,
-    wire::Wire,
+    wire::{self, Wire},
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_prototype_lyon::prelude::*;
 
-use super::{circuit_board::CircuitBoardRenderingSettings, utils::screen_to_world_space};
+use super::{
+    circuit_board::CircuitBoardRenderingSettings, draw_layer::DrawLayer,
+    utils::screen_to_world_space,
+};
 
 #[derive(PartialEq)]
 pub enum CursorState {
@@ -132,8 +135,6 @@ pub fn delete_board_entity(
         With<BoardBinaryIOHandleBar>,
     >,
     q_board_io: Query<Entity, Or<(With<BoardBinaryInput>, With<BoardBinaryOutput>)>>,
-    q_dest_pins: Query<Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
-    mut q_wires: Query<(&mut Wire, &mut Path), With<Wire>>,
     mut commands: Commands,
     cursor: Res<Cursor>,
 ) {
@@ -314,23 +315,38 @@ pub fn drag_board_binary_io(
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn drag_wire(
     input: Res<Input<MouseButton>>,
-    q_output_pins: Query<(&GlobalTransform, &Children), (With<ChipOutputPin>, Without<Camera>)>,
+    q_wire_src_pins: Query<
+        (&GlobalTransform, Entity),
+        (
+            Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
+            Without<Camera>,
+        ),
+    >,
     q_input_pins: Query<(&GlobalTransform, Entity), (With<ChipInputPin>, Without<Camera>)>,
     q_board_output_pins: Query<
         (&GlobalTransform, Entity),
         (With<BoardBinaryOutputPin>, Without<Camera>),
     >,
-    q_board_input_pins: Query<
-        (&GlobalTransform, &Children),
-        (With<BoardBinaryInputPin>, Without<Camera>),
-    >,
     mut q_wires: Query<(&mut Path, &GlobalTransform, &mut Wire)>,
     mut cursor: ResMut<Cursor>,
+    mut commands: Commands,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
     if let Some(cursor_world_pos) = cursor.world_pos {
         if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
-            for (pin_transform, pin_children) in q_output_pins.iter() {
+            let wire_bundle = (
+                ShapeBundle {
+                    path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
+                    transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
+                    ..default()
+                },
+                Stroke::new(
+                    render_settings.signal_low_color,
+                    render_settings.wire_line_width,
+                ),
+            );
+
+            for (pin_transform, pin_entity) in q_wire_src_pins.iter() {
                 if cursor_world_pos.distance(pin_transform.translation().truncate())
                     > render_settings.chip_pin_radius
                 {
@@ -338,21 +354,16 @@ pub fn drag_wire(
                 }
 
                 // cursor is on pin
-                let &wire_entity = pin_children.first().unwrap();
-                cursor.state = CursorState::DraggingWire(wire_entity);
-                return;
-            }
-
-            for (pin_transform, pin_children) in q_board_input_pins.iter() {
-                if cursor_world_pos.distance(pin_transform.translation().truncate())
-                    > render_settings.binary_io_pin_radius
-                {
-                    continue;
-                }
-
-                // cursor is on pin
-                let &wire_entity = pin_children.first().unwrap();
-                cursor.state = CursorState::DraggingWire(wire_entity);
+                let wire = commands
+                    .spawn((
+                        wire_bundle,
+                        Wire {
+                            src_pin: Some(pin_entity),
+                            dest_pin: None,
+                        },
+                    ))
+                    .id();
+                cursor.state = CursorState::DraggingWire(wire);
                 return;
             }
         }
@@ -360,7 +371,6 @@ pub fn drag_wire(
         if let CursorState::DraggingWire(wire_entity) = cursor.state {
             if let Ok(wire_components) = q_wires.get_mut(wire_entity) {
                 let (mut path, output_pin_transform, mut wire) = wire_components;
-                let mut new_wire = shapes::Line(Vec2::ZERO, Vec2::ZERO);
 
                 //TODO: nicht jedes mal abfrage? aber juckt glaube nicht
                 if wire.dest_pin.is_some() {
@@ -368,8 +378,10 @@ pub fn drag_wire(
                 }
 
                 if input.pressed(MouseButton::Left) {
-                    new_wire.1 = cursor_world_pos - output_pin_transform.translation().truncate();
-                    *path = ShapePath::build_as(&new_wire);
+                    *path = ShapePath::build_as(&shapes::Line(
+                        Vec2::ZERO,
+                        cursor_world_pos - output_pin_transform.translation().truncate(),
+                    ));
                 } else if input.just_released(MouseButton::Left) {
                     let hovered_chip_pin = || {
                         q_input_pins.iter().find(|pin| {
@@ -390,15 +402,17 @@ pub fn drag_wire(
                     if let Some(hovered_pin) = hovered_pin {
                         // connect wire to pin
                         wire.dest_pin = Some(hovered_pin.1);
-                        new_wire.1 = hovered_pin.0.translation().truncate()
-                            - output_pin_transform.translation().truncate();
-                        *path = ShapePath::build_as(&new_wire);
+                        *path = ShapePath::build_as(&shapes::Line(
+                            Vec2::ZERO,
+                            hovered_pin.0.translation().truncate()
+                                - output_pin_transform.translation().truncate(),
+                        ));
                         cursor.state = CursorState::Idle;
                         return;
                     }
 
-                    // reset wire if dragged on nothing
-                    *path = ShapePath::build_as(&new_wire);
+                    // delete wire if dragged on nothing
+                    commands.entity(wire_entity).despawn();
                     cursor.state = CursorState::Idle;
                 }
             }
