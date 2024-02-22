@@ -5,7 +5,7 @@ use crate::simulation::{
         BoardBinaryInputPin, BoardBinaryInputSwitch, BoardBinaryOutput, BoardBinaryOutputPin,
         ChipInputPin, ChipOutputPin, SpawnIOPinEvent,
     },
-    pin_state::PinState,
+    signal_state::SignalState,
     wire::{self, Wire},
 };
 use bevy::{prelude::*, window::PrimaryWindow};
@@ -44,6 +44,27 @@ impl Default for Cursor {
 }
 
 //TODO: instead of setting position when dragging set parent, this needs cursor to be an entity
+
+//TODO: LEFT OFF: cursor impl
+// if q_cursor.iter().count() > 1 {
+//     panic!("More than one cursor in the scene.");
+// }
+
+// if q_camera.iter().count() > 1 {
+//     panic!("More than one camera in the scene.");
+// }
+
+// if let Ok(window) = q_window.get_single() {
+//     for (camera, camera_transform) in q_camera.iter() {
+//         if let Ok(mut cursor_transform) = q_cursor.get_single_mut() {
+//             if let Some(cursor_screen_pos) = window.cursor_position() {
+//                 cursor_transform.translation =
+//                     screen_to_world_space(camera, camera_transform, cursor_screen_pos)
+//                         .extend(0.0);
+//             }
+//         }
+//     }
+// }
 
 pub fn update_cursor(
     //input: Res<Input<MouseButton>>,
@@ -344,6 +365,7 @@ pub fn drag_wire(
                     render_settings.signal_low_color,
                     render_settings.wire_line_width,
                 ),
+                SignalState::Low
             );
 
             for (pin_transform, pin_entity) in q_wire_src_pins.iter() {
@@ -424,7 +446,7 @@ pub fn toggle_board_input_pin(
     input: Res<Input<MouseButton>>,
     q_inputs: Query<&Children, With<BoardBinaryInput>>,
     q_input_switches: Query<(&GlobalTransform, &Parent), With<BoardBinaryInputSwitch>>,
-    mut q_input_pins: Query<(&mut BoardBinaryInputPin, &mut PinState)>,
+    mut q_input_pins: Query<(&mut BoardBinaryInputPin, &mut SignalState)>,
     render_settings: Res<CircuitBoardRenderingSettings>,
     cursor: Res<Cursor>,
 ) {

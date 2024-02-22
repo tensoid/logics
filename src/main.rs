@@ -63,7 +63,7 @@ fn main() {
         .add_plugin(ShapePlugin)
         .add_plugin(CameraPlugin)
         .add_plugin(WorldInspectorPlugin::default())
-        //.add_plugin(SimulationPlugin)
+        .add_plugin(SimulationPlugin)
         .add_plugin(UIPlugin)
         .add_plugin(FrameTimeDiagnosticsPlugin)
         .add_system(display_fps)

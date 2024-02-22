@@ -6,7 +6,7 @@ use crate::simulation::{
         BoardBinaryInputPin, BoardBinaryInputSwitch, BoardBinaryOutput, BoardBinaryOutputDisplay,
         BoardBinaryOutputPin, ChipInputPin, ChipOutputPin, SpawnIOPinEvent,
     },
-    pin_state::PinState,
+    signal_state::SignalState,
     wire::Wire,
 };
 use bevy::prelude::*;
@@ -112,11 +112,8 @@ pub fn spawn_chip_event(
                             ..default()
                         },
                         Fill::color(render_settings.signal_low_color),
-                        ChipInputPin {
-                            //TODO: think about making this property a component
-                            input_received: false,
-                        },
-                        PinState::Low,
+                        ChipInputPin,
+                        SignalState::Low,
                     ));
                 }
 
@@ -133,7 +130,7 @@ pub fn spawn_chip_event(
                     },
                     Fill::color(render_settings.signal_low_color),
                     ChipOutputPin,
-                    PinState::Low,
+                    SignalState::Low,
                 ));
             });
     }
@@ -220,7 +217,7 @@ pub fn spawn_io_pin_event(
             commands
                 .spawn((BoardBinaryInput, identity_spatial_bundle, BoardEntity))
                 .with_children(|parent| {
-                    parent.spawn((pin_bundle, BoardBinaryInputPin, PinState::Low));
+                    parent.spawn((pin_bundle, BoardBinaryInputPin, SignalState::Low));
                     parent.spawn((handle_bar_bundle, BoardBinaryIOHandleBar));
                     parent.spawn((switch_bundle, BoardBinaryInputSwitch));
                 });
@@ -231,7 +228,7 @@ pub fn spawn_io_pin_event(
             commands
                 .spawn((BoardBinaryOutput, identity_spatial_bundle, BoardEntity))
                 .with_children(|parent| {
-                    parent.spawn((pin_bundle, BoardBinaryOutputPin, PinState::Low));
+                    parent.spawn((pin_bundle, BoardBinaryOutputPin, SignalState::Low));
                     parent.spawn((handle_bar_bundle, BoardBinaryIOHandleBar));
                     parent.spawn((display_bundle, BoardBinaryOutputDisplay));
                 });

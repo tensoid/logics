@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct ChipInputPin {
-    pub input_received: bool,
-}
+pub struct ChipInputPin;
 
 //TODO: split into files
 #[derive(Component)]
