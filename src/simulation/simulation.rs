@@ -87,7 +87,6 @@ fn tick_simulation(
         ),
     >,
 ) {
-    //TODO: two cables going into same pin
     for (_, input_pin_state, input_pin_entity) in q_board_input_pins.iter() {
         for (wire, mut wire_signal_state) in q_wires.iter_mut() {
             if let Some(src_pin) = wire.src_pin {
@@ -111,6 +110,10 @@ fn tick_simulation(
             }
 
             *output_pin_state = *wire_signal_state;
+
+            if wire_signal_state.eq(&SignalState::High) {
+                break;
+            }
         }
     }
 
@@ -125,6 +128,10 @@ fn tick_simulation(
             }
 
             *input_pin_state = *wire_signal_state;
+
+            if wire_signal_state.eq(&SignalState::High) {
+                break;
+            }
         }
     }
 
