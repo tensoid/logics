@@ -90,9 +90,11 @@ fn tick_simulation(
     for (_, input_pin_state, input_pin_entity) in q_board_input_pins.iter() {
         for (wire, mut wire_signal_state) in q_wires.iter_mut() {
             if let Some(src_pin) = wire.src_pin {
-                if !src_pin.eq(&input_pin_entity) {
+                if src_pin != input_pin_entity {
                     continue;
                 }
+            } else {
+                continue;
             }
 
             *wire_signal_state = *input_pin_state;
@@ -104,9 +106,11 @@ fn tick_simulation(
 
         for (wire, wire_signal_state) in q_wires.iter_mut() {
             if let Some(dest_pin) = wire.dest_pin {
-                if !dest_pin.eq(&output_pin_entity) {
+                if dest_pin != output_pin_entity {
                     continue;
                 }
+            } else {
+                continue;
             }
 
             *output_pin_state = *wire_signal_state;
@@ -122,9 +126,11 @@ fn tick_simulation(
 
         for (wire, wire_signal_state) in q_wires.iter_mut() {
             if let Some(dest_pin) = wire.dest_pin {
-                if !dest_pin.eq(&input_pin_entity) {
+                if dest_pin != input_pin_entity {
                     continue;
                 }
+            } else {
+                continue;
             }
 
             *input_pin_state = *wire_signal_state;
@@ -163,9 +169,11 @@ fn tick_simulation(
     for (_, output_pin_state, output_pin_entity) in q_chip_output_pins.iter() {
         for (wire, mut wire_signal_state) in q_wires.iter_mut() {
             if let Some(src_pin) = wire.src_pin {
-                if !src_pin.eq(&output_pin_entity) {
+                if src_pin != output_pin_entity {
                     continue;
                 }
+            } else {
+                continue;
             }
 
             *wire_signal_state = *output_pin_state;
