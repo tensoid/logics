@@ -1,6 +1,7 @@
-pub mod circuit_board;
-pub mod cursor;
-pub mod debug;
-pub mod draw_layer;
-pub mod ui;
-pub mod utils;
+use bevy::prelude::*;
+
+pub struct UIPlugin;
+
+impl Plugin for UIPlugin {
+    fn build(&self, app: &mut App) {}
+}

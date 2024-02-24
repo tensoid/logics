@@ -13,12 +13,16 @@ mod ui;
 
 use camera::CameraPlugin;
 use simulation::{
-    chip::{ChipSpec, ChipSpecs, SpawnChipEvent},
+    chip::{ChipSpec, ChipSpecs},
+    cursor::Cursor,
+    events::OpenChipSelectorEvent,
     expressions::Expr,
-    pin::SpawnIOPinEvent,
-    simulation::SimulationPlugin,
+    input::KeyBindings,
+    render_settings::CircuitBoardRenderingSettings,
+    SimulationPlugin,
 };
-use ui::{circuit_board::CircuitBoardRenderingSettings, cursor::Cursor, ui::UIPlugin};
+
+use ui::UIPlugin;
 
 const WINDOW_TITLE: &str = "Logics";
 
@@ -45,19 +49,6 @@ fn main() {
                 expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
             },
         ]))
-        .insert_resource(CircuitBoardRenderingSettings {
-            signal_low_color: Color::BLACK,
-            signal_high_color: Color::GREEN,
-            chip_pin_gap: 25.0,
-            chip_pin_radius: 7.0,
-            binary_io_pin_radius: 10.0,
-            binary_io_handlebar_width: 8.0,
-            binary_io_handlebar_length: 40.0,
-            binary_io_handlebar_color: Color::BLACK,
-            wire_line_width: 2.0,
-        })
-        .add_event::<SpawnChipEvent>()
-        .add_event::<SpawnIOPinEvent>()
         .add_plugins(DefaultPlugins)
         .add_plugin(PanCamPlugin)
         .add_plugin(ShapePlugin)

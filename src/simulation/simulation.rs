@@ -1,26 +1,15 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::{Fill, Stroke};
 
-use crate::ui::circuit_board::CircuitBoardRenderingSettings;
-
 use super::{
-    chip::{Chip, ChipSpec},
-    pin::{BoardBinaryInputPin, BoardBinaryOutputPin, ChipInputPin, ChipOutputPin},
+    chip::{Chip, ChipInputPin, ChipOutputPin, ChipSpec},
+    io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin},
     signal_state::SignalState,
     wire::Wire,
 };
 
-pub struct SimulationPlugin;
-
-impl Plugin for SimulationPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_system(tick_simulation)
-            .add_system(update_signal_colors.after(tick_simulation));
-    }
-}
-
 #[allow(clippy::type_complexity)]
-fn tick_simulation(
+pub fn tick_simulation(
     q_board_input_pins: Query<
         (&BoardBinaryInputPin, &SignalState, Entity),
         (
@@ -178,52 +167,5 @@ fn tick_simulation(
 
             *wire_signal_state = *output_pin_state;
         }
-    }
-}
-
-//TODO: make faster by not updating colors that havent changed.
-/**
- * Updates all colors that are bound to a signal, e.g. pins or wires.
- */
-#[allow(clippy::type_complexity)]
-fn update_signal_colors(
-    mut q_pins: Query<
-        (&mut Fill, &SignalState, Entity),
-        Or<(
-            With<ChipInputPin>,
-            With<ChipOutputPin>,
-            With<BoardBinaryInputPin>,
-            With<BoardBinaryOutputPin>,
-        )>,
-    >,
-    mut q_wires: Query<(&mut Stroke, &SignalState), With<Wire>>,
-    render_settings: Res<CircuitBoardRenderingSettings>,
-) {
-    // Color Pins
-    for (mut pin_fill, pin_state, pin_entity) in q_pins.iter_mut() {
-        let signal_fill = match pin_state {
-            SignalState::Low => Fill::color(render_settings.signal_low_color),
-            SignalState::High => Fill::color(render_settings.signal_high_color),
-        };
-
-        // Color Pins
-        *pin_fill = signal_fill;
-    }
-
-    // Color Wires
-    for (mut stroke, signal_state) in q_wires.iter_mut() {
-        let signal_wire_stroke = match signal_state {
-            SignalState::Low => Stroke::new(
-                render_settings.signal_low_color,
-                render_settings.wire_line_width,
-            ),
-
-            SignalState::High => Stroke::new(
-                render_settings.signal_high_color,
-                render_settings.wire_line_width,
-            ),
-        };
-
-        *stroke = signal_wire_stroke;
     }
 }

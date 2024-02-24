@@ -1,19 +1,19 @@
 use crate::simulation::{
-    chip::{Chip, ChipExtents, SpawnChipEvent},
-    pin::{
+    chip::{Chip, ChipExtents},
+    events::SpawnChipEvent,
+    events::SpawnIOPinEvent,
+    io_pin::{
         BoardBinaryIOHandleBar, BoardBinaryIOHandleBarExtents, BoardBinaryInput,
         BoardBinaryInputPin, BoardBinaryInputSwitch, BoardBinaryOutput, BoardBinaryOutputPin,
-        ChipInputPin, ChipOutputPin, SpawnIOPinEvent,
     },
     signal_state::SignalState,
-    wire::{self, Wire},
+    wire::Wire,
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_prototype_lyon::prelude::*;
 
 use super::{
-    circuit_board::CircuitBoardRenderingSettings, draw_layer::DrawLayer,
-    utils::screen_to_world_space,
+    chip::{ChipInputPin, ChipOutputPin}, draw_layer::DrawLayer, render_settings::CircuitBoardRenderingSettings, utils::screen_to_world_space
 };
 
 #[derive(PartialEq)]
@@ -365,7 +365,7 @@ pub fn drag_wire(
                     render_settings.signal_low_color,
                     render_settings.wire_line_width,
                 ),
-                SignalState::Low
+                SignalState::Low,
             );
 
             for (pin_transform, pin_entity) in q_wire_src_pins.iter() {
