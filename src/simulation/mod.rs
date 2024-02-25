@@ -31,7 +31,6 @@ use cursor::toggle_board_input_pin;
 use cursor::update_cursor;
 
 use self::events::register_events;
-use self::input::event_rec;
 use self::input::handle_keybindings;
 use self::input::register_keybindings;
 use self::render_settings::register_render_settings;
@@ -54,8 +53,7 @@ impl Plugin for SimulationPlugin {
             .add_system(update_wires.in_base_set(CoreSet::PostUpdate))
             .add_system(delete_board_entity)
             .add_system(update_cursor) //TODO: run before anything
-            .add_system(handle_keybindings)
-            .add_system(event_rec);
+            .add_system(handle_keybindings);
 
         register_events(app);
         register_keybindings(app);
