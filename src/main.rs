@@ -1,5 +1,6 @@
 use bevy::{
-    diagnostic::{Diagnostics, DiagnosticsStore, FrameTimeDiagnosticsPlugin},
+    asset::AssetMetaCheck,
+    diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin},
     prelude::*,
     window::PrimaryWindow,
 };
@@ -25,6 +26,8 @@ const WINDOW_TITLE: &str = "Logics";
 
 fn main() {
     let mut app = App::new();
+
+    app.insert_resource(AssetMetaCheck::Never);
 
     app.add_plugins(DefaultPlugins.set(WindowPlugin {
         primary_window: Some(Window {
