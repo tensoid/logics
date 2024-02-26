@@ -24,8 +24,17 @@ use ui::UIPlugin;
 const WINDOW_TITLE: &str = "Logics";
 
 fn main() {
-    App::new()
-        .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
+    let mut app = App::new();
+
+    app.add_plugins(DefaultPlugins.set(WindowPlugin {
+        primary_window: Some(Window {
+            canvas: Some("#logics-canvas".into()),
+            ..default()
+        }),
+        ..default()
+    }));
+
+    app.insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
         .insert_resource(Cursor::default())
         .insert_resource(ChipSpecs(vec![
             ChipSpec {
@@ -46,7 +55,6 @@ fn main() {
                 expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
             },
         ]))
-        .add_plugins(DefaultPlugins)
         .add_plugins(PanCamPlugin)
         .add_plugins(ShapePlugin)
         .add_plugins(CameraPlugin)
