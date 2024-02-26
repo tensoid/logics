@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
-use super::{board_entity::BoardEntity, draw_layer::DrawLayer, events::SpawnIOPinEvent, render_settings::CircuitBoardRenderingSettings, signal_state::SignalState};
+use super::{
+    board_entity::BoardEntity, draw_layer::DrawLayer, events::SpawnIOPinEvent,
+    render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
+};
 
 #[derive(Component)]
 pub struct BoardBinaryIOHandleBar;
@@ -32,14 +35,17 @@ pub fn spawn_io_pin_event(
     mut spawn_ev: EventReader<SpawnIOPinEvent>,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
-    for ev in spawn_ev.iter() {
+    for ev in spawn_ev.read() {
         let pin_bundle = (
             ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Circle {
                     radius: render_settings.binary_io_pin_radius,
                     ..default()
                 }),
-                transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Pin.get_z()),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Pin.get_z()),
+                    ..default()
+                },
                 ..default()
             },
             Fill::color(render_settings.signal_low_color),
@@ -56,7 +62,10 @@ pub fn spawn_io_pin_event(
                     origin: RectangleOrigin::Center,
                     extents: handle_bar_extents,
                 }),
-                transform: Transform::from_xyz(0.0, 0.0, DrawLayer::HandleBar.get_z()),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(0.0, 0.0, DrawLayer::HandleBar.get_z()),
+                    ..default()
+                },
                 ..default()
             },
             BoardBinaryIOHandleBarExtents(handle_bar_extents),
@@ -69,11 +78,14 @@ pub fn spawn_io_pin_event(
                     radius: render_settings.binary_io_pin_radius,
                     ..default()
                 }),
-                transform: Transform::from_xyz(
-                    -render_settings.binary_io_handlebar_length,
-                    0.0,
-                    DrawLayer::Pin.get_z(),
-                ),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(
+                        -render_settings.binary_io_handlebar_length,
+                        0.0,
+                        DrawLayer::Pin.get_z(),
+                    ),
+                    ..default()
+                },
                 ..default()
             },
             Fill::color(render_settings.binary_io_handlebar_color),
@@ -85,11 +97,14 @@ pub fn spawn_io_pin_event(
                     radius: render_settings.binary_io_pin_radius,
                     ..default()
                 }),
-                transform: Transform::from_xyz(
-                    render_settings.binary_io_handlebar_length,
-                    0.0,
-                    DrawLayer::Pin.get_z(),
-                ),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(
+                        render_settings.binary_io_handlebar_length,
+                        0.0,
+                        DrawLayer::Pin.get_z(),
+                    ),
+                    ..default()
+                },
                 ..default()
             },
             Fill::color(render_settings.signal_low_color),
@@ -101,7 +116,7 @@ pub fn spawn_io_pin_event(
         };
 
         if ev.is_input {
-            handle_bar_bundle.0.transform.translation.x -=
+            handle_bar_bundle.0.spatial.transform.translation.x -=
                 render_settings.binary_io_handlebar_length / 2.0;
 
             commands
@@ -112,7 +127,7 @@ pub fn spawn_io_pin_event(
                     parent.spawn((switch_bundle, BoardBinaryInputSwitch));
                 });
         } else {
-            handle_bar_bundle.0.transform.translation.x +=
+            handle_bar_bundle.0.spatial.transform.translation.x +=
                 render_settings.binary_io_handlebar_length / 2.0;
 
             commands

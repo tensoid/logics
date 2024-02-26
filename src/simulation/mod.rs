@@ -39,21 +39,21 @@ pub struct SimulationPlugin;
 
 impl Plugin for SimulationPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(tick_simulation)
-            .add_system(update_signal_colors.after(tick_simulation))
-            .add_system(spawn_chip_at_cursor)
-            .add_system(spawn_io_pin_at_cursor)
-            .add_system(spawn_chip_event)
-            .add_system(drag_board_binary_io)
-            .add_system(toggle_board_input_pin.before(drag_board_binary_io))
-            .add_system(spawn_io_pin_event)
-            .add_system(drag_chip)
-            .add_system(drag_wire.before(drag_board_binary_io).before(drag_chip))
+        app.add_systems(Update, tick_simulation)
+            .add_systems(Update, update_signal_colors.after(tick_simulation))
+            .add_systems(Update, spawn_chip_at_cursor)
+            .add_systems(Update, spawn_io_pin_at_cursor)
+            .add_systems(Update, spawn_chip_event)
+            .add_systems(Update, drag_board_binary_io)
+            .add_systems(Update, toggle_board_input_pin.before(drag_board_binary_io))
+            .add_systems(Update, spawn_io_pin_event)
+            .add_systems(Update, drag_chip)
+            .add_systems(Update, drag_wire.before(drag_board_binary_io).before(drag_chip))
             // runs in post update because it requires that all despawning of dest pins has been completed to update the wires
-            .add_system(update_wires.in_base_set(CoreSet::PostUpdate))
-            .add_system(delete_board_entity)
-            .add_system(update_cursor) //TODO: run before anything
-            .add_system(handle_keybindings);
+            .add_systems(PostUpdate, update_wires)
+            .add_systems(Update, delete_board_entity)
+            .add_systems(Update, update_cursor) //TODO: run before anything
+            .add_systems(Update, handle_keybindings);
 
         register_events(app);
         register_keybindings(app);

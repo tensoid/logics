@@ -2,7 +2,8 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
 use super::{
-    board_entity::BoardEntity, draw_layer::DrawLayer, events::SpawnChipEvent, expressions::Expr, render_settings::CircuitBoardRenderingSettings, signal_state::SignalState
+    board_entity::BoardEntity, draw_layer::DrawLayer, events::SpawnChipEvent, expressions::Expr,
+    render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
 };
 
 #[derive(Component)]
@@ -34,7 +35,7 @@ pub fn spawn_chip_event(
     asset_server: Res<AssetServer>,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
-    for ev in spawn_ev.iter() {
+    for ev in spawn_ev.read() {
         let chip_spec = chip_specs
             .0
             .iter()
@@ -71,11 +72,14 @@ pub fn spawn_chip_event(
             .spawn((
                 ShapeBundle {
                     path: GeometryBuilder::build_as(&chip_shape),
-                    transform: Transform::from_xyz(
-                        ev.position.x,
-                        ev.position.y,
-                        DrawLayer::Chip.get_z(),
-                    ),
+                    spatial: SpatialBundle {
+                        transform: Transform::from_xyz(
+                            ev.position.x,
+                            ev.position.y,
+                            DrawLayer::Chip.get_z(),
+                        ),
+                        ..default()
+                    },
                     ..default()
                 },
                 Fill::color(Color::WHITE),
@@ -89,22 +93,26 @@ pub fn spawn_chip_event(
                 //Chip Name
                 chip.spawn(Text2dBundle {
                     text: Text::from_section(&ev.chip_name.to_uppercase(), text_style)
-                        .with_alignment(TextAlignment::Center),
+                        .with_justify(JustifyText::Center), 
                     transform: Transform::from_xyz(0.0, 0.0, DrawLayer::ChipName.get_z()),
                     ..default()
                 });
-
+                
                 // Input pins
                 for i in 0..num_input_pins {
                     chip.spawn((
                         ShapeBundle {
                             path: GeometryBuilder::build_as(&pin_shape),
-                            transform: Transform::from_xyz(
-                                -(chip_extents.x / 2.0),
-                                (i as f32 * render_settings.chip_pin_gap) - (chip_extents.y / 2.0)
-                                    + render_settings.chip_pin_gap,
-                                DrawLayer::Pin.get_z(),
-                            ),
+                            spatial: SpatialBundle {
+                                transform: Transform::from_xyz(
+                                    -(chip_extents.x / 2.0),
+                                    (i as f32 * render_settings.chip_pin_gap)
+                                        - (chip_extents.y / 2.0)
+                                        + render_settings.chip_pin_gap,
+                                    DrawLayer::Pin.get_z(),
+                                ),
+                                ..default()
+                            },
                             ..default()
                         },
                         Fill::color(render_settings.signal_low_color),
@@ -117,11 +125,14 @@ pub fn spawn_chip_event(
                 chip.spawn((
                     ShapeBundle {
                         path: GeometryBuilder::build_as(&pin_shape),
-                        transform: Transform::from_xyz(
-                            chip_extents.x / 2.0,
-                            0.0,
-                            DrawLayer::Pin.get_z(),
-                        ),
+                        spatial: SpatialBundle {
+                            transform: Transform::from_xyz(
+                                chip_extents.x / 2.0,
+                                0.0,
+                                DrawLayer::Pin.get_z(),
+                            ),
+                            ..default()
+                        },
                         ..default()
                     },
                     Fill::color(render_settings.signal_low_color),

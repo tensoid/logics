@@ -32,7 +32,7 @@ pub fn register_keybindings(app: &mut App) {
 pub fn handle_keybindings(
     mut commands: Commands,
     keybindings: Res<KeyBindings>,
-    input: Res<Input<KeyCode>>,
+    input: Res<ButtonInput<KeyCode>>,
 ) {
     for (keycodes, action) in keybindings.0.iter() {
         if !keycodes.iter().all(|key| input.pressed(*key)) {

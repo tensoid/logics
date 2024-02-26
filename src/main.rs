@@ -1,5 +1,5 @@
 use bevy::{
-    diagnostic::{Diagnostics, FrameTimeDiagnosticsPlugin},
+    diagnostic::{Diagnostics, DiagnosticsStore, FrameTimeDiagnosticsPlugin},
     prelude::*,
     window::PrimaryWindow,
 };
@@ -15,10 +15,7 @@ use camera::CameraPlugin;
 use simulation::{
     chip::{ChipSpec, ChipSpecs},
     cursor::Cursor,
-    events::OpenChipSelectorEvent,
     expressions::Expr,
-    input::KeyBindings,
-    render_settings::CircuitBoardRenderingSettings,
     SimulationPlugin,
 };
 
@@ -50,19 +47,19 @@ fn main() {
             },
         ]))
         .add_plugins(DefaultPlugins)
-        .add_plugin(PanCamPlugin)
-        .add_plugin(ShapePlugin)
-        .add_plugin(CameraPlugin)
-        .add_plugin(WorldInspectorPlugin::default())
-        .add_plugin(SimulationPlugin)
-        .add_plugin(UIPlugin)
-        .add_plugin(FrameTimeDiagnosticsPlugin)
-        .add_system(display_fps)
+        .add_plugins(PanCamPlugin)
+        .add_plugins(ShapePlugin)
+        .add_plugins(CameraPlugin)
+        .add_plugins(WorldInspectorPlugin::default())
+        .add_plugins(SimulationPlugin)
+        .add_plugins(UIPlugin)
+        .add_plugins(FrameTimeDiagnosticsPlugin)
+        .add_systems(Update, display_fps)
         .run();
 }
 
 fn display_fps(
-    diagnostics: Res<Diagnostics>,
+    diagnostics: Res<DiagnosticsStore>,
     mut q_window: Query<&mut Window, With<PrimaryWindow>>,
 ) {
     let mut window = q_window.get_single_mut().unwrap();
@@ -70,7 +67,7 @@ fn display_fps(
         "{} - {:.2}",
         WINDOW_TITLE,
         diagnostics
-            .get(FrameTimeDiagnosticsPlugin::FPS)
+            .get(&FrameTimeDiagnosticsPlugin::FPS)
             .and_then(|fps| fps.average())
             .unwrap_or(0.0)
     );

@@ -13,7 +13,10 @@ use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_prototype_lyon::prelude::*;
 
 use super::{
-    chip::{ChipInputPin, ChipOutputPin}, draw_layer::DrawLayer, render_settings::CircuitBoardRenderingSettings, utils::screen_to_world_space
+    chip::{ChipInputPin, ChipOutputPin},
+    draw_layer::DrawLayer,
+    render_settings::CircuitBoardRenderingSettings,
+    utils::screen_to_world_space,
 };
 
 #[derive(PartialEq)]
@@ -67,7 +70,7 @@ impl Default for Cursor {
 // }
 
 pub fn update_cursor(
-    //input: Res<Input<MouseButton>>,
+    //input: Res<ButtonInput<MouseButton>>,
     //mut mouse_motion_ev: EventReader<MouseMotion>,
     q_window: Query<&Window, With<PrimaryWindow>>,
     q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
@@ -91,32 +94,32 @@ pub fn update_cursor(
 }
 
 pub fn spawn_chip_at_cursor(
-    key_input: Res<Input<KeyCode>>,
+    key_input: Res<ButtonInput<KeyCode>>,
     mut ev_writer: EventWriter<SpawnChipEvent>,
     cursor: Res<Cursor>,
 ) {
-    if key_input.just_pressed(KeyCode::F) {
+    if key_input.just_pressed(KeyCode::KeyF) {
         if let Some(cursor_world_pos) = cursor.world_pos {
             ev_writer.send(SpawnChipEvent {
                 chip_name: "and".to_string(),
                 position: cursor_world_pos,
             });
         }
-    } else if key_input.just_pressed(KeyCode::G) {
+    } else if key_input.just_pressed(KeyCode::KeyG) {
         if let Some(cursor_world_pos) = cursor.world_pos {
             ev_writer.send(SpawnChipEvent {
                 chip_name: "or".to_string(),
                 position: cursor_world_pos,
             });
         }
-    } else if key_input.just_pressed(KeyCode::H) {
+    } else if key_input.just_pressed(KeyCode::KeyH) {
         if let Some(cursor_world_pos) = cursor.world_pos {
             ev_writer.send(SpawnChipEvent {
                 chip_name: "xor".to_string(),
                 position: cursor_world_pos,
             });
         }
-    } else if key_input.just_pressed(KeyCode::J) {
+    } else if key_input.just_pressed(KeyCode::KeyJ) {
         if let Some(cursor_world_pos) = cursor.world_pos {
             ev_writer.send(SpawnChipEvent {
                 chip_name: "not".to_string(),
@@ -127,13 +130,13 @@ pub fn spawn_chip_at_cursor(
 }
 
 pub fn spawn_io_pin_at_cursor(
-    input: Res<Input<KeyCode>>,
+    input: Res<ButtonInput<KeyCode>>,
     mut ev_writer: EventWriter<SpawnIOPinEvent>,
     cursor: Res<Cursor>,
 ) {
-    let spawn_input_pin = if input.just_pressed(KeyCode::I) {
+    let spawn_input_pin = if input.just_pressed(KeyCode::KeyI) {
         true
-    } else if input.just_pressed(KeyCode::O) {
+    } else if input.just_pressed(KeyCode::KeyO) {
         false
     } else {
         return;
@@ -149,7 +152,7 @@ pub fn spawn_io_pin_at_cursor(
 
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn delete_board_entity(
-    input: Res<Input<KeyCode>>,
+    input: Res<ButtonInput<KeyCode>>,
     q_chips: Query<(Entity, &GlobalTransform, &ChipExtents), With<Chip>>,
     q_handle_bars: Query<
         (&Parent, &GlobalTransform, &BoardBinaryIOHandleBarExtents),
@@ -217,7 +220,7 @@ pub fn delete_board_entity(
 
 //TODO: make one function for dragging everything
 pub fn drag_chip(
-    input: Res<Input<MouseButton>>,
+    input: Res<ButtonInput<MouseButton>>,
     mut q_chips: Query<(&GlobalTransform, &mut Transform, &ChipExtents, Entity), With<Chip>>,
     mut cursor: ResMut<Cursor>,
 ) {
@@ -268,7 +271,7 @@ pub fn drag_chip(
 
 #[allow(clippy::type_complexity)]
 pub fn drag_board_binary_io(
-    input: Res<Input<MouseButton>>,
+    input: Res<ButtonInput<MouseButton>>,
     mut cursor: ResMut<Cursor>,
     mut q_bbio_handle_bars: Query<
         (
@@ -335,7 +338,7 @@ pub fn drag_board_binary_io(
 
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn drag_wire(
-    input: Res<Input<MouseButton>>,
+    input: Res<ButtonInput<MouseButton>>,
     q_wire_src_pins: Query<
         (&GlobalTransform, Entity),
         (
@@ -358,7 +361,10 @@ pub fn drag_wire(
             let wire_bundle = (
                 ShapeBundle {
                     path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
-                    transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
+                    spatial: SpatialBundle {
+                        transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
+                        ..default()
+                    },
                     ..default()
                 },
                 Stroke::new(
@@ -443,7 +449,7 @@ pub fn drag_wire(
 }
 
 pub fn toggle_board_input_pin(
-    input: Res<Input<MouseButton>>,
+    input: Res<ButtonInput<MouseButton>>,
     q_inputs: Query<&Children, With<BoardBinaryInput>>,
     q_input_switches: Query<(&GlobalTransform, &Parent), With<BoardBinaryInputSwitch>>,
     mut q_input_pins: Query<(&mut BoardBinaryInputPin, &mut SignalState)>,
