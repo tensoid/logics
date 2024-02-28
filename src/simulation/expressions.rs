@@ -90,7 +90,7 @@ impl AstNode {
             return Err("expression too deep");
         }
 
-        let next = match tokens.get(0) {
+        let next = match tokens.front() {
             Some(x) => x,
             None => return Err("unexpected end of expression"),
         };
@@ -100,7 +100,7 @@ impl AstNode {
                 tokens.remove(0);
                 // Negate exactly the next token
                 // !a & b -> (!a) & b
-                match tokens.get(0) {
+                match tokens.front() {
                     Some(Token::OpenBracket) => Ok(AstNode::Negate(Box::new(Self::munch_tokens(
                         tokens,
                         depth - 1,
@@ -141,7 +141,7 @@ impl AstNode {
                     _ => return Err("expected closing bracket"),
                 };
                 // check for binary op afterwards
-                return match tokens.get(0) {
+                return match tokens.front() {
                     Some(Token::BinaryOp(op)) => {
                         let op = *op;
                         tokens.remove(0).unwrap(); // remove binary op
@@ -163,7 +163,7 @@ impl AstNode {
                         // convert to unambiguous form and try again
                         tokens.insert(1, Token::CloseBracket);
                         tokens.insert(0, Token::OpenBracket);
-                        return Self::munch_tokens(tokens, depth - 1);
+                        Self::munch_tokens(tokens, depth - 1)
                     }
                     Some(Token::CloseBracket) | None => {
                         // lone token
@@ -257,16 +257,16 @@ fn test_lexer() {
 
 #[test]
 fn test_invalid_syntax() {
-    assert!(matches!(Expr::from_string(""), Err(_)));
-    assert!(matches!(Expr::from_string("!!"), Err(_)));
-    assert!(matches!(Expr::from_string(")"), Err(_)));
-    assert!(matches!(Expr::from_string("a"), Err(_)));
-    assert!(matches!(Expr::from_string("1("), Err(_)));
-    assert!(matches!(Expr::from_string("1!"), Err(_)));
-    assert!(matches!(Expr::from_string("0 &"), Err(_)));
-    assert!(matches!(Expr::from_string("(0 & 1"), Err(_)));
-    assert!(matches!(Expr::from_string("() 0"), Err(_)));
-    assert!(matches!(Expr::from_string("0 1"), Err(_)));
+    assert!(Expr::from_string("").is_err());
+    assert!(Expr::from_string("!!").is_err());
+    assert!(Expr::from_string(")").is_err());
+    assert!(Expr::from_string("a").is_err());
+    assert!(Expr::from_string("1(").is_err());
+    assert!(Expr::from_string("1!").is_err());
+    assert!(Expr::from_string("0 &").is_err());
+    assert!(Expr::from_string("(0 & 1").is_err());
+    assert!(Expr::from_string("() 0").is_err());
+    assert!(Expr::from_string("0 1").is_err());
 }
 
 #[test]
@@ -309,12 +309,10 @@ fn test_bracketed_expressions() {
 
 #[test]
 fn test_max_recursion_depth() {
-    assert!(matches!(
-        Expr::from_string("((((((((((((((((((((((((((((((0))))))))))))))))))))))))))))))"),
-        Err(_)
-    ));
-    assert!(matches!(
-        Expr::from_string("(((((((((((((((((((((((((((((0)))))))))))))))))))))))))))))"),
-        Ok(_)
-    ));
+    assert!(
+        Expr::from_string("((((((((((((((((((((((((((((((0))))))))))))))))))))))))))))))").is_err(),
+    );
+    assert!(
+        Expr::from_string("(((((((((((((((((((((((((((((0)))))))))))))))))))))))))))))").is_ok()
+    );
 }

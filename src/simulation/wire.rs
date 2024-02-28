@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
+use crate::get_cursor;
+
 use super::{
     chip::{ChipInputPin, ChipOutputPin},
     cursor::{Cursor, CursorState},
@@ -23,47 +25,47 @@ pub fn update_wires(
     mut q_wires: Query<(&mut Wire, &mut Path, &GlobalTransform, Entity)>,
     q_dest_pins: Query<&GlobalTransform, Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
     q_src_pins: Query<&GlobalTransform, Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>>,
-    cursor: ResMut<Cursor>,
+    q_cursor: Query<(&Cursor, &Transform)>,
     mut commands: Commands,
 ) {
+    let (cursor, cursor_transform) = get_cursor!(q_cursor);
+
     for (wire, mut wire_path, _, wire_entity) in q_wires.iter_mut() {
-        if let Some(cursor_world_pos) = cursor.world_pos {
-            let Some(wire_src_pin_entity) = wire.src_pin else {
+        let Some(wire_src_pin_entity) = wire.src_pin else {
+            commands.entity(wire_entity).despawn();
+            return;
+        };
+
+        if let Some(wire_dest_pin_entity) = wire.dest_pin {
+            if let (Ok(wire_src_pin_transform), Ok(wire_dest_pin_transform)) = (
+                q_src_pins.get(wire_src_pin_entity),
+                q_dest_pins.get(wire_dest_pin_entity),
+            ) {
+                let new_wire = shapes::Line(
+                    wire_src_pin_transform.translation().truncate(),
+                    wire_dest_pin_transform.translation().truncate(),
+                );
+
+                *wire_path = ShapePath::build_as(&new_wire);
+            } else {
                 commands.entity(wire_entity).despawn();
                 return;
-            };
-
-            if let Some(wire_dest_pin_entity) = wire.dest_pin {
-                if let (Ok(wire_src_pin_transform), Ok(wire_dest_pin_transform)) = (
-                    q_src_pins.get(wire_src_pin_entity),
-                    q_dest_pins.get(wire_dest_pin_entity),
-                ) {
+            }
+        } else if let CursorState::DraggingWire(dragged_wire) = cursor.state {
+            if dragged_wire.eq(&wire_entity) {
+                if let Ok(wire_src_pin_transform) = q_src_pins.get(wire_src_pin_entity) {
                     let new_wire = shapes::Line(
                         wire_src_pin_transform.translation().truncate(),
-                        wire_dest_pin_transform.translation().truncate(),
+                        cursor_transform.translation.truncate(),
                     );
 
                     *wire_path = ShapePath::build_as(&new_wire);
-                } else {
-                    commands.entity(wire_entity).despawn();
-                    return;
-                }
-            } else if let CursorState::DraggingWire(dragged_wire) = cursor.state {
-                if dragged_wire.eq(&wire_entity) {
-                    if let Ok(wire_src_pin_transform) = q_src_pins.get(wire_src_pin_entity) {
-                        let new_wire = shapes::Line(
-                            wire_src_pin_transform.translation().truncate(),
-                            cursor_world_pos,
-                        );
-
-                        *wire_path = ShapePath::build_as(&new_wire);
-                    }
-                } else {
-                    commands.entity(wire_entity).despawn();
                 }
             } else {
                 commands.entity(wire_entity).despawn();
             }
+        } else {
+            commands.entity(wire_entity).despawn();
         }
     }
 }

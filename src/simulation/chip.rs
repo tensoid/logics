@@ -2,8 +2,9 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
 use super::{
-    board_entity::BoardEntity, draw_layer::DrawLayer, events::SpawnChipEvent, expressions::Expr,
-    render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
+    board_entity::BoardEntity, bounding_box::BoundingBox, draw_layer::DrawLayer,
+    events::SpawnChipEvent, expressions::Expr, render_settings::CircuitBoardRenderingSettings,
+    signal_state::SignalState,
 };
 
 #[derive(Component)]
@@ -82,22 +83,23 @@ pub fn spawn_chip_event(
                     },
                     ..default()
                 },
-                Fill::color(Color::WHITE),
+                Fill::color(render_settings.chip_color),
                 Stroke::new(Color::BLACK, 1.0),
                 Chip,
                 ChipExtents(chip_extents),
+                BoundingBox::new(chip_extents / 2.0),
                 chip_spec.clone(),
                 BoardEntity,
             ))
             .with_children(|chip| {
                 //Chip Name
                 chip.spawn(Text2dBundle {
-                    text: Text::from_section(&ev.chip_name.to_uppercase(), text_style)
-                        .with_justify(JustifyText::Center), 
+                    text: Text::from_section(ev.chip_name.to_uppercase(), text_style)
+                        .with_justify(JustifyText::Center),
                     transform: Transform::from_xyz(0.0, 0.0, DrawLayer::ChipName.get_z()),
                     ..default()
                 });
-                
+
                 // Input pins
                 for i in 0..num_input_pins {
                     chip.spawn((

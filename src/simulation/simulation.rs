@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude::{Fill, Stroke};
 
 use super::{
     chip::{Chip, ChipInputPin, ChipOutputPin, ChipSpec},

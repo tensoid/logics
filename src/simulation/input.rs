@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::simulation::events::ToggleDebugModeEvent;
+
 use super::events::OpenChipSelectorEvent;
 
 macro_rules! match_and_send_event {
@@ -10,23 +12,23 @@ macro_rules! match_and_send_event {
                     w.send_event($event);
                 }),
             )*
-            _ => {} // Handle default case or remove this line if all actions are covered
         }
     };
 }
 
 pub enum Action {
     OpenChipSelector,
+    ToggleDebugMode,
 }
 
 #[derive(Resource)]
 pub struct KeyBindings(pub Vec<(Vec<KeyCode>, Action)>);
 
 pub fn register_keybindings(app: &mut App) {
-    app.insert_resource(KeyBindings(vec![(
-        vec![KeyCode::Space],
-        Action::OpenChipSelector,
-    )]));
+    app.insert_resource(KeyBindings(vec![
+        (vec![KeyCode::Space], Action::OpenChipSelector),
+        (vec![KeyCode::KeyD], Action::ToggleDebugMode),
+    ]));
 }
 
 pub fn handle_keybindings(
@@ -47,6 +49,7 @@ pub fn handle_keybindings(
             action,
             commands,
             Action::OpenChipSelector => OpenChipSelectorEvent,
+            Action::ToggleDebugMode => ToggleDebugModeEvent,
         );
     }
 }

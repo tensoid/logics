@@ -15,7 +15,6 @@ mod ui;
 use camera::CameraPlugin;
 use simulation::{
     chip::{ChipSpec, ChipSpecs},
-    cursor::Cursor,
     expressions::Expr,
     SimulationPlugin,
 };
@@ -37,36 +36,34 @@ fn main() {
         ..default()
     }));
 
-    app.insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
-        .insert_resource(Cursor::default())
-        .insert_resource(ChipSpecs(vec![
-            ChipSpec {
-                name: "and".to_string(),
-                //expressions: vec![Expr::from_string("0 & 1").unwrap()],
-                expression: Expr::from_string("0 & 1").unwrap(),
-            },
-            ChipSpec {
-                name: "or".to_string(),
-                expression: Expr::from_string("0 | 1").unwrap(),
-            },
-            ChipSpec {
-                name: "not".to_string(),
-                expression: Expr::from_string("!0").unwrap(),
-            },
-            ChipSpec {
-                name: "xor".to_string(),
-                expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
-            },
-        ]))
-        .add_plugins(PanCamPlugin)
-        .add_plugins(ShapePlugin)
-        .add_plugins(CameraPlugin)
-        .add_plugins(WorldInspectorPlugin::default())
-        .add_plugins(SimulationPlugin)
-        .add_plugins(UIPlugin)
-        .add_plugins(FrameTimeDiagnosticsPlugin)
-        .add_systems(Update, display_fps)
-        .run();
+    app.insert_resource(ChipSpecs(vec![
+        ChipSpec {
+            name: "and".to_string(),
+            //expressions: vec![Expr::from_string("0 & 1").unwrap()],
+            expression: Expr::from_string("0 & 1").unwrap(),
+        },
+        ChipSpec {
+            name: "or".to_string(),
+            expression: Expr::from_string("0 | 1").unwrap(),
+        },
+        ChipSpec {
+            name: "not".to_string(),
+            expression: Expr::from_string("!0").unwrap(),
+        },
+        ChipSpec {
+            name: "xor".to_string(),
+            expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
+        },
+    ]))
+    .add_plugins(PanCamPlugin)
+    .add_plugins(ShapePlugin)
+    .add_plugins(CameraPlugin)
+    .add_plugins(WorldInspectorPlugin::default())
+    .add_plugins(SimulationPlugin)
+    .add_plugins(UIPlugin)
+    .add_plugins(FrameTimeDiagnosticsPlugin)
+    .add_systems(Update, display_fps)
+    .run();
 }
 
 fn display_fps(

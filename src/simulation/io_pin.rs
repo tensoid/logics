@@ -2,8 +2,9 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
 use super::{
-    board_entity::BoardEntity, draw_layer::DrawLayer, events::SpawnIOPinEvent,
-    render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
+    board_entity::BoardEntity, bounding_box::BoundingBox, draw_layer::DrawLayer,
+    events::SpawnIOPinEvent, render_settings::CircuitBoardRenderingSettings,
+    signal_state::SignalState,
 };
 
 #[derive(Component)]
@@ -88,7 +89,7 @@ pub fn spawn_io_pin_event(
                 },
                 ..default()
             },
-            Fill::color(render_settings.binary_io_handlebar_color),
+            Fill::color(render_settings.signal_low_color),
         );
 
         let display_bundle = (
@@ -120,7 +121,15 @@ pub fn spawn_io_pin_event(
                 render_settings.binary_io_handlebar_length / 2.0;
 
             commands
-                .spawn((BoardBinaryInput, identity_spatial_bundle, BoardEntity))
+                .spawn((
+                    BoardBinaryInput,
+                    identity_spatial_bundle,
+                    BoardEntity,
+                    BoundingBox::with_offset(
+                        handle_bar_extents / 2.0,
+                        handle_bar_bundle.0.spatial.transform.translation.xy(),
+                    ),
+                ))
                 .with_children(|parent| {
                     parent.spawn((pin_bundle, BoardBinaryInputPin, SignalState::Low));
                     parent.spawn((handle_bar_bundle, BoardBinaryIOHandleBar));
@@ -131,7 +140,15 @@ pub fn spawn_io_pin_event(
                 render_settings.binary_io_handlebar_length / 2.0;
 
             commands
-                .spawn((BoardBinaryOutput, identity_spatial_bundle, BoardEntity))
+                .spawn((
+                    BoardBinaryOutput,
+                    identity_spatial_bundle,
+                    BoardEntity,
+                    BoundingBox::with_offset(
+                        handle_bar_extents / 2.0,
+                        handle_bar_bundle.0.spatial.transform.translation.xy(),
+                    ),
+                ))
                 .with_children(|parent| {
                     parent.spawn((pin_bundle, BoardBinaryOutputPin, SignalState::Low));
                     parent.spawn((handle_bar_bundle, BoardBinaryIOHandleBar));
