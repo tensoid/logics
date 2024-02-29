@@ -1,15 +1,13 @@
 use crate::{
-    get_cursor, get_cursor_mut,
-    simulation::{
-        chip::{Chip, ChipExtents},
-        events::{SpawnChipEvent, SpawnIOPinEvent},
+    events::events::{SpawnChipEvent, SpawnIOPinEvent}, get_cursor, get_cursor_mut, designer::{
+        chip::Chip,
         io_pin::{
-            BoardBinaryIOHandleBar, BoardBinaryIOHandleBarExtents, BoardBinaryInput,
-            BoardBinaryInputPin, BoardBinaryInputSwitch, BoardBinaryOutput, BoardBinaryOutputPin,
+            BoardBinaryInput, BoardBinaryInputPin, BoardBinaryInputSwitch,
+            BoardBinaryOutputPin,
         },
         signal_state::SignalState,
         wire::Wire,
-    },
+    }
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_prototype_lyon::prelude::*;

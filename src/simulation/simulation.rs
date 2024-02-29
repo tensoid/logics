@@ -1,11 +1,6 @@
 use bevy::prelude::*;
 
-use super::{
-    chip::{Chip, ChipInputPin, ChipOutputPin, ChipSpec},
-    io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin},
-    signal_state::SignalState,
-    wire::Wire,
-};
+use crate::designer::{chip::{Chip, ChipInputPin, ChipOutputPin, ChipSpec}, io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin}, signal_state::SignalState, wire::Wire};
 
 #[allow(clippy::type_complexity)]
 pub fn tick_simulation(

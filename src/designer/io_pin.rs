@@ -1,11 +1,9 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
-use super::{
-    board_entity::BoardEntity, bounding_box::BoundingBox, draw_layer::DrawLayer,
-    events::SpawnIOPinEvent, render_settings::CircuitBoardRenderingSettings,
-    signal_state::SignalState,
-};
+use crate::events::events::SpawnIOPinEvent;
+
+use super::{board_entity::BoardEntity, bounding_box::BoundingBox, draw_layer::DrawLayer, render_settings::CircuitBoardRenderingSettings, signal_state::SignalState};
 
 #[derive(Component)]
 pub struct BoardBinaryIOHandleBar;

@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
-use super::{
+use crate::{events::events::SpawnChipEvent, simulation::expressions::Expr};
+
+use crate::designer::{
     board_entity::BoardEntity, bounding_box::BoundingBox, draw_layer::DrawLayer,
-    events::SpawnChipEvent, expressions::Expr, render_settings::CircuitBoardRenderingSettings,
-    signal_state::SignalState,
+    render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
 };
 
 #[derive(Component)]

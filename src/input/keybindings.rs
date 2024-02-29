@@ -1,8 +1,6 @@
 use bevy::prelude::*;
 
-use crate::simulation::events::ToggleDebugModeEvent;
-
-use super::events::OpenChipSelectorEvent;
+use crate::events::events::{OpenChipSelectorEvent, ToggleDebugModeEvent};
 
 macro_rules! match_and_send_event {
     ($action:expr, $commands:expr, $($action_path:path => $event:path),* $(,)?) => {
@@ -23,13 +21,6 @@ pub enum Action {
 
 #[derive(Resource)]
 pub struct KeyBindings(pub Vec<(Vec<KeyCode>, Action)>);
-
-pub fn register_keybindings(app: &mut App) {
-    app.insert_resource(KeyBindings(vec![
-        (vec![KeyCode::Space], Action::OpenChipSelector),
-        (vec![KeyCode::KeyD], Action::ToggleDebugMode),
-    ]));
-}
 
 pub fn handle_keybindings(
     mut commands: Commands,
