@@ -40,20 +40,20 @@ fn main() {
 
     app.insert_resource(ChipSpecs(vec![
         ChipSpec {
-            name: "and".to_string(),
+            name: "AND-2".to_string(),
             //expressions: vec![Expr::from_string("0 & 1").unwrap()],
             expression: Expr::from_string("0 & 1").unwrap(),
         },
         ChipSpec {
-            name: "or".to_string(),
+            name: "OR-2".to_string(),
             expression: Expr::from_string("0 | 1").unwrap(),
         },
         ChipSpec {
-            name: "not".to_string(),
+            name: "NOT".to_string(),
             expression: Expr::from_string("!0").unwrap(),
         },
         ChipSpec {
-            name: "xor".to_string(),
+            name: "XOR-2".to_string(),
             expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
         },
     ]))

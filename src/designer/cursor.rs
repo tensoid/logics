@@ -1,13 +1,14 @@
 use crate::{
-    events::events::{SpawnChipEvent, SpawnIOPinEvent}, get_cursor, get_cursor_mut, designer::{
+    designer::{
         chip::Chip,
         io_pin::{
-            BoardBinaryInput, BoardBinaryInputPin, BoardBinaryInputSwitch,
-            BoardBinaryOutputPin,
+            BoardBinaryInput, BoardBinaryInputPin, BoardBinaryInputSwitch, BoardBinaryOutputPin,
         },
         signal_state::SignalState,
         wire::Wire,
-    }
+    },
+    events::events::{SpawnChipEvent, SpawnIOPinEvent},
+    get_cursor, get_cursor_mut,
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_prototype_lyon::prelude::*;
@@ -80,57 +81,6 @@ pub fn update_cursor(
     }
 }
 
-pub fn spawn_chip_at_cursor(
-    key_input: Res<ButtonInput<KeyCode>>,
-    mut ev_writer: EventWriter<SpawnChipEvent>,
-    q_cursor: Query<&Transform, With<Cursor>>,
-) {
-    let cursor_transform = get_cursor!(q_cursor);
-
-    if key_input.just_pressed(KeyCode::KeyF) {
-        ev_writer.send(SpawnChipEvent {
-            chip_name: "and".to_string(),
-            position: cursor_transform.translation.xy(),
-        });
-    } else if key_input.just_pressed(KeyCode::KeyG) {
-        ev_writer.send(SpawnChipEvent {
-            chip_name: "or".to_string(),
-            position: cursor_transform.translation.xy(),
-        });
-    } else if key_input.just_pressed(KeyCode::KeyH) {
-        ev_writer.send(SpawnChipEvent {
-            chip_name: "xor".to_string(),
-            position: cursor_transform.translation.xy(),
-        });
-    } else if key_input.just_pressed(KeyCode::KeyJ) {
-        ev_writer.send(SpawnChipEvent {
-            chip_name: "not".to_string(),
-            position: cursor_transform.translation.xy(),
-        });
-    }
-}
-
-pub fn spawn_io_pin_at_cursor(
-    input: Res<ButtonInput<KeyCode>>,
-    mut ev_writer: EventWriter<SpawnIOPinEvent>,
-    q_cursor: Query<&Transform, With<Cursor>>,
-) {
-    let cursor_transform = get_cursor!(q_cursor);
-
-    let spawn_input_pin = if input.just_pressed(KeyCode::KeyI) {
-        true
-    } else if input.just_pressed(KeyCode::KeyO) {
-        false
-    } else {
-        return;
-    };
-
-    ev_writer.send(SpawnIOPinEvent {
-        is_input: spawn_input_pin,
-        position: cursor_transform.translation.xy(),
-    });
-}
-
 pub fn delete_board_entity(
     q_cursor: Query<(&Cursor, &Transform)>,
     q_deletable_entities: Query<(Entity, &BoundingBox), Without<Cursor>>,
@@ -192,135 +142,6 @@ pub fn drag_board_entity(
         }
     }
 }
-
-// #[allow(clippy::type_complexity)]
-// pub fn drag_chip(
-//     input: Res<ButtonInput<MouseButton>>,
-//     mut q_chips: Query<(&GlobalTransform, &mut Transform, &ChipExtents, Entity), With<Chip>>,
-//     mut q_cursor: Query<(&mut Cursor, &Transform), (With<Cursor>, Without<Chip>)>,
-// ) {
-//     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
-
-//     if let CursorState::DraggingChip(dragged_chip_entity) = cursor.state {
-//         if input.pressed(MouseButton::Left) {
-//             for (_, mut chip_transform, _, chip_entity) in q_chips.iter_mut() {
-//                 if chip_entity != dragged_chip_entity {
-//                     continue;
-//                 }
-
-//                 chip_transform.translation = cursor_transform
-//                     .translation
-//                     .xy()
-//                     .extend(chip_transform.translation.z);
-//             }
-
-//             return;
-//         }
-
-//         if input.just_released(MouseButton::Left) {
-//             cursor.state = CursorState::Idle;
-//         }
-//     }
-
-//     if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
-//         for (chip_global_transform, _, chip_extents, chip_entity) in q_chips.iter_mut() {
-//             let chip_position: Vec2 = Vec2::new(
-//                 chip_global_transform.translation().x,
-//                 chip_global_transform.translation().y,
-//             );
-
-//             let cursor_on_chip: bool = cursor_transform.translation.x
-//                 >= chip_position.x - (chip_extents.0.x / 2.0)
-//                 && cursor_transform.translation.x <= chip_position.x + (chip_extents.0.x / 2.0)
-//                 && cursor_transform.translation.y >= chip_position.y - (chip_extents.0.y / 2.0)
-//                 && cursor_transform.translation.y <= chip_position.y + (chip_extents.0.y / 2.0);
-
-//             if !cursor_on_chip {
-//                 continue;
-//             }
-
-//             //window.set_cursor_icon(CursorIcon::Grab);
-//             cursor.state = CursorState::DraggingChip(chip_entity);
-//             return;
-//         }
-//     }
-// }
-
-// #[allow(clippy::type_complexity)]
-// pub fn drag_board_binary_io(
-//     input: Res<ButtonInput<MouseButton>>,
-//     mut q_cursor: Query<
-//         (&mut Cursor, &Transform),
-//         (
-//             With<Cursor>,
-//             Without<BoardBinaryInput>,
-//             Without<BoardBinaryOutput>,
-//         ),
-//     >,
-//     mut q_bbio_handle_bars: Query<
-//         (
-//             &GlobalTransform,
-//             &BoardBinaryIOHandleBarExtents,
-//             Entity,
-//             &Parent,
-//         ),
-//         With<BoardBinaryIOHandleBar>,
-//     >,
-//     mut q_bbio: Query<&mut Transform, Or<(With<BoardBinaryInput>, With<BoardBinaryOutput>)>>,
-//     render_settings: Res<CircuitBoardRenderingSettings>,
-// ) {
-//     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
-
-//     if let CursorState::DraggingBBIO(dragged_entity) = cursor.state {
-//         if input.pressed(MouseButton::Left) {
-//             for (_, _, handle_bar_entity, bbio_entity) in q_bbio_handle_bars.iter() {
-//                 if handle_bar_entity != dragged_entity {
-//                     continue;
-//                 }
-
-//                 let mut bbio_transform = q_bbio.get_mut(bbio_entity.get())
-//                         .expect("BoardBinaryInputHandleBar has no parent BoardBinaryInput or BoardBinaryOutput.");
-
-//                 bbio_transform.translation = cursor_transform
-//                     .translation
-//                     .xy()
-//                     .extend(bbio_transform.translation.z);
-//             }
-
-//             return;
-//         }
-
-//         if input.just_released(MouseButton::Left) {
-//             cursor.state = CursorState::Idle;
-//         }
-//     }
-
-//     if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
-//         for (handle_bar_global_transform, handle_bar_extents, handle_bar_entity, _) in
-//             q_bbio_handle_bars.iter_mut()
-//         {
-//             let handle_bar_position: Vec2 = Vec2::new(
-//                 handle_bar_global_transform.translation().x,
-//                 handle_bar_global_transform.translation().y,
-//             );
-
-//             let cursor_on_handle_bar: bool = cursor_transform.translation.x
-//                     >= handle_bar_position.x - (handle_bar_extents.0.x / 2.0)
-//                         + render_settings.binary_io_pin_radius // Workaround weil die handle bar unterm switch liegt
-//                     && cursor_transform.translation.x <= handle_bar_position.x + (handle_bar_extents.0.x / 2.0)
-//                     && cursor_transform.translation.y >= handle_bar_position.y - (handle_bar_extents.0.y / 2.0)
-//                     && cursor_transform.translation.y <= handle_bar_position.y + (handle_bar_extents.0.y / 2.0);
-
-//             if !cursor_on_handle_bar {
-//                 continue;
-//             }
-
-//             //window.set_cursor_icon(CursorIcon::Grab);
-//             cursor.state = CursorState::DraggingBBIO(handle_bar_entity);
-//             return;
-//         }
-//     }
-// }
 
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn drag_wire(

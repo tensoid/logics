@@ -1,12 +1,15 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
+use crate::get_cursor_mut;
 use crate::{events::events::SpawnChipEvent, simulation::expressions::Expr};
 
 use crate::designer::{
     board_entity::BoardEntity, bounding_box::BoundingBox, draw_layer::DrawLayer,
     render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
 };
+
+use super::cursor::{Cursor, CursorState};
 
 #[derive(Component)]
 pub struct Chip;
@@ -20,7 +23,6 @@ pub struct ChipSpecs(pub Vec<ChipSpec>);
 #[derive(Component, Clone)]
 pub struct ChipSpec {
     pub name: String,
-    //pub expressions: Vec<Expr>,
     pub expression: Expr,
 }
 
@@ -36,7 +38,10 @@ pub fn spawn_chip_event(
     chip_specs: Res<ChipSpecs>,
     asset_server: Res<AssetServer>,
     render_settings: Res<CircuitBoardRenderingSettings>,
+    mut q_cursor: Query<(Entity, &mut Cursor)>,
 ) {
+    let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
+
     for ev in spawn_ev.read() {
         let chip_spec = chip_specs
             .0
@@ -70,7 +75,7 @@ pub fn spawn_chip_event(
             font,
         };
 
-        commands
+        let chip_entity = commands
             .spawn((
                 ShapeBundle {
                     path: GeometryBuilder::build_as(&chip_shape),
@@ -142,6 +147,11 @@ pub fn spawn_chip_event(
                     ChipOutputPin,
                     SignalState::Low,
                 ));
-            });
+            })
+            .id();
+
+        // Parent chip to curser and start drag
+        cursor.state = CursorState::Dragging;
+        commands.entity(cursor_entity).add_child(chip_entity);
     }
 }
