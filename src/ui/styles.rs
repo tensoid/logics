@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+pub const DEFAULT_FONT: &str = "fonts/VCR_OSD_MONO.ttf";
+
 pub fn empty_board_tooltip_style() -> Style {
     Style {
         justify_self: JustifySelf::Center,
@@ -10,7 +12,7 @@ pub fn empty_board_tooltip_style() -> Style {
 }
 
 pub fn empty_board_tooltip_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
-    let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
+    let font: Handle<Font> = asset_server.load(DEFAULT_FONT);
 
     TextStyle {
         font,
@@ -59,7 +61,7 @@ pub fn chip_button_background_color_pressed() -> BackgroundColor {
 }
 
 pub fn chip_button_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
-    let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
+    let font: Handle<Font> = asset_server.load(DEFAULT_FONT);
 
     TextStyle {
         font: font.clone(),

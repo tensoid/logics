@@ -7,20 +7,23 @@ use bevy::{
 pub struct BoundingBox {
     pub aabb: Aabb2d,
     pub offset: Vec2,
+    pub interactable: bool,
 }
 
 impl BoundingBox {
-    pub fn new(half_size: Vec2) -> BoundingBox {
+    pub fn new(half_size: Vec2, interactable: bool) -> BoundingBox {
         BoundingBox {
             aabb: Aabb2d::new(Vec2::ZERO, half_size),
             offset: Vec2::ZERO,
+            interactable,
         }
     }
 
-    pub fn with_offset(half_size: Vec2, offset: Vec2) -> BoundingBox {
+    pub fn with_offset(half_size: Vec2, offset: Vec2, interactable: bool) -> BoundingBox {
         BoundingBox {
             aabb: Aabb2d::new(Vec2::ZERO, half_size),
             offset,
+            interactable,
         }
     }
 

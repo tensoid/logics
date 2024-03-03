@@ -21,9 +21,11 @@ use self::cursor::delete_board_entity;
 use self::cursor::drag_board_entity;
 use self::cursor::drag_wire;
 use self::cursor::spawn_cursor;
-use self::cursor::toggle_board_input_pin;
+use self::cursor::toggle_board_input_switch;
 use self::cursor::update_cursor;
-use self::io_pin::spawn_io_pin_event;
+use self::io_pin::spawn_board_binary_input;
+use self::io_pin::spawn_board_binary_output;
+use self::io_pin::update_board_binary_displays;
 use self::render_settings::init_render_settings;
 use self::signal_state::update_signal_colors;
 use self::wire::update_wires;
@@ -35,13 +37,20 @@ impl Plugin for DesignerPlugin {
         app.add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
             .add_systems(Update, spawn_chip_event)
-            .add_systems(Update, spawn_io_pin_event)
+            .add_systems(Update, spawn_board_binary_input)
+            .add_systems(Update, spawn_board_binary_output)
             .add_systems(
                 Update,
                 drag_board_entity.run_if(in_state(ChipSelectorState::Closed)),
             )
             .add_systems(Update, update_signal_colors.after(tick_simulation))
-            .add_systems(Update, toggle_board_input_pin.before(drag_board_entity))
+            .add_systems(Update, toggle_board_input_switch)
+            .add_systems(
+                Update,
+                update_board_binary_displays
+                    .after(toggle_board_input_switch)
+                    .after(tick_simulation),
+            )
             .add_systems(
                 Update,
                 drag_wire

@@ -10,11 +10,11 @@ pub fn draw_bounding_boxes(
     q_bboxes: Query<&BoundingBox>,
 ) {
     for bbox in q_bboxes.iter() {
-        bbox_gizmos.rect_2d(
-            bbox.aabb.center(),
-            0.0,
-            bbox.aabb.half_size() * 2.0,
-            Color::RED,
-        );
+        let color = match bbox.interactable {
+            false => Color::GREEN,
+            true => Color::RED,
+        };
+
+        bbox_gizmos.rect_2d(bbox.aabb.center(), 0.0, bbox.aabb.half_size() * 2.0, color);
     }
 }

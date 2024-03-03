@@ -66,7 +66,6 @@ pub fn spawn_chip_event(
             ..default()
         };
 
-        // let font: Handle<Font> = asset_server.load("fonts/OpenSans-ExtraBold.ttf");
         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
         let text_style = TextStyle {
@@ -93,7 +92,7 @@ pub fn spawn_chip_event(
                 Stroke::new(Color::BLACK, 1.0),
                 Chip,
                 ChipExtents(chip_extents),
-                BoundingBox::new(chip_extents / 2.0),
+                BoundingBox::new(chip_extents / 2.0, true),
                 chip_spec.clone(),
                 BoardEntity,
             ))

@@ -1,9 +1,7 @@
 use crate::{
     designer::{
         chip::Chip,
-        io_pin::{
-            BoardBinaryInput, BoardBinaryInputPin, BoardBinaryInputSwitch, BoardBinaryOutputPin,
-        },
+        io_pin::{BoardBinaryInput, BoardBinaryInputPin, BoardBinaryOutputPin},
         signal_state::SignalState,
         wire::Wire,
     },
@@ -17,6 +15,7 @@ use super::{
     bounding_box::BoundingBox,
     chip::{ChipInputPin, ChipOutputPin},
     draw_layer::DrawLayer,
+    io_pin::BoardBinaryInputSwitch,
     render_settings::CircuitBoardRenderingSettings,
 };
 
@@ -98,7 +97,7 @@ pub fn delete_board_entity(
     }
 
     for (deletable_entity, bbox) in q_deletable_entities.iter() {
-        if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
+        if bbox.point_in_bbox(cursor_transform.translation.truncate()) && bbox.interactable {
             commands.entity(deletable_entity).despawn_recursive();
             return;
         }
@@ -131,7 +130,7 @@ pub fn drag_board_entity(
         for (draggable_entity, bbox, mut draggable_entity_transform) in
             q_draggable_entities.iter_mut()
         {
-            if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
+            if bbox.point_in_bbox(cursor_transform.translation.truncate()) && bbox.interactable {
                 cursor.state = CursorState::Dragging;
                 commands.entity(cursor_entity).add_child(draggable_entity);
                 let position_diff =
@@ -272,24 +271,18 @@ pub fn drag_wire(
     }
 }
 
-pub fn toggle_board_input_pin(
+pub fn toggle_board_input_switch(
     input: Res<ButtonInput<MouseButton>>,
     q_inputs: Query<&Children, With<BoardBinaryInput>>,
-    q_input_switches: Query<(&GlobalTransform, &Parent), With<BoardBinaryInputSwitch>>,
+    q_input_switches: Query<(&Parent, &BoundingBox), With<BoardBinaryInputSwitch>>,
     mut q_input_pins: Query<(&mut BoardBinaryInputPin, &mut SignalState)>,
-    render_settings: Res<CircuitBoardRenderingSettings>,
     q_cursor: Query<&Transform, With<Cursor>>,
 ) {
     let cursor_transform = get_cursor!(q_cursor);
 
     if input.just_pressed(MouseButton::Left) {
-        for (switch_transform, parent) in q_input_switches.iter() {
-            if cursor_transform
-                .translation
-                .truncate()
-                .distance(switch_transform.translation().truncate())
-                > render_settings.binary_io_pin_radius
-            {
+        for (parent, bbox) in q_input_switches.iter() {
+            if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
                 continue;
             }
 
