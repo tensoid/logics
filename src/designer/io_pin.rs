@@ -229,26 +229,19 @@ pub fn spawn_board_binary_output(
 pub fn update_board_binary_displays(
     q_io_pins: Query<
         (&Parent, &SignalState),
-        Or<(With<BoardBinaryInputPin>, With<BoardBinaryOutputPin>)>,
+        Or<(
+            With<BoardBinaryInputPin>,
+            With<BoardBinaryOutputPin>,
+            Changed<SignalState>,
+        )>,
     >,
-    q_board_io: Query<&Children, Or<(With<BoardBinaryInput>, With<BoardBinaryOutput>)>>,
-    q_io_displays: Query<&Children, With<BoardBinaryDisplay>>,
     mut q_io_display_texts: Query<(&mut Text, &Parent)>,
 ) {
     for (parent, signal_state) in q_io_pins.iter() {
-        let board_io_children = q_board_io
-            .get(parent.get())
-            .expect("BoardBinaryInputPin/BoardBinaryOutputPin has no BoardBinaryInput/BoardBinaryOutput parent.");
-
-        let io_display_entity = board_io_children
-            .iter()
-            .find(|c| q_io_displays.get(**c).is_ok())
-            .expect("BoardBinaryInput/BoardBinaryOutput has no BoardBinaryDisplay child.");
-
         let mut io_display_text = q_io_display_texts
             .iter_mut()
-            .find(|t| t.1.get() == *io_display_entity)
-            .expect("BoardBinaryDisplay has no Text child.");
+            .find(|t| t.1 == parent)
+            .expect("BoardBinaryInput/BoardBinaryOutput has no Text child.");
 
         io_display_text.0.sections[0].value = match signal_state {
             SignalState::High => "1".into(),

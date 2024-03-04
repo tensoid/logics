@@ -123,7 +123,6 @@ pub fn drag_board_entity(
         commands.entity(cursor_entity).clear_children();
     }
 
-    //TODO: fix board binary io handlebars
     if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
         for (draggable_entity, bbox, mut draggable_entity_transform) in
             q_draggable_entities.iter_mut()
