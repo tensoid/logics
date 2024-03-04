@@ -59,7 +59,6 @@ impl BoundingBox {
 
 pub fn update_bounding_boxes(mut q_entities: Query<(&GlobalTransform, &mut BoundingBox)>) {
     for (entity_transform, mut bbox) in q_entities.iter_mut() {
-
         let offset = bbox.offset;
 
         match bbox.bounding_shape {
@@ -69,8 +68,11 @@ pub fn update_bounding_boxes(mut q_entities: Query<(&GlobalTransform, &mut Bound
                     aabb.half_size(),
                 );
             }
-            BoundingShape::Circle(circle) => {
-                todo!("implement")
+            BoundingShape::Circle(ref mut circle) => {
+                *circle = BoundingCircle::new(
+                    entity_transform.translation().truncate() + offset,
+                    circle.radius(),
+                )
             }
         }
     }

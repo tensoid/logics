@@ -66,8 +66,9 @@ pub fn spawn_board_binary_input(
                 },
                 ..default()
             },
-            Fill::color(render_settings.signal_low_color),
+            Fill::color(render_settings.pin_color),
             SignalState::Low,
+            BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
         );
 
         let binary_display_bundle = (
@@ -175,9 +176,10 @@ pub fn spawn_board_binary_output(
                 },
                 ..default()
             },
-            Fill::color(render_settings.signal_low_color),
+            Fill::color(render_settings.pin_color),
             BoardBinaryOutputPin,
             SignalState::Low,
+            BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
         );
 
         let binary_display_bundle = (
@@ -229,11 +231,10 @@ pub fn spawn_board_binary_output(
 pub fn update_board_binary_displays(
     q_io_pins: Query<
         (&Parent, &SignalState),
-        Or<(
-            With<BoardBinaryInputPin>,
-            With<BoardBinaryOutputPin>,
+        (
+            Or<(With<BoardBinaryInputPin>, With<BoardBinaryOutputPin>)>,
             Changed<SignalState>,
-        )>,
+        ),
     >,
     mut q_io_display_texts: Query<(&mut Text, &Parent)>,
 ) {

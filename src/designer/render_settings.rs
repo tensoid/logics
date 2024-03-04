@@ -15,6 +15,8 @@ pub struct CircuitBoardRenderingSettings {
     pub binary_io_stroke_color: Color,
     pub binary_io_stroke_width: f32,
     pub wire_line_width: f32,
+    pub pin_color: Color,
+    pub hovered_pin_color: Color,
 }
 
 pub fn init_render_settings(app: &mut App) {
@@ -33,6 +35,8 @@ pub fn init_render_settings(app: &mut App) {
         binary_io_stroke_color: Color::BLACK,
         binary_io_stroke_width: 2.0,
         wire_line_width: 2.0,
+        pin_color: Color::BLACK,
+        hovered_pin_color: Color::rgb(0.4, 0.4, 0.4),
     };
     // DARK-MODE
     // let render_settings = CircuitBoardRenderingSettings {

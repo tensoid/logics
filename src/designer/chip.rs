@@ -121,9 +121,10 @@ pub fn spawn_chip_event(
                             },
                             ..default()
                         },
-                        Fill::color(render_settings.signal_low_color),
+                        Fill::color(render_settings.pin_color),
                         ChipInputPin,
                         SignalState::Low,
+                        BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
                     ));
                 }
 
@@ -137,9 +138,10 @@ pub fn spawn_chip_event(
                         },
                         ..default()
                     },
-                    Fill::color(render_settings.signal_low_color),
+                    Fill::color(render_settings.pin_color),
                     ChipOutputPin,
                     SignalState::Low,
+                    BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
                 ));
             })
             .id();

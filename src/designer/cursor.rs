@@ -14,7 +14,7 @@ use super::{
     bounding_box::BoundingBox,
     chip::{ChipInputPin, ChipOutputPin},
     io_pin::BoardBinaryInputSwitch,
-    render_settings::CircuitBoardRenderingSettings,
+    render_settings::{self, CircuitBoardRenderingSettings},
 };
 
 #[derive(PartialEq)]
@@ -142,20 +142,21 @@ pub fn drag_board_entity(
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn drag_wire(
     input: Res<ButtonInput<MouseButton>>,
-    q_chip_output_pins: Query<(), With<ChipOutputPin>>,
     q_wire_src_pins: Query<
-        (&GlobalTransform, Entity),
+        (&BoundingBox, Entity),
         (
             Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
             Without<Camera>,
         ),
     >,
-    q_input_pins: Query<(&GlobalTransform, Entity), (With<ChipInputPin>, Without<Camera>)>,
-    q_board_output_pins: Query<
-        (&GlobalTransform, Entity),
-        (With<BoardBinaryOutputPin>, Without<Camera>),
+    q_wire_dest_pins: Query<
+        (&BoundingBox, Entity),
+        (
+            Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>,
+            Without<Camera>,
+        ),
     >,
-    mut q_wires: Query<(&mut Path, &GlobalTransform, &mut Wire)>,
+    mut q_wires: Query<&mut Wire>,
     mut q_cursor: Query<(&mut Cursor, &Transform), With<Cursor>>,
     mut commands: Commands,
     render_settings: Res<CircuitBoardRenderingSettings>,
@@ -179,19 +180,8 @@ pub fn drag_wire(
             SignalState::Low,
         );
 
-        for (pin_transform, pin_entity) in q_wire_src_pins.iter() {
-            let pin_radius = if q_chip_output_pins.get(pin_entity).is_ok() {
-                render_settings.chip_pin_radius
-            } else {
-                render_settings.binary_io_pin_radius
-            };
-
-            if cursor_transform
-                .translation
-                .truncate()
-                .distance(pin_transform.translation().truncate())
-                > pin_radius
-            {
+        for (bbox, pin_entity) in q_wire_src_pins.iter() {
+            if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
                 continue;
             }
 
@@ -211,53 +201,15 @@ pub fn drag_wire(
     }
 
     if let CursorState::DraggingWire(wire_entity) = cursor.state {
-        if let Ok(wire_components) = q_wires.get_mut(wire_entity) {
-            let (mut path, output_pin_transform, mut wire) = wire_components;
-
-            //TODO: nicht jedes mal abfrage? aber juckt glaube nicht
-            if wire.dest_pin.is_some() {
-                wire.dest_pin = None;
-            }
-
-            if input.pressed(MouseButton::Left) {
-                *path = ShapePath::build_as(&shapes::Line(
-                    Vec2::ZERO,
-                    cursor_transform.translation.truncate()
-                        - output_pin_transform.translation().truncate(),
-                ));
-            } else if input.just_released(MouseButton::Left) {
-                let hovered_chip_pin = || {
-                    q_input_pins.iter().find(|pin| {
-                        cursor_transform
-                            .translation
-                            .truncate()
-                            .distance(pin.0.translation().truncate())
-                            <= render_settings.chip_pin_radius
-                    })
-                };
-
-                let hovered_board_pin = || {
-                    q_board_output_pins.iter().find(|pin| {
-                        cursor_transform
-                            .translation
-                            .truncate()
-                            .distance(pin.0.translation().truncate())
-                            <= render_settings.binary_io_pin_radius
-                    })
-                };
-
-                let hovered_pin = hovered_chip_pin().or_else(hovered_board_pin);
-
-                if let Some(hovered_pin) = hovered_pin {
-                    // connect wire to pin
-                    wire.dest_pin = Some(hovered_pin.1);
-                    *path = ShapePath::build_as(&shapes::Line(
-                        Vec2::ZERO,
-                        hovered_pin.0.translation().truncate()
-                            - output_pin_transform.translation().truncate(),
-                    ));
-                    cursor.state = CursorState::Idle;
-                    return;
+        if let Ok(mut wire) = q_wires.get_mut(wire_entity) {
+            if input.just_released(MouseButton::Left) {
+                for (bbox, pin_entity) in q_wire_dest_pins.iter() {
+                    if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
+                        // connect wire to pin
+                        wire.dest_pin = Some(pin_entity);
+                        cursor.state = CursorState::Idle;
+                        return;
+                    }
                 }
 
                 // delete wire if dragged on nothing
@@ -299,6 +251,31 @@ pub fn toggle_board_input_switch(
 
             board_binary_input_pin_state.toggle();
             break;
+        }
+    }
+}
+
+#[allow(clippy::type_complexity)]
+pub fn highlight_hovered_pin(
+    q_cursor: Query<&Transform, With<Cursor>>,
+    mut q_pins: Query<
+        (&BoundingBox, &mut Fill),
+        Or<(
+            With<ChipInputPin>,
+            With<ChipOutputPin>,
+            With<BoardBinaryInputPin>,
+            With<BoardBinaryOutputPin>,
+        )>,
+    >,
+    render_settings: Res<CircuitBoardRenderingSettings>,
+) {
+    let cursor_position = get_cursor!(q_cursor).translation.truncate();
+
+    for (bbox, mut fill) in q_pins.iter_mut() {
+        if bbox.point_in_bbox(cursor_position) {
+            *fill = Fill::color(render_settings.hovered_pin_color)
+        } else {
+            *fill = Fill::color(render_settings.pin_color)
         }
     }
 }

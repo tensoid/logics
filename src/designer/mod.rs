@@ -19,6 +19,7 @@ use self::chip::spawn_chip_event;
 use self::cursor::delete_board_entity;
 use self::cursor::drag_board_entity;
 use self::cursor::drag_wire;
+use self::cursor::highlight_hovered_pin;
 use self::cursor::spawn_cursor;
 use self::cursor::toggle_board_input_switch;
 use self::cursor::update_cursor;
@@ -35,6 +36,7 @@ impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
+            .add_systems(Update, highlight_hovered_pin)
             .add_systems(Update, spawn_chip_event)
             .add_systems(Update, spawn_board_binary_input)
             .add_systems(Update, spawn_board_binary_output)
