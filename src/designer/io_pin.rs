@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, render::render_phase::Draw};
 use bevy_prototype_lyon::prelude::*;
 
 use crate::{events::events::SpawnIOPinEvent, get_cursor_mut};
@@ -7,7 +7,6 @@ use super::{
     board_entity::BoardEntity,
     bounding_box::BoundingBox,
     cursor::{Cursor, CursorState},
-    draw_layer::DrawLayer,
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
@@ -44,6 +43,8 @@ pub fn spawn_board_binary_input(
             return;
         }
 
+        let binary_input_extents = Vec2::new(60.0, 30.0);
+
         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
         let text_style = TextStyle {
@@ -53,114 +54,77 @@ pub fn spawn_board_binary_input(
         };
 
         let pin_bundle = (
+            BoardBinaryInputPin,
             ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Circle {
                     radius: render_settings.binary_io_pin_radius,
                     ..default()
                 }),
                 spatial: SpatialBundle {
-                    transform: Transform::from_xyz(
-                        render_settings.binary_io_display_extents.x,
-                        0.0,
-                        DrawLayer::Pin.get_z(),
-                    ),
+                    transform: Transform::from_xyz(binary_input_extents.x / 2.0, 0.0, 0.02),
                     ..default()
                 },
                 ..default()
             },
             Fill::color(render_settings.signal_low_color),
+            SignalState::Low,
         );
 
-        //TODO: fix z's
-
-        let board_binary_display_shape = ShapeBundle {
-            path: GeometryBuilder::build_as(&shapes::Rectangle {
-                extents: render_settings.binary_io_display_extents,
-                ..default()
-            }),
-            spatial: SpatialBundle {
-                transform: Transform::from_xyz(
-                    render_settings.binary_io_display_extents.x / 2.0,
-                    0.0,
-                    0.0,
-                ),
-                ..default()
-            },
-            ..default()
-        };
-
-        let board_binary_display_text = Text2dBundle {
-            text: Text::from_section("0", text_style).with_justify(JustifyText::Center),
-            transform: Transform::from_xyz(0.0, 0.0, DrawLayer::ChipName.get_z()),
-            ..default()
-        };
-
-        let board_binary_display_bundle = (
+        let binary_display_bundle = (
             BoardBinaryDisplay,
-            board_binary_display_shape,
-            Fill::color(render_settings.binary_io_display_color),
-        );
-
-        let io_spatial_bundle = SpatialBundle {
-            transform: Transform::from_xyz(ev.position.x, ev.position.y, DrawLayer::Pin.get_z()),
-            ..default()
-        };
-
-        let board_binary_switch_shape = ShapeBundle {
-            path: GeometryBuilder::build_as(&shapes::Rectangle {
-                extents: render_settings.binary_io_switch_extents,
-                ..default()
-            }),
-            spatial: SpatialBundle {
-                transform: Transform::from_xyz(
-                    -render_settings.binary_io_switch_extents.x / 2.0,
-                    0.0,
-                    0.0,
-                ),
+            Text2dBundle {
+                text: Text::from_section("0", text_style).with_justify(JustifyText::Center),
+                transform: Transform::from_xyz(binary_input_extents.x / 4.0, 0.0, 0.01),
                 ..default()
             },
-            ..default()
-        };
+        );
 
-        let board_binary_switch_bundle = (
+        let binary_switch_bundle = (
             BoardBinaryInputSwitch,
-            board_binary_switch_shape,
-            Fill::color(render_settings.binary_io_switch_color),
-            BoundingBox::new(render_settings.binary_io_switch_extents / 2.0, false),
-        );
-
-        let board_binary_switch_sprite_bundle = SpriteBundle {
-            texture: asset_server.load("images/switch.png"),
-            transform: Transform::from_xyz(0.0, 0.0, 10.0),
-            sprite: Sprite {
-                custom_size: Some(render_settings.binary_io_switch_extents * 0.8),
+            SpriteBundle {
+                texture: asset_server.load("images/switch.png"),
+                transform: Transform::from_xyz(-binary_input_extents.x / 4.0, 0.0, 0.01),
+                sprite: Sprite {
+                    custom_size: Some(binary_input_extents / Vec2::new(2.0, 1.0) * 0.8),
+                    ..default()
+                },
                 ..default()
             },
-            ..default()
-        };
+            BoundingBox::rect_new(binary_input_extents / Vec2::new(4.0, 2.0), false),
+        );
 
         let board_binary_input_bundle = (
             BoardBinaryInput,
-            io_spatial_bundle,
             BoardEntity,
-            BoundingBox::with_offset(
-                render_settings.binary_io_display_extents / 2.0,
-                Vec2::new(render_settings.binary_io_display_extents.x / 2.0, 0.0),
+            BoundingBox::rect_with_offset(
+                binary_input_extents / Vec2::new(4.0, 2.0),
+                Vec2::new(binary_input_extents.x / 4.0, 0.0),
                 true,
             ),
+            Fill::color(render_settings.binary_io_color),
+            Stroke::new(
+                render_settings.binary_io_stroke_color,
+                render_settings.binary_io_stroke_width,
+            ),
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: binary_input_extents,
+                    ..default()
+                }),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
+                    ..default()
+                },
+                ..default()
+            },
         );
 
         let entity = commands
             .spawn(board_binary_input_bundle)
             .with_children(|bbi| {
-                bbi.spawn(board_binary_switch_bundle).with_children(|bbis| {
-                    bbis.spawn(board_binary_switch_sprite_bundle);
-                });
-                bbi.spawn(board_binary_display_bundle)
-                    .with_children(|bbid| {
-                        bbid.spawn(board_binary_display_text);
-                    });
-                bbi.spawn((pin_bundle, BoardBinaryInputPin, SignalState::Low));
+                bbi.spawn(binary_switch_bundle);
+                bbi.spawn(binary_display_bundle);
+                bbi.spawn(pin_bundle);
             })
             .id();
 
@@ -184,31 +148,7 @@ pub fn spawn_board_binary_output(
             return;
         }
 
-        let rect_shape = shapes::Rectangle {
-            extents: render_settings.binary_io_display_extents,
-            ..default()
-        };
-
-        let pin_shape = shapes::Circle {
-            radius: render_settings.binary_io_pin_radius,
-            ..default()
-        };
-
-        let pin_bundle = (
-            ShapeBundle {
-                path: GeometryBuilder::build_as(&pin_shape),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(
-                        -rect_shape.extents.x / 2.0,
-                        0.0,
-                        DrawLayer::Pin.get_z(),
-                    ),
-                    ..default()
-                },
-                ..default()
-            },
-            Fill::color(render_settings.signal_low_color),
-        );
+        let binary_output_extents = Vec2::new(30.0, 30.0);
 
         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
@@ -218,43 +158,64 @@ pub fn spawn_board_binary_output(
             font,
         };
 
-        let board_binary_display_shape = ShapeBundle {
-            path: GeometryBuilder::build_as(&rect_shape),
+        let rect_shape = shapes::Rectangle {
+            extents: Vec2::new(30.0, 30.0),
             ..default()
         };
 
-        let board_binary_display_text = Text2dBundle {
-            text: Text::from_section("0", text_style).with_justify(JustifyText::Center),
-            transform: Transform::from_xyz(0.0, 0.0, DrawLayer::ChipName.get_z()),
-            ..default()
-        };
-
-        let board_binary_display_bundle = (
-            BoardBinaryDisplay,
-            board_binary_display_shape,
-            Fill::color(render_settings.binary_io_display_color),
+        let pin_bundle = (
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Circle {
+                    radius: render_settings.binary_io_pin_radius,
+                    ..default()
+                }),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(-rect_shape.extents.x / 2.0, 0.0, 0.01),
+                    ..default()
+                },
+                ..default()
+            },
+            Fill::color(render_settings.signal_low_color),
+            BoardBinaryOutputPin,
+            SignalState::Low,
         );
 
-        let io_spatial_bundle = SpatialBundle {
-            transform: Transform::from_xyz(ev.position.x, ev.position.y, DrawLayer::Pin.get_z()),
-            ..default()
-        };
+        let binary_display_bundle = (
+            BoardBinaryDisplay,
+            Text2dBundle {
+                text: Text::from_section("0", text_style).with_justify(JustifyText::Center),
+                transform: Transform::from_xyz(0.0, 0.0, 0.01),
+                ..default()
+            },
+        );
 
         let board_binary_output_bundle = (
             BoardBinaryOutput,
-            io_spatial_bundle,
             BoardEntity,
-            BoundingBox::new(rect_shape.extents / 2.0, true),
+            BoundingBox::rect_new(rect_shape.extents / 2.0, true),
+            Stroke::new(
+                render_settings.binary_io_stroke_color,
+                render_settings.binary_io_stroke_width,
+            ),
+            Fill::color(render_settings.binary_io_color),
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: binary_output_extents,
+                    ..default()
+                }),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
+                    ..default()
+                },
+                ..default()
+            },
         );
 
         let entity = commands
             .spawn(board_binary_output_bundle)
             .with_children(|bbo| {
-                bbo.spawn(board_binary_display_bundle)
-                    .with_children(|bbod| {
-                        bbod.spawn(board_binary_display_text);
-                    });
-                bbo.spawn((pin_bundle, BoardBinaryOutputPin, SignalState::Low));
+                bbo.spawn(binary_display_bundle);
+                bbo.spawn(pin_bundle);
             })
             .id();
 
@@ -294,19 +255,4 @@ pub fn update_board_binary_displays(
             SignalState::Low => "0".into(),
         };
     }
-
-    /*
-    let parent_children = q_inputs
-        .get(parent.get())
-        .expect("BoardBinaryInputSwitch has no BoardBinaryInput parent.");
-
-    let board_binary_input_pin_entity = parent_children
-        .iter()
-        .find(|c| q_input_pins.get(**c).is_ok())
-        .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
-
-    let (_, mut board_binary_input_pin_state) = q_input_pins
-        .get_mut(*board_binary_input_pin_entity)
-        .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
-    */
 }

@@ -2,7 +2,6 @@ pub mod board_entity;
 pub mod bounding_box;
 pub mod chip;
 pub mod cursor;
-pub mod draw_layer;
 pub mod io_pin;
 pub mod macros;
 pub mod render_settings;
@@ -45,12 +44,12 @@ impl Plugin for DesignerPlugin {
             )
             .add_systems(Update, update_signal_colors.after(tick_simulation))
             .add_systems(Update, toggle_board_input_switch)
-            .add_systems(
-                Update,
-                update_board_binary_displays
-                    .after(toggle_board_input_switch)
-                    .after(tick_simulation),
-            )
+            // .add_systems(
+            //     Update,
+            //     update_board_binary_displays
+            //         .after(toggle_board_input_switch)
+            //         .after(tick_simulation),
+            // )
             .add_systems(
                 Update,
                 drag_wire

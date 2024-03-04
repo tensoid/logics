@@ -5,7 +5,7 @@ use crate::get_cursor_mut;
 use crate::{events::events::SpawnChipEvent, simulation::expressions::Expr};
 
 use crate::designer::{
-    board_entity::BoardEntity, bounding_box::BoundingBox, draw_layer::DrawLayer,
+    board_entity::BoardEntity, bounding_box::BoundingBox,
     render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
 };
 
@@ -79,20 +79,19 @@ pub fn spawn_chip_event(
                 ShapeBundle {
                     path: GeometryBuilder::build_as(&chip_shape),
                     spatial: SpatialBundle {
-                        transform: Transform::from_xyz(
-                            ev.position.x,
-                            ev.position.y,
-                            DrawLayer::Chip.get_z(),
-                        ),
+                        transform: Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
                         ..default()
                     },
                     ..default()
                 },
                 Fill::color(render_settings.chip_color),
-                Stroke::new(Color::BLACK, 1.0),
+                Stroke::new(
+                    render_settings.chip_stroke_color,
+                    render_settings.chip_stroke_width,
+                ),
                 Chip,
                 ChipExtents(chip_extents),
-                BoundingBox::new(chip_extents / 2.0, true),
+                BoundingBox::rect_new(chip_extents / 2.0, true),
                 chip_spec.clone(),
                 BoardEntity,
             ))
@@ -101,7 +100,7 @@ pub fn spawn_chip_event(
                 chip.spawn(Text2dBundle {
                     text: Text::from_section(ev.chip_name.to_uppercase(), text_style)
                         .with_justify(JustifyText::Center),
-                    transform: Transform::from_xyz(0.0, 0.0, DrawLayer::ChipName.get_z()),
+                    transform: Transform::from_xyz(0.0, 0.0, 0.01),
                     ..default()
                 });
 
@@ -116,7 +115,7 @@ pub fn spawn_chip_event(
                                     (i as f32 * render_settings.chip_pin_gap)
                                         - (chip_extents.y / 2.0)
                                         + render_settings.chip_pin_gap,
-                                    DrawLayer::Pin.get_z(),
+                                    0.01,
                                 ),
                                 ..default()
                             },
@@ -133,11 +132,7 @@ pub fn spawn_chip_event(
                     ShapeBundle {
                         path: GeometryBuilder::build_as(&pin_shape),
                         spatial: SpatialBundle {
-                            transform: Transform::from_xyz(
-                                chip_extents.x / 2.0,
-                                0.0,
-                                DrawLayer::Pin.get_z(),
-                            ),
+                            transform: Transform::from_xyz(chip_extents.x / 2.0, 0.0, 0.01),
                             ..default()
                         },
                         ..default()

@@ -5,7 +5,6 @@ use crate::{
         signal_state::SignalState,
         wire::Wire,
     },
-    events::events::{SpawnChipEvent, SpawnIOPinEvent},
     get_cursor, get_cursor_mut,
 };
 use bevy::{prelude::*, window::PrimaryWindow};
@@ -14,7 +13,6 @@ use bevy_prototype_lyon::prelude::*;
 use super::{
     bounding_box::BoundingBox,
     chip::{ChipInputPin, ChipOutputPin},
-    draw_layer::DrawLayer,
     io_pin::BoardBinaryInputSwitch,
     render_settings::CircuitBoardRenderingSettings,
 };
@@ -170,7 +168,7 @@ pub fn drag_wire(
             ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
                 spatial: SpatialBundle {
-                    transform: Transform::from_xyz(0.0, 0.0, DrawLayer::Wire.get_z()),
+                    transform: Transform::from_xyz(0.0, 0.0, 0.005),
                     ..default()
                 },
                 ..default()

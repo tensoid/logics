@@ -1,6 +1,6 @@
 use bevy::{math::bounding::BoundingVolume, prelude::*};
 
-use crate::designer::bounding_box::BoundingBox;
+use crate::designer::bounding_box::{BoundingBox, BoundingShape};
 
 #[derive(Default, Reflect, GizmoConfigGroup)]
 pub struct BoundingBoxGizmos;
@@ -15,6 +15,13 @@ pub fn draw_bounding_boxes(
             true => Color::RED,
         };
 
-        bbox_gizmos.rect_2d(bbox.aabb.center(), 0.0, bbox.aabb.half_size() * 2.0, color);
+        match bbox.bounding_shape {
+            BoundingShape::Aabb(aabb) => {
+                bbox_gizmos.rect_2d(aabb.center(), 0.0, aabb.half_size() * 2.0, color);
+            }
+            BoundingShape::Circle(circle) => {
+                bbox_gizmos.circle_2d(circle.center(), circle.radius(), color);
+            }
+        }
     }
 }
