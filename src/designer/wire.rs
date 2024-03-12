@@ -1,12 +1,10 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
-use crate::get_cursor;
+use crate::{get_cursor, get_cursor_mut};
 
 use super::{
-    chip::{ChipInputPin, ChipOutputPin},
-    cursor::{Cursor, CursorState},
-    io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin},
+    bounding_box::BoundingBox, chip::{ChipInputPin, ChipOutputPin}, cursor::{Cursor, CursorState}, io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin}, render_settings::CircuitBoardRenderingSettings, signal_state::SignalState
 };
 
 #[derive(Component)]
@@ -52,6 +50,7 @@ pub fn update_wires(
                 return;
             }
         } else if let CursorState::DraggingWire(dragged_wire) = cursor.state {
+            //TODO: move this to drag_wire
             if dragged_wire.eq(&wire_entity) {
                 if let Ok(wire_src_pin_transform) = q_src_pins.get(wire_src_pin_entity) {
                     let new_wire = shapes::Line(
@@ -66,6 +65,87 @@ pub fn update_wires(
             }
         } else {
             commands.entity(wire_entity).despawn();
+        }
+    }
+}
+
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
+pub fn drag_wire(
+    input: Res<ButtonInput<MouseButton>>,
+    q_wire_src_pins: Query<
+        (&BoundingBox, Entity),
+        (
+            Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
+            Without<Camera>,
+        ),
+    >,
+    q_wire_dest_pins: Query<
+        (&BoundingBox, Entity),
+        (
+            Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>,
+            Without<Camera>,
+        ),
+    >,
+    mut q_wires: Query<&mut Wire>,
+    mut q_cursor: Query<(&mut Cursor, &Transform), With<Cursor>>,
+    mut commands: Commands,
+    render_settings: Res<CircuitBoardRenderingSettings>,
+) {
+    let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
+
+    if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
+        let wire_bundle = (
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(0.0, 0.0, 0.005),
+                    ..default()
+                },
+                ..default()
+            },
+            Stroke::new(
+                render_settings.signal_low_color,
+                render_settings.wire_line_width,
+            ),
+            SignalState::Low,
+        );
+
+        for (bbox, pin_entity) in q_wire_src_pins.iter() {
+            if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
+                continue;
+            }
+
+            // cursor is on pin
+            let wire = commands
+                .spawn((
+                    wire_bundle,
+                    Wire {
+                        src_pin: Some(pin_entity),
+                        dest_pin: None,
+                    },
+                ))
+                .id();
+            cursor.state = CursorState::DraggingWire(wire);
+            return;
+        }
+    }
+
+    if let CursorState::DraggingWire(wire_entity) = cursor.state {
+        if let Ok(mut wire) = q_wires.get_mut(wire_entity) {
+            if input.just_released(MouseButton::Left) {
+                for (bbox, pin_entity) in q_wire_dest_pins.iter() {
+                    if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
+                        // connect wire to pin
+                        wire.dest_pin = Some(pin_entity);
+                        cursor.state = CursorState::Idle;
+                        return;
+                    }
+                }
+
+                // delete wire if dragged on nothing
+                commands.entity(wire_entity).despawn();
+                cursor.state = CursorState::Idle;
+            }
         }
     }
 }

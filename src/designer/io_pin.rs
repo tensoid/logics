@@ -1,13 +1,14 @@
-use bevy::{prelude::*, render::render_phase::Draw};
+use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
-use crate::{events::events::SpawnIOPinEvent, get_cursor_mut};
+use crate::{events::events::SpawnBoardEntityEvent, get_cursor, get_cursor_mut};
 
 use super::{
     board_entity::BoardEntity,
     bounding_box::BoundingBox,
     cursor::{Cursor, CursorState},
     render_settings::CircuitBoardRenderingSettings,
+    selection::Selected,
     signal_state::SignalState,
 };
 
@@ -31,16 +32,16 @@ pub struct BoardBinaryDisplay;
 
 pub fn spawn_board_binary_input(
     mut commands: Commands,
-    mut spawn_ev: EventReader<SpawnIOPinEvent>,
+    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
     render_settings: Res<CircuitBoardRenderingSettings>,
     mut q_cursor: Query<(Entity, &mut Cursor)>,
     asset_server: Res<AssetServer>,
-) {
+) -> Option<(Entity, SpawnBoardEntityEvent)> {
     let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
 
     for ev in spawn_ev.read() {
-        if !ev.is_input {
-            return;
+        if ev.name != "PORT-IN" {
+            continue;
         }
 
         let binary_input_extents = Vec2::new(60.0, 30.0);
@@ -104,8 +105,8 @@ pub fn spawn_board_binary_input(
             ),
             Fill::color(render_settings.binary_io_color),
             Stroke::new(
-                render_settings.binary_io_stroke_color,
-                render_settings.binary_io_stroke_width,
+                render_settings.board_entity_stroke_color,
+                render_settings.board_entity_stroke_width,
             ),
             ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Rectangle {
@@ -132,21 +133,26 @@ pub fn spawn_board_binary_input(
         //Parent io pin to curser and start drag
         cursor.state = CursorState::Dragging;
         commands.entity(cursor_entity).add_child(entity);
+        commands.entity(entity).insert(Selected);
+
+        return Some((entity, ev.clone()));
     }
+
+    None
 }
 
 pub fn spawn_board_binary_output(
     mut commands: Commands,
-    mut spawn_ev: EventReader<SpawnIOPinEvent>,
+    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
     render_settings: Res<CircuitBoardRenderingSettings>,
     mut q_cursor: Query<(Entity, &mut Cursor)>,
     asset_server: Res<AssetServer>,
-) {
+) -> Option<(Entity, SpawnBoardEntityEvent)> {
     let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
 
     for ev in spawn_ev.read() {
-        if ev.is_input {
-            return;
+        if ev.name != "PORT-OUT" {
+            continue;
         }
 
         let binary_output_extents = Vec2::new(30.0, 30.0);
@@ -196,8 +202,8 @@ pub fn spawn_board_binary_output(
             BoardEntity,
             BoundingBox::rect_new(rect_shape.extents / 2.0, true),
             Stroke::new(
-                render_settings.binary_io_stroke_color,
-                render_settings.binary_io_stroke_width,
+                render_settings.board_entity_stroke_color,
+                render_settings.board_entity_stroke_width,
             ),
             Fill::color(render_settings.binary_io_color),
             ShapeBundle {
@@ -224,7 +230,12 @@ pub fn spawn_board_binary_output(
         //Parent io pin to curser and start drag
         cursor.state = CursorState::Dragging;
         commands.entity(cursor_entity).add_child(entity);
+        commands.entity(entity).insert(Selected);
+
+        return Some((entity, ev.clone()));
     }
+
+    None
 }
 
 #[allow(clippy::type_complexity)]
@@ -248,5 +259,40 @@ pub fn update_board_binary_displays(
             SignalState::High => "1".into(),
             SignalState::Low => "0".into(),
         };
+    }
+}
+
+pub fn toggle_board_input_switch(
+    input: Res<ButtonInput<MouseButton>>,
+    q_inputs: Query<&Children, With<BoardBinaryInput>>,
+    q_input_switches: Query<(&Parent, &BoundingBox), With<BoardBinaryInputSwitch>>,
+    mut q_input_pins: Query<(&mut BoardBinaryInputPin, &mut SignalState)>,
+    q_cursor: Query<&Transform, With<Cursor>>,
+) {
+    let cursor_transform = get_cursor!(q_cursor);
+
+    if input.just_pressed(MouseButton::Left) {
+        for (parent, bbox) in q_input_switches.iter() {
+            if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
+                continue;
+            }
+
+            //TODO: find a way to make this easier (Child -> Parent -> Children -> Specific Children)
+            let parent_children = q_inputs
+                .get(parent.get())
+                .expect("BoardBinaryInputSwitch has no BoardBinaryInput parent.");
+
+            let board_binary_input_pin_entity = parent_children
+                .iter()
+                .find(|c| q_input_pins.get(**c).is_ok())
+                .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
+
+            let (_, mut board_binary_input_pin_state) = q_input_pins
+                .get_mut(*board_binary_input_pin_entity)
+                .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
+
+            board_binary_input_pin_state.toggle();
+            break;
+        }
     }
 }

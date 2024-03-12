@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
 use crate::{
-    designer::{board_entity::BoardEntity, chip::ChipSpecs},
-    events::events::{OpenChipSelectorEvent, SpawnChipEvent, SpawnIOPinEvent},
+    designer::{board_entity::BoardEntity, chip::ChipSpecs, designer_state::DesignerState},
+    events::events::{OpenChipSelectorEvent, SpawnBoardEntityEvent},
 };
 
 use super::styles::*;
@@ -52,13 +52,16 @@ pub fn toggle_chip_selector(
     chip_selector_state: Res<State<ChipSelectorState>>,
     mut chip_selector_next_state: ResMut<NextState<ChipSelectorState>>,
     mut open_chip_selector_ev: EventReader<OpenChipSelectorEvent>,
+    mut designer_next_state: ResMut<NextState<DesignerState>>,
 ) {
     for _ in open_chip_selector_ev.read() {
-        let next_state = match chip_selector_state.get() {
-            ChipSelectorState::Closed => ChipSelectorState::Open,
-            ChipSelectorState::Open => ChipSelectorState::Closed,
+        let (next_chip_selector_state, next_designer_state) = match chip_selector_state.get() {
+            ChipSelectorState::Closed => (ChipSelectorState::Open, DesignerState::Inactive),
+            ChipSelectorState::Open => (ChipSelectorState::Closed, DesignerState::Active),
         };
-        chip_selector_next_state.set(next_state);
+
+        chip_selector_next_state.set(next_chip_selector_state);
+        designer_next_state.set(next_designer_state);
     }
 }
 
@@ -117,9 +120,9 @@ pub fn chip_selector_button_interact(
         (Changed<Interaction>, With<ChipButton>),
     >,
     q_texts: Query<&Text>,
-    mut chip_ev_writer: EventWriter<SpawnChipEvent>,
-    mut io_pin_ev_writer: EventWriter<SpawnIOPinEvent>,
+    mut spawn_ev_writer: EventWriter<SpawnBoardEntityEvent>,
     mut chip_selector_next_state: ResMut<NextState<ChipSelectorState>>,
+    mut next_designer_state: ResMut<NextState<DesignerState>>,
 ) {
     for (interaction, mut background_color, children) in q_buttons.iter_mut() {
         let button_text = q_texts.get(*children.first().unwrap()).unwrap();
@@ -135,25 +138,15 @@ pub fn chip_selector_button_interact(
                 *background_color = chip_button_background_color_pressed();
 
                 chip_selector_next_state.set(ChipSelectorState::Closed);
+                next_designer_state.set(DesignerState::Active);
 
                 let chip_name = button_text.sections.first().unwrap().value.clone();
 
-                if chip_name == "PORT-IN" {
-                    io_pin_ev_writer.send(SpawnIOPinEvent {
-                        is_input: true,
-                        position: Vec2::ZERO,
-                    });
-                } else if chip_name == "PORT-OUT" {
-                    io_pin_ev_writer.send(SpawnIOPinEvent {
-                        is_input: false,
-                        position: Vec2::ZERO,
-                    });
-                } else {
-                    chip_ev_writer.send(SpawnChipEvent {
-                        chip_name,
-                        position: Vec2::ZERO,
-                    });
-                }
+                spawn_ev_writer.send(SpawnBoardEntityEvent {
+                    name: chip_name,
+                    position: Vec2::ZERO,
+                    init_drag: true,
+                });
             }
         }
     }

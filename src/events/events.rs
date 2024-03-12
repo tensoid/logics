@@ -1,15 +1,10 @@
 use bevy::prelude::*;
 
-#[derive(Event)]
-pub struct SpawnChipEvent {
-    pub chip_name: String,
+#[derive(Event, Clone)]
+pub struct SpawnBoardEntityEvent {
+    pub name: String,
     pub position: Vec2,
-}
-
-#[derive(Event)]
-pub struct SpawnIOPinEvent {
-    pub is_input: bool,
-    pub position: Vec2,
+    pub init_drag: bool,
 }
 
 #[derive(Event)]
@@ -17,3 +12,6 @@ pub struct OpenChipSelectorEvent;
 
 #[derive(Event)]
 pub struct ToggleDebugModeEvent;
+
+#[derive(Event)]
+pub struct DeleteSelectedEvent;

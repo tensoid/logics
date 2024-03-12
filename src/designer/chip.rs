@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
+use crate::events::events::SpawnBoardEntityEvent;
 use crate::get_cursor_mut;
-use crate::{events::events::SpawnChipEvent, simulation::expressions::Expr};
+use crate::simulation::expressions::Expr;
 
 use crate::designer::{
     board_entity::BoardEntity, bounding_box::BoundingBox,
@@ -10,6 +11,7 @@ use crate::designer::{
 };
 
 use super::cursor::{Cursor, CursorState};
+use super::selection::Selected;
 
 #[derive(Component)]
 pub struct Chip;
@@ -32,22 +34,20 @@ pub struct ChipInputPin;
 #[derive(Component)]
 pub struct ChipOutputPin;
 
-pub fn spawn_chip_event(
-    mut spawn_ev: EventReader<SpawnChipEvent>,
+pub fn spawn_chip(
+    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
     mut commands: Commands,
     chip_specs: Res<ChipSpecs>,
     asset_server: Res<AssetServer>,
     render_settings: Res<CircuitBoardRenderingSettings>,
     mut q_cursor: Query<(Entity, &mut Cursor)>,
-) {
+) -> Option<(Entity, SpawnBoardEntityEvent)> {
     let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
 
     for ev in spawn_ev.read() {
-        let chip_spec = chip_specs
-            .0
-            .iter()
-            .find(|spec| spec.name == ev.chip_name)
-            .unwrap();
+        let Some(chip_spec) = chip_specs.0.iter().find(|spec| spec.name == ev.name) else {
+            continue;
+        };
 
         let num_input_pins = chip_spec.expression.1;
 
@@ -79,15 +79,15 @@ pub fn spawn_chip_event(
                 ShapeBundle {
                     path: GeometryBuilder::build_as(&chip_shape),
                     spatial: SpatialBundle {
-                        transform: Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
+                        transform: Transform::IDENTITY,
                         ..default()
                     },
                     ..default()
                 },
                 Fill::color(render_settings.chip_color),
                 Stroke::new(
-                    render_settings.chip_stroke_color,
-                    render_settings.chip_stroke_width,
+                    render_settings.board_entity_stroke_color,
+                    render_settings.board_entity_stroke_width,
                 ),
                 Chip,
                 ChipExtents(chip_extents),
@@ -98,7 +98,7 @@ pub fn spawn_chip_event(
             .with_children(|chip| {
                 //Chip Name
                 chip.spawn(Text2dBundle {
-                    text: Text::from_section(ev.chip_name.to_uppercase(), text_style)
+                    text: Text::from_section(ev.name.to_uppercase(), text_style)
                         .with_justify(JustifyText::Center),
                     transform: Transform::from_xyz(0.0, 0.0, 0.01),
                     ..default()
@@ -146,8 +146,8 @@ pub fn spawn_chip_event(
             })
             .id();
 
-        // Parent chip to curser and start drag
-        cursor.state = CursorState::Dragging;
-        commands.entity(cursor_entity).add_child(chip_entity);
+        return Some((chip_entity, ev.clone()));
     }
+
+    None
 }

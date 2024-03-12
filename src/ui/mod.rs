@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use self::chip_selector::{
-    chip_selector_button_interact, despawn_chip_selector, spawn_chip_selector, spawn_empty_board_tooltip, toggle_chip_selector, update_emtpy_board_tooltip, ChipSelectorState
+    chip_selector_button_interact, despawn_chip_selector, spawn_chip_selector,
+    spawn_empty_board_tooltip, toggle_chip_selector, update_emtpy_board_tooltip, ChipSelectorState,
 };
 
 pub mod chip_selector;

@@ -45,6 +45,11 @@ fn main() {
             expression: Expr::from_string("0 & 1").unwrap(),
         },
         ChipSpec {
+            name: "NAND-2".to_string(),
+            //expressions: vec![Expr::from_string("0 & 1").unwrap()],
+            expression: Expr::from_string("!(0 & 1)").unwrap(),
+        },
+        ChipSpec {
             name: "OR-2".to_string(),
             expression: Expr::from_string("0 | 1").unwrap(),
         },

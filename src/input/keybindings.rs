@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::events::events::{OpenChipSelectorEvent, ToggleDebugModeEvent};
+use crate::events::events::{DeleteSelectedEvent, OpenChipSelectorEvent, ToggleDebugModeEvent};
 
 macro_rules! match_and_send_event {
     ($action:expr, $commands:expr, $($action_path:path => $event:path),* $(,)?) => {
@@ -17,6 +17,7 @@ macro_rules! match_and_send_event {
 pub enum Action {
     OpenChipSelector,
     ToggleDebugMode,
+    DeleteSelected,
 }
 
 #[derive(Resource)]
@@ -41,6 +42,7 @@ pub fn handle_keybindings(
             commands,
             Action::OpenChipSelector => OpenChipSelectorEvent,
             Action::ToggleDebugMode => ToggleDebugModeEvent,
+            Action::DeleteSelected => DeleteSelectedEvent,
         );
     }
 }

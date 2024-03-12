@@ -1,5 +1,5 @@
 use bevy::{
-    math::bounding::{Aabb2d, BoundingCircle, BoundingVolume},
+    math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
 };
 
@@ -53,6 +53,19 @@ impl BoundingBox {
         match self.bounding_shape {
             BoundingShape::Aabb(aabb) => aabb.closest_point(point) == point,
             BoundingShape::Circle(circle) => circle.closest_point(point) == point,
+        }
+    }
+
+    pub fn intersects(&self, other: &BoundingBox) -> bool {
+        match self.bounding_shape {
+            BoundingShape::Aabb(aabb) => match other.bounding_shape {
+                BoundingShape::Aabb(other_aabb) => aabb.intersects(&other_aabb),
+                BoundingShape::Circle(other_circle) => aabb.intersects(&other_circle),
+            },
+            BoundingShape::Circle(circle) => match other.bounding_shape {
+                BoundingShape::Aabb(other_aabb) => circle.intersects(&other_aabb),
+                BoundingShape::Circle(other_circle) => circle.intersects(&other_circle),
+            },
         }
     }
 }

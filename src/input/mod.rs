@@ -11,6 +11,7 @@ impl Plugin for InputPlugin {
         app.insert_resource(KeyBindings(vec![
             (vec![KeyCode::Space], Action::OpenChipSelector),
             (vec![KeyCode::KeyD], Action::ToggleDebugMode),
+            (vec![KeyCode::Delete], Action::DeleteSelected),
         ]))
         .add_systems(Update, handle_keybindings);
     }
