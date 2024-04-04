@@ -1,8 +1,6 @@
 use bevy::{diagnostic::FrameTimeDiagnosticsPlugin, prelude::*};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use crate::designer::selection::Selected;
-
 use self::{
     bounding_box_gizmos::{draw_bounding_boxes, BoundingBoxGizmos},
     debug_mode_state::{toggle_debug_mode, DebugModeState},

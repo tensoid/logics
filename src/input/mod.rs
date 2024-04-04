@@ -9,7 +9,6 @@ pub struct InputPlugin;
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(KeyBindings(vec![
-            (vec![KeyCode::Space], Action::OpenChipSelector),
             (vec![KeyCode::KeyD], Action::ToggleDebugMode),
             (vec![KeyCode::Delete], Action::DeleteSelected),
         ]))

@@ -14,6 +14,7 @@ use bevy::prelude::*;
 use bevy::transform::TransformSystem;
 
 use crate::simulation::simulation::tick_simulation;
+use crate::ui::cursor_captured::IsCursorCaptured;
 
 use self::board_entity::manage_additional_spawn_tasks;
 use self::bounding_box::update_bounding_boxes;
@@ -46,7 +47,11 @@ impl Plugin for DesignerPlugin {
         app.init_state::<DesignerState>()
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
-            .add_systems(Update, drag_wire.run_if(in_state(DesignerState::Active)))
+            .add_systems(
+                Update,
+                drag_wire.run_if(resource_equals(IsCursorCaptured(false))),
+            )
+            .add_systems(Update, stop_dragging)
             .add_systems(
                 Update,
                 (
@@ -55,10 +60,9 @@ impl Plugin for DesignerPlugin {
                         .chain()
                         .after(drag_wire),
                     delete_selected,
-                    stop_dragging,
                 )
                     .after(drag_wire)
-                    .run_if(in_state(DesignerState::Active)),
+                    .run_if(resource_equals(IsCursorCaptured(false))),
             )
             .add_systems(Update, update_selection_box)
             .add_systems(Update, highlight_selected)

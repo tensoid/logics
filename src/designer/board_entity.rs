@@ -21,6 +21,7 @@ pub fn manage_additional_spawn_tasks(
     In(data_option): In<Option<(Entity, SpawnBoardEntityEvent)>>,
     mut q_cursor: Query<(Entity, &mut Cursor)>,
     mut commands: Commands,
+    q_selected_entities: Query<Entity, With<Selected>>,
 ) {
     let Some((entity, spawn_ev)) = data_option else {
         return;
@@ -29,6 +30,10 @@ pub fn manage_additional_spawn_tasks(
     let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
 
     if spawn_ev.init_drag {
+        for selected_entity in q_selected_entities.iter() {
+            commands.entity(selected_entity).remove::<Selected>();
+        }
+
         cursor.state = CursorState::Dragging;
         commands.entity(cursor_entity).add_child(entity);
         commands.entity(entity).insert(Selected);

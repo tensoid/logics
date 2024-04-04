@@ -8,9 +8,6 @@ pub struct SpawnBoardEntityEvent {
 }
 
 #[derive(Event)]
-pub struct OpenChipSelectorEvent;
-
-#[derive(Event)]
 pub struct ToggleDebugModeEvent;
 
 #[derive(Event)]

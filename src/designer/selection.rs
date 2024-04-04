@@ -6,7 +6,11 @@ use bevy_prototype_lyon::{
     shapes::{self, RectangleOrigin},
 };
 
-use crate::{events::events::DeleteSelectedEvent, get_cursor, get_cursor_mut};
+use crate::{
+    events::events::DeleteSelectedEvent,
+    get_cursor, get_cursor_mut,
+    ui::cursor_captured::{self, IsCursorCaptured},
+};
 
 use super::{
     bounding_box::{BoundingBox, BoundingShape},
@@ -234,11 +238,17 @@ pub fn stop_dragging(
         (Entity, &BoundingBox, &mut Transform),
         (With<Selected>, Without<Cursor>),
     >,
+    cursor_captured: Res<IsCursorCaptured>,
 ) {
     let (cursor_entity, mut cursor, cursor_transform, cursor_children) = get_cursor_mut!(q_cursor);
 
     if cursor.state == CursorState::Dragging && input.just_released(MouseButton::Left) {
         cursor.state = CursorState::Idle;
+
+        if cursor_captured.0 {
+            commands.entity(cursor_entity).despawn_descendants();
+            return;
+        }
 
         for &cursor_child_entity in cursor_children.iter().flat_map(|c| c.iter()) {
             let (_, _, mut child_transform) =
