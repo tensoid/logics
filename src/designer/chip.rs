@@ -10,14 +10,10 @@ use crate::designer::{
     render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
 };
 
-use super::cursor::{Cursor, CursorState};
-use super::selection::Selected;
+use super::cursor::Cursor;
 
 #[derive(Component)]
 pub struct Chip;
-
-#[derive(Component)]
-pub struct ChipExtents(pub Vec2);
 
 #[derive(Resource)]
 pub struct ChipSpecs(pub Vec<ChipSpec>);
@@ -90,7 +86,6 @@ pub fn spawn_chip(
                     render_settings.board_entity_stroke_width,
                 ),
                 Chip,
-                ChipExtents(chip_extents),
                 BoundingBox::rect_new(chip_extents / 2.0, true),
                 chip_spec.clone(),
                 BoardEntity,

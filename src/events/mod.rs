@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
-use self::events::{DeleteSelectedEvent, SpawnBoardEntityEvent, ToggleDebugModeEvent};
+use self::events::{
+    DeleteSelectedEvent, SaveBoardEvent, SpawnBoardEntityEvent, ToggleDebugModeEvent,
+};
 
 pub mod events;
 
@@ -10,6 +12,7 @@ impl Plugin for EventsPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<DeleteSelectedEvent>()
             .add_event::<SpawnBoardEntityEvent>()
+            .add_event::<SaveBoardEvent>()
             .add_event::<ToggleDebugModeEvent>();
     }
 }

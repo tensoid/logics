@@ -12,3 +12,6 @@ pub struct ToggleDebugModeEvent;
 
 #[derive(Event)]
 pub struct DeleteSelectedEvent;
+
+#[derive(Event)]
+pub struct SaveBoardEvent;

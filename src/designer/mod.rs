@@ -6,6 +6,7 @@ pub mod designer_state;
 pub mod io_pin;
 pub mod macros;
 pub mod render_settings;
+mod save_load;
 pub mod selection;
 pub mod signal_state;
 pub mod wire;

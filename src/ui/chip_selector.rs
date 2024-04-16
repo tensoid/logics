@@ -1,9 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{
-    designer::{chip::ChipSpecs, designer_state::DesignerState},
-    events::events::SpawnBoardEntityEvent,
-};
+use crate::{designer::chip::ChipSpecs, events::events::SpawnBoardEntityEvent};
 
 use super::styles::*;
 
