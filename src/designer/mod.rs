@@ -24,10 +24,10 @@ use self::cursor::highlight_hovered_pin;
 use self::cursor::spawn_cursor;
 use self::cursor::update_cursor;
 use self::designer_state::DesignerState;
+use self::io_pin::apply_io_pin_state;
 use self::io_pin::spawn_board_binary_input;
 use self::io_pin::spawn_board_binary_output;
 use self::io_pin::toggle_board_input_switch;
-use self::io_pin::update_board_binary_displays;
 use self::render_settings::init_render_settings;
 use self::selection::clear_selection;
 use self::selection::delete_selected;
@@ -42,6 +42,11 @@ use self::wire::drag_wire;
 use self::wire::update_wires;
 
 pub struct DesignerPlugin;
+
+//TODO: spawn event to take state object
+//TODO: spawn command on state object (or maybe not because of transform)
+//TODO: apply state stage
+//TODO: get enum impl on state objects for deserialization?
 
 impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
@@ -81,7 +86,7 @@ impl Plugin for DesignerPlugin {
             .add_systems(Update, toggle_board_input_switch)
             .add_systems(
                 Update,
-                update_board_binary_displays
+                apply_io_pin_state
                     .after(toggle_board_input_switch)
                     .after(tick_simulation),
             )

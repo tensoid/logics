@@ -30,6 +30,7 @@ fn main() {
     app.add_plugins(DefaultPlugins.set(WindowPlugin {
         primary_window: Some(Window {
             canvas: Some("#logics-canvas".into()),
+            present_mode: bevy::window::PresentMode::Immediate,
             ..default()
         }),
         ..default()
@@ -64,11 +65,11 @@ fn main() {
     ]))
     .add_plugins(PanCamPlugin)
     .add_plugins(ShapePlugin)
-    .add_plugins(CameraPlugin);
-    app.add_plugins(DesignerPlugin)
-        .add_plugins(EventsPlugin)
-        .add_plugins(InputPlugin)
-        .add_plugins(SimulationPlugin)
-        .add_plugins(UIPlugin)
-        .run();
+    .add_plugins(CameraPlugin)
+    .add_plugins(DesignerPlugin)
+    .add_plugins(EventsPlugin)
+    .add_plugins(InputPlugin)
+    .add_plugins(SimulationPlugin)
+    .add_plugins(UIPlugin)
+    .run();
 }

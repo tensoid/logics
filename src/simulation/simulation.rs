@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::designer::{chip::{Chip, ChipInputPin, ChipOutputPin, ChipSpec}, io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin}, signal_state::SignalState, wire::Wire};
+use crate::designer::{chip::{Chip, ChipInputPin, ChipOutputPin, ChipSpec}, io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin}, signal_state::SignalState, wire::{Wire, WireState}};
 
 #[allow(clippy::type_complexity)]
 pub fn tick_simulation(
@@ -60,7 +60,7 @@ pub fn tick_simulation(
         ),
     >,
     mut q_wires: Query<
-        (&Wire, &mut SignalState),
+        (&WireState, &mut SignalState),
         (
             With<Wire>,
             Without<BoardBinaryOutputPin>,

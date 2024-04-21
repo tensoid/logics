@@ -8,10 +8,13 @@ use super::{
 };
 
 #[derive(Component)]
-pub struct Wire {
+pub struct WireState {
     pub src_pin: Option<Entity>,
     pub dest_pin: Option<Entity>,
 }
+
+#[derive(Component)]
+pub struct Wire;
 
 /**
  * Updates the wires location to always stay connected to its source and destination pins.
@@ -20,7 +23,7 @@ pub struct Wire {
 //TODO: Optimisation potential with only updating necessary wires.
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
-    mut q_wires: Query<(&mut Wire, &mut Path, &GlobalTransform, Entity)>,
+    mut q_wires: Query<(&mut WireState, &mut Path, &GlobalTransform, Entity)>,
     q_dest_pins: Query<&GlobalTransform, Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
     q_src_pins: Query<&GlobalTransform, Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>>,
     q_cursor: Query<(&Cursor, &Transform)>,
@@ -86,7 +89,7 @@ pub fn drag_wire(
             Without<Camera>,
         ),
     >,
-    mut q_wires: Query<&mut Wire>,
+    mut q_wires: Query<&mut WireState>,
     mut q_cursor: Query<(&mut Cursor, &Transform), With<Cursor>>,
     mut commands: Commands,
     render_settings: Res<CircuitBoardRenderingSettings>,
@@ -119,7 +122,8 @@ pub fn drag_wire(
             let wire = commands
                 .spawn((
                     wire_bundle,
-                    Wire {
+                    Wire,
+                    WireState {
                         src_pin: Some(pin_entity),
                         dest_pin: None,
                     },

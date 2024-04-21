@@ -30,6 +30,11 @@ pub struct BoardBinaryOutputPin;
 #[derive(Component)]
 pub struct BoardBinaryDisplay;
 
+#[derive(Component)]
+pub struct IOPinState {
+    pub signal_state: SignalState,
+}
+
 pub fn spawn_board_binary_input(
     mut commands: Commands,
     mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
@@ -68,7 +73,6 @@ pub fn spawn_board_binary_input(
                 ..default()
             },
             Fill::color(render_settings.pin_color),
-            SignalState::Low,
             BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
         );
 
@@ -98,6 +102,9 @@ pub fn spawn_board_binary_input(
         let board_binary_input_bundle = (
             BoardBinaryInput,
             BoardEntity,
+            IOPinState {
+                signal_state: SignalState::Low,
+            },
             BoundingBox::rect_with_offset(
                 binary_input_extents / Vec2::new(4.0, 2.0),
                 Vec2::new(binary_input_extents.x / 4.0, 0.0),
@@ -184,7 +191,6 @@ pub fn spawn_board_binary_output(
             },
             Fill::color(render_settings.pin_color),
             BoardBinaryOutputPin,
-            SignalState::Low,
             BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
         );
 
@@ -200,6 +206,9 @@ pub fn spawn_board_binary_output(
         let board_binary_output_bundle = (
             BoardBinaryOutput,
             BoardEntity,
+            IOPinState {
+                signal_state: SignalState::Low,
+            },
             BoundingBox::rect_new(rect_shape.extents / 2.0, true),
             Stroke::new(
                 render_settings.board_entity_stroke_color,
@@ -239,23 +248,23 @@ pub fn spawn_board_binary_output(
 }
 
 #[allow(clippy::type_complexity)]
-pub fn update_board_binary_displays(
+pub fn apply_io_pin_state(
     q_io_pins: Query<
-        (&Parent, &SignalState),
+        (Entity, &IOPinState),
         (
-            Or<(With<BoardBinaryInputPin>, With<BoardBinaryOutputPin>)>,
-            Changed<SignalState>,
+            Or<(With<BoardBinaryInput>, With<BoardBinaryOutput>)>,
+            Changed<IOPinState>,
         ),
     >,
     mut q_io_display_texts: Query<(&mut Text, &Parent)>,
 ) {
-    for (parent, signal_state) in q_io_pins.iter() {
+    for (io_pin_entity, io_pin_state) in q_io_pins.iter() {
         let mut io_display_text = q_io_display_texts
             .iter_mut()
-            .find(|t| t.1 == parent)
+            .find(|t| **t.1 == io_pin_entity)
             .expect("BoardBinaryInput/BoardBinaryOutput has no Text child.");
 
-        io_display_text.0.sections[0].value = match signal_state {
+        io_display_text.0.sections[0].value = match io_pin_state.signal_state {
             SignalState::High => "1".into(),
             SignalState::Low => "0".into(),
         };
@@ -264,9 +273,8 @@ pub fn update_board_binary_displays(
 
 pub fn toggle_board_input_switch(
     input: Res<ButtonInput<MouseButton>>,
-    q_inputs: Query<&Children, With<BoardBinaryInput>>,
+    mut q_inputs: Query<&mut IOPinState, With<BoardBinaryInput>>,
     q_input_switches: Query<(&Parent, &BoundingBox), With<BoardBinaryInputSwitch>>,
-    mut q_input_pins: Query<(&mut BoardBinaryInputPin, &mut SignalState)>,
     q_cursor: Query<&Transform, With<Cursor>>,
 ) {
     let cursor_transform = get_cursor!(q_cursor);
@@ -277,21 +285,12 @@ pub fn toggle_board_input_switch(
                 continue;
             }
 
-            //TODO: find a way to make this easier (Child -> Parent -> Children -> Specific Children)
-            let parent_children = q_inputs
-                .get(parent.get())
+            let mut io_pin_state = q_inputs
+                .get_mut(parent.get())
                 .expect("BoardBinaryInputSwitch has no BoardBinaryInput parent.");
 
-            let board_binary_input_pin_entity = parent_children
-                .iter()
-                .find(|c| q_input_pins.get(**c).is_ok())
-                .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
+            io_pin_state.signal_state.toggle();
 
-            let (_, mut board_binary_input_pin_state) = q_input_pins
-                .get_mut(*board_binary_input_pin_entity)
-                .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
-
-            board_binary_input_pin_state.toggle();
             break;
         }
     }
