@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    color::palettes::css::{BLACK, BLUE, LIME, WHITE},
+    prelude::*,
+};
 
 #[derive(Resource, Clone)]
 pub struct CircuitBoardRenderingSettings {
@@ -24,23 +27,23 @@ pub struct CircuitBoardRenderingSettings {
 pub fn init_render_settings(app: &mut App) {
     // LIGHT-MODE
     let render_settings = CircuitBoardRenderingSettings {
-        background_color: Color::rgb(0.42, 0.45, 0.63),
-        signal_low_color: Color::BLACK,
-        signal_high_color: Color::GREEN,
+        background_color: Color::srgb(0.42, 0.45, 0.63),
+        signal_low_color: BLACK.into(),
+        signal_high_color: LIME.into(),
         chip_pin_gap: 25.0,
         chip_pin_radius: 7.0,
-        chip_color: Color::WHITE,
-        board_entity_stroke_color: Color::BLACK,
-        board_entity_stroke_color_selected: Color::BLUE,
+        chip_color: WHITE.into(),
+        board_entity_stroke_color: BLACK.into(),
+        board_entity_stroke_color_selected: BLUE.into(),
         board_entity_stroke_width: 2.0,
         binary_io_pin_radius: 7.0,
-        binary_io_color: Color::WHITE,
+        binary_io_color: WHITE.into(),
         wire_line_width: 2.0,
-        pin_color: Color::BLACK,
-        hovered_pin_color: Color::rgb(0.4, 0.4, 0.4),
-        selection_box_fill_color: Color::rgba(1.0, 1.0, 1.0, 0.1),
+        pin_color: BLACK.into(),
+        hovered_pin_color: Color::srgb(0.4, 0.4, 0.4),
+        selection_box_fill_color: Color::srgba(1.0, 1.0, 1.0, 0.1),
         selection_box_stroke_width: 1.0,
-        selection_box_stroke_color: Color::BLACK,
+        selection_box_stroke_color: BLACK.into(),
     };
 
     app.insert_resource(render_settings.clone())

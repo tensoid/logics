@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    color::palettes::css::{BLACK, GRAY, WHITE},
+    prelude::*,
+};
 
 pub const DEFAULT_FONT: &str = "fonts/VCR_OSD_MONO.ttf";
 
@@ -16,11 +19,11 @@ pub fn chip_selector_style() -> Style {
 }
 
 pub fn chip_selector_background_color() -> BackgroundColor {
-    Color::WHITE.into()
+    WHITE.into()
 }
 
 pub fn chip_selector_border_color() -> BorderColor {
-    Color::BLACK.into()
+    BLACK.into()
 }
 
 pub fn chip_button_style() -> Style {
@@ -33,15 +36,15 @@ pub fn chip_button_style() -> Style {
 }
 
 pub fn chip_button_background_color() -> BackgroundColor {
-    Color::WHITE.into()
+    WHITE.into()
 }
 
 pub fn chip_button_background_color_hovered() -> BackgroundColor {
-    Color::GRAY.into()
+    GRAY.into()
 }
 
 pub fn chip_button_background_color_pressed() -> BackgroundColor {
-    Color::GRAY.into()
+    GRAY.into()
 }
 
 pub fn chip_button_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
@@ -50,6 +53,6 @@ pub fn chip_button_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
     TextStyle {
         font: font.clone(),
         font_size: 20.0,
-        color: Color::BLACK,
+        color: BLACK.into(),
     }
 }

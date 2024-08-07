@@ -25,15 +25,20 @@ use ui::UIPlugin;
 fn main() {
     let mut app = App::new();
 
-    app.insert_resource(AssetMetaCheck::Never);
-
-    app.add_plugins(DefaultPlugins.set(WindowPlugin {
-        primary_window: Some(Window {
-            canvas: Some("#logics-canvas".into()),
-            ..default()
-        }),
-        ..default()
-    }));
+    app.add_plugins(
+        DefaultPlugins
+            .set(WindowPlugin {
+                primary_window: Some(Window {
+                    canvas: Some("#logics-canvas".into()),
+                    ..default()
+                }),
+                ..default()
+            })
+            .set(AssetPlugin {
+                meta_check: AssetMetaCheck::Never,
+                ..default()
+            }),
+    );
 
     #[cfg(debug_assertions)]
     app.add_plugins(DebugPlugin);

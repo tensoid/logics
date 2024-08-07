@@ -1,4 +1,8 @@
-use bevy::{math::bounding::BoundingVolume, prelude::*};
+use bevy::{
+    color::palettes::css::{LIME, RED},
+    math::bounding::BoundingVolume,
+    prelude::*,
+};
 
 use crate::designer::bounding_box::{BoundingBox, BoundingShape};
 
@@ -9,10 +13,11 @@ pub fn draw_bounding_boxes(
     mut bbox_gizmos: Gizmos<BoundingBoxGizmos>,
     q_bboxes: Query<&BoundingBox>,
 ) {
+    println!("dbg");
     for bbox in q_bboxes.iter() {
         let color = match bbox.interactable {
-            false => Color::GREEN,
-            true => Color::RED,
+            false => LIME,
+            true => RED,
         };
 
         match bbox.bounding_shape {
