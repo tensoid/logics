@@ -14,9 +14,7 @@ pub fn toggle_debug_mode(
     mut debug_mode_next_state: ResMut<NextState<DebugModeState>>,
     mut toggle_debug_mode_ev: EventReader<ToggleDebugModeEvent>,
 ) {
-    println!("checl");
     for _ in toggle_debug_mode_ev.read() {
-        println!("changd");
         let next_state = match debug_mode_state.get() {
             DebugModeState::Off => DebugModeState::On,
             DebugModeState::On => DebugModeState::Off,

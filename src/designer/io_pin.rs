@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
+use moonshine_core::prelude::*;
+use moonshine_view::prelude::*;
 
 use crate::{events::events::SpawnBoardEntityEvent, get_cursor, get_cursor_mut};
 
@@ -12,8 +14,24 @@ use super::{
     signal_state::SignalState,
 };
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct BoardBinaryInput;
+
+#[derive(Bundle)]
+pub struct BoardBinaryInputBundle {
+    board_binary_input: BoardBinaryInput,
+    save: Save,
+}
+
+impl BoardBinaryInputBundle {
+    fn new() -> Self {
+        Self {
+            board_binary_input: BoardBinaryInput,
+            save: Save,
+        }
+    }
+}
 
 #[derive(Component)]
 pub struct BoardBinaryInputPin;
@@ -30,7 +48,44 @@ pub struct BoardBinaryOutputPin;
 #[derive(Component)]
 pub struct BoardBinaryDisplay;
 
+impl BuildView for BoardBinaryInput {
+    fn build(world: &World, object: Object<Self>, view: &mut ViewCommands<Self>) {
+        view.insert((
+            Fill::color(Color::BLACK),
+            Stroke::new(Color::WHITE, 2.0),
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: Vec2::new(50.0, 100.0),
+                    ..default()
+                }),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                    ..default()
+                },
+                ..default()
+            },
+        ));
+
+        println!("View Built!");
+    }
+}
+
 pub fn spawn_board_binary_input(
+    mut commands: Commands,
+    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
+) -> Option<(Entity, SpawnBoardEntityEvent)> {
+    for ev in spawn_ev.read() {
+        if ev.name != "PORT-IN" {
+            continue;
+        }
+
+        commands.spawn(BoardBinaryInputBundle::new());
+    }
+
+    None
+}
+
+pub fn spawn_board_binary_input_d(
     mut commands: Commands,
     mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
     render_settings: Res<CircuitBoardRenderingSettings>,

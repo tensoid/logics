@@ -13,7 +13,6 @@ pub fn draw_bounding_boxes(
     mut bbox_gizmos: Gizmos<BoundingBoxGizmos>,
     q_bboxes: Query<&BoundingBox>,
 ) {
-    println!("dbg");
     for bbox in q_bboxes.iter() {
         let color = match bbox.interactable {
             false => LIME,

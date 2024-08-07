@@ -1,0 +1,10 @@
+(
+  resources: {},
+  entities: {
+    4294967314: (
+      components: {
+        "logics::designer::io_pin::BoardBinaryInput": (),
+      },
+    ),
+  },
+)

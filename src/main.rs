@@ -14,11 +14,13 @@ use camera::CameraPlugin;
 use debug::DebugPlugin;
 use designer::{
     chip::{ChipSpec, ChipSpecs},
+    io_pin::BoardBinaryInput,
     DesignerPlugin,
 };
 
 use events::EventsPlugin;
 use input::InputPlugin;
+use moonshine_save::{load::LoadPlugin, save::SavePlugin};
 use simulation::{expressions::Expr, SimulationPlugin};
 use ui::UIPlugin;
 
@@ -42,6 +44,10 @@ fn main() {
 
     #[cfg(debug_assertions)]
     app.add_plugins(DebugPlugin);
+
+    app.add_plugins((SavePlugin, LoadPlugin));
+
+    app.register_type::<BoardBinaryInput>();
 
     app.insert_resource(ChipSpecs(vec![
         ChipSpec {
