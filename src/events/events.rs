@@ -21,6 +21,15 @@ pub struct SaveEvent;
 
 impl FilePath for SaveEvent {
     fn path(&self) -> &Path {
-        Path::new("save.ron")
+        Path::new("saves/save.ron")
+    }
+}
+
+#[derive(Event)]
+pub struct LoadEvent;
+
+impl FilePath for LoadEvent {
+    fn path(&self) -> &Path {
+        Path::new("saves/save.ron")
     }
 }

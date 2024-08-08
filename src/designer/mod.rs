@@ -13,10 +13,11 @@ pub mod wire;
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
 use io_pin::BoardBinaryInput;
+use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use moonshine_view::RegisterView;
 
-use crate::events::events::SaveEvent;
+use crate::events::events::{LoadEvent, SaveEvent};
 use crate::simulation::simulation::tick_simulation;
 use crate::ui::cursor_captured::IsCursorCaptured;
 
@@ -52,7 +53,13 @@ impl Plugin for DesignerPlugin {
             .register_viewable::<BoardBinaryInput>()
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
-            .add_systems(PreUpdate, save_default().into_file_on_event::<SaveEvent>())
+            .add_systems(
+                PreUpdate,
+                (
+                    save_default().into_file_on_event::<SaveEvent>(),
+                    load_from_file_on_event::<LoadEvent>(),
+                ),
+            )
             .add_systems(
                 Update,
                 drag_wire.run_if(resource_equals(IsCursorCaptured(false))),

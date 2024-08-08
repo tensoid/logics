@@ -50,23 +50,94 @@ pub struct BoardBinaryDisplay;
 
 impl BuildView for BoardBinaryInput {
     fn build(world: &World, object: Object<Self>, view: &mut ViewCommands<Self>) {
-        view.insert((
-            Fill::color(Color::BLACK),
-            Stroke::new(Color::WHITE, 2.0),
+        let asset_server = world.resource::<AssetServer>();
+        let render_settings = world.resource::<CircuitBoardRenderingSettings>();
+
+        let binary_input_extents = Vec2::new(60.0, 30.0);
+
+        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
+
+        let text_style = TextStyle {
+            font_size: 20.0,
+            color: Color::BLACK,
+            font,
+        };
+
+        let pin_bundle = (
+            BoardBinaryInputPin,
             ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Rectangle {
-                    extents: Vec2::new(50.0, 100.0),
+                path: GeometryBuilder::build_as(&shapes::Circle {
+                    radius: render_settings.binary_io_pin_radius,
                     ..default()
                 }),
                 spatial: SpatialBundle {
+                    transform: Transform::from_xyz(binary_input_extents.x / 2.0, 0.0, 0.02),
+                    ..default()
+                },
+                ..default()
+            },
+            Fill::color(render_settings.pin_color),
+            SignalState::Low,
+            BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
+        );
+
+        let binary_display_bundle = (
+            BoardBinaryDisplay,
+            Text2dBundle {
+                text: Text::from_section("0", text_style).with_justify(JustifyText::Center),
+                transform: Transform::from_xyz(binary_input_extents.x / 4.0, 0.0, 0.01),
+                ..default()
+            },
+        );
+
+        let binary_switch_bundle = (
+            BoardBinaryInputSwitch,
+            SpriteBundle {
+                texture: asset_server.load("images/switch.png"),
+                transform: Transform::from_xyz(-binary_input_extents.x / 4.0, 0.0, 0.01),
+                sprite: Sprite {
+                    custom_size: Some(binary_input_extents / Vec2::new(2.0, 1.0) * 0.8),
+                    ..default()
+                },
+                ..default()
+            },
+            BoundingBox::rect_new(binary_input_extents / Vec2::new(4.0, 2.0), false),
+        );
+
+        let board_binary_input_bundle = (
+            BoardEntity,
+            BoundingBox::rect_with_offset(
+                binary_input_extents / Vec2::new(4.0, 2.0),
+                Vec2::new(binary_input_extents.x / 4.0, 0.0),
+                true,
+            ),
+            Fill::color(render_settings.binary_io_color),
+            Stroke::new(
+                render_settings.board_entity_stroke_color,
+                render_settings.board_entity_stroke_width,
+            ),
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: binary_input_extents,
+                    ..default()
+                }),
+                spatial: SpatialBundle {
+                    //transform: Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
                     transform: Transform::from_xyz(0.0, 0.0, 0.0),
                     ..default()
                 },
                 ..default()
             },
-        ));
+        );
 
-        println!("View Built!");
+        let entity = view
+            .insert(board_binary_input_bundle)
+            .with_children(|bbi| {
+                bbi.spawn(binary_switch_bundle);
+                bbi.spawn(binary_display_bundle);
+                bbi.spawn(pin_bundle);
+            })
+            .id();
     }
 }
 
@@ -186,9 +257,9 @@ pub fn spawn_board_binary_input_d(
             .id();
 
         //Parent io pin to curser and start drag
-        cursor.state = CursorState::Dragging;
-        commands.entity(cursor_entity).add_child(entity);
-        commands.entity(entity).insert(Selected);
+        // cursor.state = CursorState::Dragging;
+        // commands.entity(cursor_entity).add_child(entity);
+        // commands.entity(entity).insert(Selected);
 
         return Some((entity, ev.clone()));
     }

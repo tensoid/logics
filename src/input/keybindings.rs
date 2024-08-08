@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::events::events::{DeleteSelectedEvent, SaveEvent, ToggleDebugModeEvent};
+use crate::events::events::{DeleteSelectedEvent, LoadEvent, SaveEvent, ToggleDebugModeEvent};
 
 macro_rules! match_and_send_event {
     ($action:expr, $commands:expr, $($action_path:path => $event:path),* $(,)?) => {
@@ -18,6 +18,7 @@ pub enum Action {
     ToggleDebugMode,
     DeleteSelected,
     Save,
+    Load,
 }
 
 #[derive(Resource)]
@@ -43,6 +44,7 @@ pub fn handle_keybindings(
             Action::ToggleDebugMode => ToggleDebugModeEvent,
             Action::DeleteSelected => DeleteSelectedEvent,
             Action::Save => SaveEvent,
+            Action::Load => LoadEvent,
         );
     }
 }

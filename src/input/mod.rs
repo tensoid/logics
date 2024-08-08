@@ -12,6 +12,7 @@ impl Plugin for InputPlugin {
             (vec![KeyCode::KeyD], Action::ToggleDebugMode),
             (vec![KeyCode::Delete], Action::DeleteSelected),
             (vec![KeyCode::ControlLeft, KeyCode::KeyS], Action::Save),
+            (vec![KeyCode::ControlLeft, KeyCode::KeyL], Action::Load),
         ]))
         .add_systems(Update, handle_keybindings);
     }
