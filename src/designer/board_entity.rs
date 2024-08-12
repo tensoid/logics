@@ -1,16 +1,17 @@
 use std::ops::{Deref, DerefMut};
 
-use bevy::prelude::*;
-use moonshine_core::
-    kind::Kind
-;
+use bevy::{math::VectorSpace, prelude::*};
+use moonshine_core::kind::Kind;
 use moonshine_save::save::Save;
 use moonshine_view::Viewable;
 
+use crate::{events::events::SpawnBoardEntityEvent, get_cursor_mut};
 
-use super::
-    bounding_box::BoundingBox
-;
+use super::{
+    bounding_box::BoundingBox,
+    cursor::{Cursor, CursorState},
+    selection::{Dragged, Selected},
+};
 
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
@@ -101,5 +102,33 @@ pub fn update_board_entity_position(
         let view = viewable.view();
         let mut transform = transform.get_mut(view.entity()).unwrap();
         *transform = Transform::from_translation(position.extend(transform.translation.z))
+    }
+}
+
+/**
+ * Handles initializing a cursor drag.
+ */
+pub fn manage_additional_spawn_tasks(
+    In(data_option): In<Option<(Entity, SpawnBoardEntityEvent)>>,
+    mut q_cursor: Query<&mut Cursor>,
+    mut commands: Commands,
+    q_selected_entities: Query<Entity, With<Selected>>,
+) {
+    let Some((entity, spawn_ev)) = data_option else {
+        return;
+    };
+
+    let mut cursor = get_cursor_mut!(q_cursor);
+
+    if spawn_ev.init_drag {
+        for selected_entity in q_selected_entities.iter() {
+            commands.entity(selected_entity).remove::<Selected>();
+        }
+
+        cursor.state = CursorState::Dragging;
+        commands.entity(entity).insert(Selected);
+        commands.entity(entity).insert(Dragged {
+            cursor_offset: Position(Vec2::ZERO),
+        });
     }
 }

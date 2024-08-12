@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    designer::{chip::ChipSpecs, designer_state::DesignerState},
+    designer::{board_entity::Position, chip::ChipSpecs, designer_state::DesignerState},
     events::events::SpawnBoardEntityEvent,
 };
 
@@ -95,7 +95,7 @@ pub fn chip_selector_button_interact(
 
                 spawn_ev_writer.send(SpawnBoardEntityEvent {
                     name: chip_name,
-                    position: Vec2::ZERO,
+                    position: Position(Vec2::ZERO),
                     init_drag: true,
                 });
             }

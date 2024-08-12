@@ -12,11 +12,14 @@ pub mod wire;
 
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
-use board_entity::{update_board_entity_position, BoardEntityViewKind};
-use io_pin::BoardBinaryInput;
+use board_entity::{
+    manage_additional_spawn_tasks, update_board_entity_position, BoardEntityViewKind, Position,
+};
+use io_pin::{BoardBinaryInput, BoardBinaryOutput};
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use moonshine_view::RegisterView;
+use selection::{release_drag, update_dragged_entities_position};
 
 use crate::events::events::{LoadEvent, SaveEvent};
 use crate::simulation::simulation::tick_simulation;
@@ -34,10 +37,10 @@ use self::io_pin::toggle_board_input_switch;
 use self::io_pin::update_board_binary_displays;
 use self::render_settings::init_render_settings;
 use self::selection::delete_selected;
-use self::selection::drag_selected;
 use self::selection::highlight_selected;
 use self::selection::select_single;
 use self::selection::spawn_selection_box;
+use self::selection::start_drag;
 use self::selection::update_selection_box;
 use self::signal_state::update_signal_colors;
 use self::wire::drag_wire;
@@ -48,7 +51,11 @@ pub struct DesignerPlugin;
 impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<DesignerState>()
+            .register_type::<BoardBinaryInput>()
+            .register_type::<BoardBinaryOutput>()
+            .register_type::<Position>()
             .register_view::<BoardEntityViewKind, BoardBinaryInput>()
+            .register_view::<BoardEntityViewKind, BoardBinaryOutput>()
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
             .add_systems(
@@ -66,18 +73,26 @@ impl Plugin for DesignerPlugin {
                 Update,
                 (
                     spawn_selection_box,
-                    (select_single, drag_selected).chain().after(drag_wire),
+                    (select_single, start_drag).chain().after(drag_wire),
                     delete_selected,
                 )
                     .after(drag_wire)
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
+            .add_systems(Update, release_drag)
             .add_systems(Update, update_selection_box)
-            .add_systems(PostUpdate, highlight_selected)
             .add_systems(Update, highlight_hovered_pin)
-            .add_systems(Update, spawn_chip)
-            .add_systems(Update, spawn_board_binary_input)
-            .add_systems(Update, spawn_board_binary_output)
+            .add_systems(
+                Update, spawn_chip, /*.pipe(manage_additional_spawn_tasks)*/
+            )
+            .add_systems(
+                Update,
+                spawn_board_binary_input.pipe(manage_additional_spawn_tasks),
+            )
+            .add_systems(
+                Update,
+                spawn_board_binary_output.pipe(manage_additional_spawn_tasks),
+            )
             .add_systems(Update, update_signal_colors.after(tick_simulation))
             .add_systems(Update, toggle_board_input_switch)
             .add_systems(
@@ -89,6 +104,8 @@ impl Plugin for DesignerPlugin {
             .add_systems(Update, update_board_entity_position)
             // runs in post update because it requires that all despawning of dest pins has been completed to update the wires
             .add_systems(PostUpdate, update_wires)
+            .add_systems(PostUpdate, update_dragged_entities_position)
+            .add_systems(PostUpdate, highlight_selected)
             .add_systems(
                 PostUpdate,
                 update_bounding_boxes.after(TransformSystem::TransformPropagate),

@@ -10,7 +10,10 @@ use bevy_prototype_lyon::{
 };
 use moonshine_view::{View, Viewable};
 
-use crate::{events::events::DeleteSelectedEvent, get_cursor, get_cursor_mut};
+use crate::{
+    events::events::DeleteSelectedEvent, get_cursor, get_cursor_mut,
+    ui::cursor_captured::IsCursorCaptured,
+};
 
 use super::{
     board_entity::{BoardEntityModel, BoardEntityView, BoardEntityViewKind, Position},
@@ -21,7 +24,7 @@ use super::{
 
 #[derive(Component)]
 pub struct Dragged {
-    cursor_offset: Position,
+    pub cursor_offset: Position,
 }
 
 #[derive(Component)]
@@ -215,32 +218,15 @@ pub fn select_single(
 }
 
 #[allow(clippy::type_complexity)]
-pub fn drag_selected(
+pub fn start_drag(
     mut q_cursor: Query<(&mut Cursor, Entity, &Transform)>,
     input: Res<ButtonInput<MouseButton>>,
     mut commands: Commands,
     q_board_entity_views: Query<(&View<BoardEntityViewKind>, &BoundingBox), With<BoardEntityView>>,
-    mut q_dragged_board_entities: Query<(Entity, &mut Position, &Dragged), With<BoardEntityModel>>,
     q_selected: Query<(Entity, &Position), (With<Selected>, Without<Dragged>)>,
 ) {
     let (mut cursor, _, cursor_transform) = get_cursor_mut!(q_cursor);
     let cursor_position = cursor_transform.translation.truncate();
-
-    // update positions
-    for (_, mut position, dragged) in q_dragged_board_entities.iter_mut() {
-        *position = Position(cursor_transform.translation.truncate() + dragged.cursor_offset.xy());
-    }
-
-    // release Dragged components
-    if input.just_released(MouseButton::Left) && cursor.state == CursorState::Dragging {
-        q_dragged_board_entities.iter().for_each(|(e, _, _)| {
-            commands.entity(e).remove::<Dragged>();
-        });
-
-        cursor.state = CursorState::Idle;
-
-        return;
-    }
 
     // check if drag is started
     if !input.just_pressed(MouseButton::Left) {
@@ -269,6 +255,45 @@ pub fn drag_selected(
     cursor.state = CursorState::Dragging;
 }
 
+pub fn release_drag(
+    cursor_captured: Res<IsCursorCaptured>,
+    mut commands: Commands,
+    input: Res<ButtonInput<MouseButton>>,
+    mut q_cursor: Query<(&mut Cursor, Entity, &Transform)>,
+    q_dragged_board_entities: Query<(Entity, &Position, &Dragged), With<BoardEntityModel>>,
+) {
+    let (mut cursor, _, _) = get_cursor_mut!(q_cursor);
+
+    if !input.just_released(MouseButton::Left) || cursor.state != CursorState::Dragging {
+        return;
+    }
+
+    if cursor_captured.0 {
+        q_dragged_board_entities.iter().for_each(|(e, _, _)| {
+            commands.entity(e).despawn_recursive();
+        });
+    } else {
+        q_dragged_board_entities.iter().for_each(|(e, _, _)| {
+            commands.entity(e).remove::<Dragged>();
+        });
+    }
+
+    cursor.state = CursorState::Idle;
+}
+
+#[allow(clippy::type_complexity)]
+pub fn update_dragged_entities_position(
+    mut q_cursor: Query<&Transform, With<Cursor>>,
+    mut q_dragged_board_entities: Query<(Entity, &mut Position, &Dragged), With<BoardEntityModel>>,
+) {
+    let cursor_transform = get_cursor_mut!(q_cursor);
+
+    // update positions
+    for (_, mut position, dragged) in q_dragged_board_entities.iter_mut() {
+        *position = Position(cursor_transform.translation.truncate() + dragged.cursor_offset.xy());
+    }
+}
+
 pub fn delete_selected(
     mut commands: Commands,
     q_selected_entities: Query<Entity, With<Selected>>,
@@ -281,8 +306,15 @@ pub fn delete_selected(
     }
 }
 
+#[allow(clippy::type_complexity)]
 pub fn highlight_selected(
-    q_selected_entities: Query<&Viewable<BoardEntityViewKind>, Added<Selected>>,
+    q_selected_entities: Query<
+        &Viewable<BoardEntityViewKind>,
+        (
+            With<Selected>,
+            Or<(Added<Selected>, Added<Viewable<BoardEntityViewKind>>)>,
+        ),
+    >,
     q_entities: Query<&Viewable<BoardEntityViewKind>>,
     mut q_deselected: RemovedComponents<Selected>,
     q_bounding_boxes: Query<&BoundingBox>,

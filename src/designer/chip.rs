@@ -124,7 +124,7 @@ pub fn spawn_chip(
                         Fill::color(render_settings.pin_color),
                         ChipInputPin,
                         SignalState::Low,
-                        BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
+                        BoundingBox::circle_new(render_settings.board_binary_io_pin_radius, false),
                     ));
                 }
 
@@ -141,7 +141,7 @@ pub fn spawn_chip(
                     Fill::color(render_settings.pin_color),
                     ChipOutputPin,
                     SignalState::Low,
-                    BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
+                    BoundingBox::circle_new(render_settings.board_binary_io_pin_radius, false),
                 ));
             });
     }

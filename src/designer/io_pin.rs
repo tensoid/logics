@@ -3,14 +3,13 @@ use bevy_prototype_lyon::prelude::*;
 use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;
 
-use crate::{events::events::SpawnBoardEntityEvent, get_cursor, get_cursor_mut};
+use crate::{events::events::SpawnBoardEntityEvent, get_cursor};
 
 use super::{
-    board_entity::{BoardEntityModelBundle, BoardEntityView, BoardEntityViewBundle, BoardEntityViewKind, Position},
+    board_entity::{BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position},
     bounding_box::BoundingBox,
-    cursor::{Cursor, CursorState},
+    cursor::Cursor,
     render_settings::CircuitBoardRenderingSettings,
-    selection::Selected,
     signal_state::SignalState,
 };
 
@@ -50,20 +49,20 @@ impl BoardBinaryInputSwitchBundle {
             sprite_bundle: SpriteBundle {
                 texture,
                 transform: Transform::from_xyz(
-                    -render_settings.binary_io_extents.x / 4.0,
+                    -render_settings.board_binary_input_extents.x / 4.0,
                     0.0,
                     0.01,
                 ),
                 sprite: Sprite {
                     custom_size: Some(
-                        render_settings.binary_io_extents / Vec2::new(2.0, 1.0) * 0.8,
+                        render_settings.board_binary_input_extents / Vec2::new(2.0, 1.0) * 0.8,
                     ),
                     ..default()
                 },
                 ..default()
             },
             bounding_box: BoundingBox::rect_new(
-                render_settings.binary_io_extents / Vec2::new(4.0, 2.0),
+                render_settings.board_binary_input_extents / Vec2::new(4.0, 2.0),
                 false,
             ),
         }
@@ -85,14 +84,14 @@ impl BoardBinaryInputBodyBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
         Self {
             board_binary_input_body: BoardBinaryInputBody,
-            fill: Fill::color(render_settings.binary_io_color),
+            fill: Fill::color(render_settings.board_binary_io_color),
             stroke: Stroke::new(
                 render_settings.board_entity_stroke_color,
                 render_settings.board_entity_stroke_width,
             ),
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Rectangle {
-                    extents: render_settings.binary_io_extents,
+                    extents: render_settings.board_binary_input_extents,
                     ..default()
                 }),
                 spatial: SpatialBundle {
@@ -122,12 +121,12 @@ impl BoardBinaryInputPinBundle {
             board_binary_input_pin: BoardBinaryInputPin,
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Circle {
-                    radius: render_settings.binary_io_pin_radius,
+                    radius: render_settings.board_binary_io_pin_radius,
                     ..default()
                 }),
                 spatial: SpatialBundle {
                     transform: Transform::from_xyz(
-                        render_settings.binary_io_extents.x / 2.0,
+                        render_settings.board_binary_input_extents.x / 2.0,
                         0.0,
                         0.02,
                     ),
@@ -136,16 +135,106 @@ impl BoardBinaryInputPinBundle {
                 ..default()
             },
             fill: Fill::color(render_settings.pin_color),
-            bounding_box: BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
+            bounding_box: BoundingBox::circle_new(
+                render_settings.board_binary_io_pin_radius,
+                false,
+            ),
+        }
+    }
+}
+
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+pub struct BoardBinaryOutput;
+
+#[derive(Bundle)]
+pub struct BoardBinaryOutputBundle {
+    board_binary_output: BoardBinaryOutput,
+    board_entity_model_bundle: BoardEntityModelBundle,
+}
+
+impl BoardBinaryOutputBundle {
+    fn new(position: Position) -> Self {
+        Self {
+            board_binary_output: BoardBinaryOutput,
+            board_entity_model_bundle: BoardEntityModelBundle::new(position),
         }
     }
 }
 
 #[derive(Component)]
-pub struct BoardBinaryOutput;
+pub struct BoardBinaryOutputBody;
+
+#[derive(Bundle)]
+pub struct BoardBinaryOutputBodyBundle {
+    board_binary_output_body: BoardBinaryOutputBody,
+    fill: Fill,
+    stroke: Stroke,
+    shape_bundle: ShapeBundle,
+}
+
+impl BoardBinaryOutputBodyBundle {
+    fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
+        Self {
+            board_binary_output_body: BoardBinaryOutputBody,
+            fill: Fill::color(render_settings.board_binary_io_color),
+            stroke: Stroke::new(
+                render_settings.board_entity_stroke_color,
+                render_settings.board_entity_stroke_width,
+            ),
+            shape_bundle: ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: render_settings.board_binary_output_extents,
+                    ..default()
+                }),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                    ..default()
+                },
+                ..default()
+            },
+        }
+    }
+}
 
 #[derive(Component)]
 pub struct BoardBinaryOutputPin;
+
+#[derive(Bundle)]
+pub struct BoardBinaryOutputPinBundle {
+    board_binary_output_pin: BoardBinaryOutputPin,
+    shape_bundle: ShapeBundle,
+    fill: Fill,
+    bounding_box: BoundingBox,
+}
+
+impl BoardBinaryOutputPinBundle {
+    fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
+        Self {
+            board_binary_output_pin: BoardBinaryOutputPin,
+            shape_bundle: ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Circle {
+                    radius: render_settings.board_binary_io_pin_radius,
+                    ..default()
+                }),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(
+                        -render_settings.board_binary_output_extents.x / 2.0,
+                        0.0,
+                        0.02,
+                    ),
+                    ..default()
+                },
+                ..default()
+            },
+            fill: Fill::color(render_settings.pin_color),
+            bounding_box: BoundingBox::circle_new(
+                render_settings.board_binary_io_pin_radius,
+                false,
+            ),
+        }
+    }
+}
 
 #[derive(Component)]
 pub struct BoardBinaryDisplay;
@@ -163,7 +252,7 @@ impl BoardBinaryDisplayBundle {
         is_input: bool,
     ) -> Self {
         let x_offset = match is_input {
-            true => render_settings.binary_io_extents.x / 4.0,
+            true => render_settings.board_binary_input_extents.x / 4.0,
             false => 0.0,
         };
 
@@ -178,8 +267,31 @@ impl BoardBinaryDisplayBundle {
     }
 }
 
+pub fn spawn_board_binary_input(
+    mut commands: Commands,
+    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
+) -> Option<(Entity, SpawnBoardEntityEvent)> {
+    for ev in spawn_ev.read() {
+        if ev.name != "PORT-IN" {
+            continue;
+        }
+
+        let entity = commands
+            .spawn(BoardBinaryInputBundle::new(ev.position.clone()))
+            .id();
+
+        return Some((entity, ev.clone()));
+    }
+
+    None
+}
+
 impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
-    fn build(world: &World, object: Object<BoardEntityViewKind>, view: &mut ViewCommands<BoardEntityViewKind>) {
+    fn build(
+        world: &World,
+        object: Object<BoardEntityViewKind>,
+        view: &mut ViewCommands<BoardEntityViewKind>,
+    ) {
         let asset_server = world.resource::<AssetServer>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
@@ -196,7 +308,7 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
 
         view.insert(BoardEntityViewBundle::new(
             position.clone(),
-            render_settings.binary_io_extents,
+            render_settings.board_binary_input_extents,
         ))
         .with_children(|board_entity| {
             board_entity.spawn(BoardBinaryInputSwitchBundle::new(
@@ -214,35 +326,35 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
     }
 }
 
-pub fn spawn_board_binary_input(
-    mut commands: Commands,
-    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
-) {
-    for ev in spawn_ev.read() {
-        if ev.name != "PORT-IN" {
-            continue;
-        }
-
-        commands.spawn(BoardBinaryInputBundle::new(Position::new(0.0, 0.0)));
-    }
-}
-
 pub fn spawn_board_binary_output(
     mut commands: Commands,
     mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
-    render_settings: Res<CircuitBoardRenderingSettings>,
-    mut q_cursor: Query<(Entity, &mut Cursor)>,
-    asset_server: Res<AssetServer>,
-) {
-    let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
-
+) -> Option<(Entity, SpawnBoardEntityEvent)> {
     for ev in spawn_ev.read() {
         if ev.name != "PORT-OUT" {
             continue;
         }
 
-        let binary_output_extents = Vec2::new(30.0, 30.0);
+        let entity = commands
+            .spawn(BoardBinaryOutputBundle::new(Position::new(0.0, 0.0)))
+            .id();
 
+        return Some((entity, ev.clone()));
+    }
+
+    None
+}
+
+impl BuildView<BoardEntityViewKind> for BoardBinaryOutput {
+    fn build(
+        world: &World,
+        object: Object<BoardEntityViewKind>,
+        view: &mut ViewCommands<BoardEntityViewKind>,
+    ) {
+        let asset_server = world.resource::<AssetServer>();
+        let render_settings = world.resource::<CircuitBoardRenderingSettings>();
+
+        //TODO: store textstyle somewhere else like render settings
         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
         let text_style = TextStyle {
@@ -251,72 +363,21 @@ pub fn spawn_board_binary_output(
             font,
         };
 
-        let rect_shape = shapes::Rectangle {
-            extents: Vec2::new(30.0, 30.0),
-            ..default()
-        };
+        let position = world.get::<Position>(object.entity()).unwrap();
 
-        let pin_bundle = (
-            ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Circle {
-                    radius: render_settings.binary_io_pin_radius,
-                    ..default()
-                }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(-rect_shape.extents.x / 2.0, 0.0, 0.01),
-                    ..default()
-                },
-                ..default()
-            },
-            Fill::color(render_settings.pin_color),
-            BoardBinaryOutputPin,
-            SignalState::Low,
-            BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
-        );
-
-        let binary_display_bundle = (
-            BoardBinaryDisplay,
-            Text2dBundle {
-                text: Text::from_section("0", text_style).with_justify(JustifyText::Center),
-                transform: Transform::from_xyz(0.0, 0.0, 0.01),
-                ..default()
-            },
-        );
-
-        let board_binary_output_bundle = (
-            BoardBinaryOutput,
-            BoardEntityView,
-            BoundingBox::rect_new(rect_shape.extents / 2.0, true),
-            Stroke::new(
-                render_settings.board_entity_stroke_color,
-                render_settings.board_entity_stroke_width,
-            ),
-            Fill::color(render_settings.binary_io_color),
-            ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Rectangle {
-                    extents: binary_output_extents,
-                    ..default()
-                }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
-                    ..default()
-                },
-                ..default()
-            },
-        );
-
-        let entity = commands
-            .spawn(board_binary_output_bundle)
-            .with_children(|bbo| {
-                bbo.spawn(binary_display_bundle);
-                bbo.spawn(pin_bundle);
-            })
-            .id();
-
-        //Parent io pin to curser and start drag
-        cursor.state = CursorState::Dragging;
-        commands.entity(cursor_entity).add_child(entity);
-        commands.entity(entity).insert(Selected);
+        view.insert(BoardEntityViewBundle::new(
+            position.clone(),
+            render_settings.board_binary_output_extents,
+        ))
+        .with_children(|board_entity| {
+            board_entity.spawn(BoardBinaryOutputBodyBundle::new(render_settings));
+            board_entity.spawn(BoardBinaryDisplayBundle::new(
+                render_settings,
+                text_style,
+                false,
+            ));
+            board_entity.spawn(BoardBinaryOutputPinBundle::new(render_settings));
+        });
     }
 }
 
