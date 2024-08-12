@@ -2,8 +2,6 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
 use super::{
-    chip::{ChipInputPin, ChipOutputPin},
-    io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin},
     render_settings::CircuitBoardRenderingSettings,
     wire::Wire,
 };

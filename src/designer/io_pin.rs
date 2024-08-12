@@ -6,7 +6,7 @@ use moonshine_view::prelude::*;
 use crate::{events::events::SpawnBoardEntityEvent, get_cursor, get_cursor_mut};
 
 use super::{
-    board_entity::{BoardEntityModelBundle, BoardEntityView, BoardEntityViewBundle, Position},
+    board_entity::{BoardEntityModelBundle, BoardEntityView, BoardEntityViewBundle, BoardEntityViewKind, Position},
     bounding_box::BoundingBox,
     cursor::{Cursor, CursorState},
     render_settings::CircuitBoardRenderingSettings,
@@ -178,8 +178,8 @@ impl BoardBinaryDisplayBundle {
     }
 }
 
-impl BuildView for BoardBinaryInput {
-    fn build(world: &World, object: Object<Self>, view: &mut ViewCommands<Self>) {
+impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
+    fn build(world: &World, object: Object<BoardEntityViewKind>, view: &mut ViewCommands<BoardEntityViewKind>) {
         let asset_server = world.resource::<AssetServer>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
@@ -217,7 +217,7 @@ impl BuildView for BoardBinaryInput {
 pub fn spawn_board_binary_input(
     mut commands: Commands,
     mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
-) -> Option<(Entity, SpawnBoardEntityEvent)> {
+) {
     for ev in spawn_ev.read() {
         if ev.name != "PORT-IN" {
             continue;
@@ -225,119 +225,6 @@ pub fn spawn_board_binary_input(
 
         commands.spawn(BoardBinaryInputBundle::new(Position::new(0.0, 0.0)));
     }
-
-    None
-}
-
-pub fn spawn_board_binary_input_d(
-    mut commands: Commands,
-    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
-    render_settings: Res<CircuitBoardRenderingSettings>,
-    mut q_cursor: Query<(Entity, &mut Cursor)>,
-    asset_server: Res<AssetServer>,
-) -> Option<(Entity, SpawnBoardEntityEvent)> {
-    let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
-
-    for ev in spawn_ev.read() {
-        if ev.name != "PORT-IN" {
-            continue;
-        }
-
-        let binary_input_extents = Vec2::new(60.0, 30.0);
-
-        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
-
-        let text_style = TextStyle {
-            font_size: 20.0,
-            color: Color::BLACK,
-            font,
-        };
-
-        let pin_bundle = (
-            BoardBinaryInputPin,
-            ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Circle {
-                    radius: render_settings.binary_io_pin_radius,
-                    ..default()
-                }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(binary_input_extents.x / 2.0, 0.0, 0.02),
-                    ..default()
-                },
-                ..default()
-            },
-            Fill::color(render_settings.pin_color),
-            SignalState::Low,
-            BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
-        );
-
-        let binary_display_bundle = (
-            BoardBinaryDisplay,
-            Text2dBundle {
-                text: Text::from_section("0", text_style).with_justify(JustifyText::Center),
-                transform: Transform::from_xyz(binary_input_extents.x / 4.0, 0.0, 0.01),
-                ..default()
-            },
-        );
-
-        let binary_switch_bundle = (
-            BoardBinaryInputSwitch,
-            SpriteBundle {
-                texture: asset_server.load("images/switch.png"),
-                transform: Transform::from_xyz(-binary_input_extents.x / 4.0, 0.0, 0.01),
-                sprite: Sprite {
-                    custom_size: Some(binary_input_extents / Vec2::new(2.0, 1.0) * 0.8),
-                    ..default()
-                },
-                ..default()
-            },
-            BoundingBox::rect_new(binary_input_extents / Vec2::new(4.0, 2.0), false),
-        );
-
-        let board_binary_input_bundle = (
-            BoardBinaryInput,
-            BoardEntityView,
-            BoundingBox::rect_with_offset(
-                binary_input_extents / Vec2::new(4.0, 2.0),
-                Vec2::new(binary_input_extents.x / 4.0, 0.0),
-                true,
-            ),
-            Fill::color(render_settings.binary_io_color),
-            Stroke::new(
-                render_settings.board_entity_stroke_color,
-                render_settings.board_entity_stroke_width,
-            ),
-            ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Rectangle {
-                    extents: binary_input_extents,
-                    ..default()
-                }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
-                    ..default()
-                },
-                ..default()
-            },
-        );
-
-        let entity = commands
-            .spawn(board_binary_input_bundle)
-            .with_children(|bbi| {
-                bbi.spawn(binary_switch_bundle);
-                bbi.spawn(binary_display_bundle);
-                bbi.spawn(pin_bundle);
-            })
-            .id();
-
-        //Parent io pin to curser and start drag
-        // cursor.state = CursorState::Dragging;
-        // commands.entity(cursor_entity).add_child(entity);
-        // commands.entity(entity).insert(Selected);
-
-        return Some((entity, ev.clone()));
-    }
-
-    None
 }
 
 pub fn spawn_board_binary_output(
@@ -346,7 +233,7 @@ pub fn spawn_board_binary_output(
     render_settings: Res<CircuitBoardRenderingSettings>,
     mut q_cursor: Query<(Entity, &mut Cursor)>,
     asset_server: Res<AssetServer>,
-) -> Option<(Entity, SpawnBoardEntityEvent)> {
+) {
     let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
 
     for ev in spawn_ev.read() {
@@ -430,11 +317,7 @@ pub fn spawn_board_binary_output(
         cursor.state = CursorState::Dragging;
         commands.entity(cursor_entity).add_child(entity);
         commands.entity(entity).insert(Selected);
-
-        return Some((entity, ev.clone()));
     }
-
-    None
 }
 
 #[allow(clippy::type_complexity)]

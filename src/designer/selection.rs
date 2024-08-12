@@ -1,4 +1,7 @@
-use bevy::{color::palettes::css::RED, math::bounding::Aabb2d, prelude::*};
+use bevy::{
+    math::bounding::{Aabb2d, BoundingVolume},
+    prelude::*,
+};
 use bevy_prototype_lyon::{
     draw::{Fill, Stroke},
     entity::{Path, ShapeBundle},
@@ -7,17 +10,19 @@ use bevy_prototype_lyon::{
 };
 use moonshine_view::{View, Viewable};
 
-use crate::{
-    events::events::DeleteSelectedEvent, get_cursor, get_cursor_mut,
-    ui::cursor_captured::IsCursorCaptured,
-};
+use crate::{events::events::DeleteSelectedEvent, get_cursor, get_cursor_mut};
 
 use super::{
-    board_entity::{BoardEntityView, BoardEntityViewKind},
+    board_entity::{BoardEntityModel, BoardEntityView, BoardEntityViewKind, Position},
     bounding_box::{BoundingBox, BoundingShape},
     cursor::{Cursor, CursorState},
     render_settings::CircuitBoardRenderingSettings,
 };
+
+#[derive(Component)]
+pub struct Dragged {
+    cursor_offset: Position,
+}
 
 #[derive(Component)]
 pub struct Selected;
@@ -37,16 +42,15 @@ impl SelectionOutlineBundle {
         Self {
             selection_outline: SelectionOutline,
             stroke: Stroke::new(
-                RED, //render_settings.board_entity_stroke_color_selected,
-                2.0, //render_settings.board_entity_stroke_width,
+                render_settings.board_entity_stroke_color_selected,
+                render_settings.board_entity_stroke_width,
             ),
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Rectangle {
-                    extents: Vec2::new(100.0, 100.0), //binary_input_extents,
+                    extents,
                     ..default()
                 }),
                 spatial: SpatialBundle {
-                    //transform: Transform::from_xyz(ev.position.x, ev.position.y, 0.0),
                     transform: Transform::from_xyz(0.0, 0.0, 1.0),
                     ..default()
                 },
@@ -111,14 +115,8 @@ pub fn update_selection_box(
     mut q_cursor: Query<(&mut Cursor, &Transform)>,
     input: Res<ButtonInput<MouseButton>>,
     mut commands: Commands,
-    q_selected_entities: Query<
-        (&View<BoardEntityViewKind>, &BoundingBox),
-        (With<Selected>, With<BoardEntityView>),
-    >,
-    q_not_selected_entities: Query<
-        (&View<BoardEntityViewKind>, &BoundingBox),
-        (Without<Selected>, With<BoardEntityView>),
-    >,
+    q_board_entity_views: Query<(&View<BoardEntityViewKind>, &BoundingBox), With<BoardEntityView>>,
+    q_selected: Query<(), With<Selected>>,
 ) {
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
     let cursor_position = cursor_transform.translation.truncate();
@@ -150,26 +148,21 @@ pub fn update_selection_box(
         offset: Vec2::ZERO,
     };
 
-    // update not selected entities
-    for (view, bbox) in q_not_selected_entities.iter() {
-        println!("Checking");
-        if !bbox.intersects(selection_box_bbox) || !bbox.selectable {
+    // update selected entities
+    for (view, bbox) in q_board_entity_views.iter() {
+        if !bbox.selectable {
             continue;
         }
-
-        println!("Found selected");
 
         let model_entity = view.viewable().entity();
-        commands.entity(model_entity).insert(Selected);
-    }
+        let intersects = bbox.intersects(selection_box_bbox);
+        let is_selected = q_selected.get(model_entity).is_ok();
 
-    // update selected entities
-    for (view, bbox) in q_selected_entities.iter() {
-        if bbox.intersects(selection_box_bbox) || !bbox.selectable {
-            continue;
+        if intersects && !is_selected {
+            commands.entity(model_entity).insert(Selected);
+        } else if !intersects && is_selected {
+            commands.entity(model_entity).remove::<Selected>();
         }
-
-        //commands.entity(entity).remove::<Selected>();
     }
 
     // update selection box visual
@@ -180,48 +173,12 @@ pub fn update_selection_box(
 }
 
 #[allow(clippy::type_complexity)]
-pub fn drag_selected(
-    mut q_cursor: Query<(&mut Cursor, Entity, &Transform)>,
-    input: Res<ButtonInput<MouseButton>>,
-    mut commands: Commands,
-    mut q_selected_entities: Query<
-        (Entity, &BoundingBox, &mut Transform),
-        (With<Selected>, Without<Cursor>),
-    >,
-) {
-    if !input.just_pressed(MouseButton::Left) {
-        return;
-    }
-
-    let (mut cursor, cursor_entity, cursor_transform) = get_cursor_mut!(q_cursor);
-    let cursor_position = cursor_transform.translation.truncate();
-
-    if cursor.state != CursorState::Idle {
-        return;
-    }
-
-    if !q_selected_entities
-        .iter()
-        .any(|(_, bbox, _)| bbox.selectable && bbox.point_in_bbox(cursor_position))
-    {
-        return;
-    }
-
-    for (entity, _, mut transform) in q_selected_entities.iter_mut() {
-        commands.entity(cursor_entity).add_child(entity);
-        let position_diff = transform.translation - cursor_transform.translation;
-        transform.translation = position_diff;
-    }
-
-    cursor.state = CursorState::Dragging;
-}
-
-#[allow(clippy::type_complexity)]
-pub fn clear_selection(
+pub fn select_single(
     q_cursor: Query<(&Cursor, &Transform)>,
     input: Res<ButtonInput<MouseButton>>,
     mut commands: Commands,
-    q_selected_entities: Query<(Entity, &BoundingBox), (With<Selected>, Without<Cursor>)>,
+    q_board_entity_views: Query<(&View<BoardEntityViewKind>, &BoundingBox), With<BoardEntityView>>,
+    q_selected: Query<(Entity, &Position), (With<Selected>, Without<Dragged>)>,
 ) {
     if !input.just_pressed(MouseButton::Left) {
         return;
@@ -234,73 +191,82 @@ pub fn clear_selection(
         return;
     }
 
-    if q_selected_entities
+    let hovered_board_entity = q_board_entity_views
+        .iter()
+        .find(|(_, bbox)| bbox.selectable && bbox.point_in_bbox(cursor_position));
+
+    if hovered_board_entity.is_none() {
+        return;
+    }
+
+    let hovered_board_entity_model_entity = hovered_board_entity.unwrap().0.viewable().entity();
+    let is_hovered_board_entity_selected =
+        q_selected.get(hovered_board_entity_model_entity).is_ok();
+
+    if !is_hovered_board_entity_selected {
+        q_selected.iter().for_each(|(e, _)| {
+            commands.entity(e).remove::<Selected>();
+        });
+
+        commands
+            .entity(hovered_board_entity_model_entity)
+            .insert(Selected);
+    }
+}
+
+#[allow(clippy::type_complexity)]
+pub fn drag_selected(
+    mut q_cursor: Query<(&mut Cursor, Entity, &Transform)>,
+    input: Res<ButtonInput<MouseButton>>,
+    mut commands: Commands,
+    q_board_entity_views: Query<(&View<BoardEntityViewKind>, &BoundingBox), With<BoardEntityView>>,
+    mut q_dragged_board_entities: Query<(Entity, &mut Position, &Dragged), With<BoardEntityModel>>,
+    q_selected: Query<(Entity, &Position), (With<Selected>, Without<Dragged>)>,
+) {
+    let (mut cursor, _, cursor_transform) = get_cursor_mut!(q_cursor);
+    let cursor_position = cursor_transform.translation.truncate();
+
+    // update positions
+    for (_, mut position, dragged) in q_dragged_board_entities.iter_mut() {
+        *position = Position(cursor_transform.translation.truncate() + dragged.cursor_offset.xy());
+    }
+
+    // release Dragged components
+    if input.just_released(MouseButton::Left) && cursor.state == CursorState::Dragging {
+        q_dragged_board_entities.iter().for_each(|(e, _, _)| {
+            commands.entity(e).remove::<Dragged>();
+        });
+
+        cursor.state = CursorState::Idle;
+
+        return;
+    }
+
+    // check if drag is started
+    if !input.just_pressed(MouseButton::Left) {
+        return;
+    }
+
+    if cursor.state != CursorState::Idle {
+        return;
+    }
+
+    if !q_board_entity_views
         .iter()
         .any(|(_, bbox)| bbox.selectable && bbox.point_in_bbox(cursor_position))
     {
         return;
     }
 
-    for (entity, _) in q_selected_entities.iter() {
-        commands.entity(entity).remove::<Selected>();
-    }
-}
-
-#[allow(clippy::type_complexity)]
-pub fn select_single(
-    q_cursor: Query<(&Cursor, &Transform)>,
-    input: Res<ButtonInput<MouseButton>>,
-    mut commands: Commands,
-    q_not_selected_entities: Query<(Entity, &BoundingBox), (Without<Selected>, Without<Cursor>)>,
-) {
-    if !input.just_pressed(MouseButton::Left) {
-        return;
+    // add Dragged component to selected entities
+    for (selected_entity, position) in q_selected.iter() {
+        let cursor_offset = position.xy() - cursor_transform.translation.truncate();
+        commands.entity(selected_entity).insert(Dragged {
+            cursor_offset: Position(cursor_offset),
+        });
     }
 
-    let (cursor, cursor_transform) = get_cursor!(q_cursor);
-    let cursor_position = cursor_transform.translation.truncate();
-
-    if cursor.state != CursorState::Idle {
-        return;
-    }
-
-    for (entity, bbox) in q_not_selected_entities.iter() {
-        if bbox.selectable && bbox.point_in_bbox(cursor_position) {
-            commands.entity(entity).insert(Selected);
-        }
-    }
-}
-
-#[allow(clippy::type_complexity)]
-pub fn stop_dragging(
-    mut q_cursor: Query<(Entity, &mut Cursor, &Transform, Option<&Children>)>,
-    input: Res<ButtonInput<MouseButton>>,
-    mut commands: Commands,
-    mut q_dragged_entities: Query<
-        (Entity, &BoundingBox, &mut Transform),
-        (With<Selected>, Without<Cursor>),
-    >,
-    cursor_captured: Res<IsCursorCaptured>,
-) {
-    let (cursor_entity, mut cursor, cursor_transform, cursor_children) = get_cursor_mut!(q_cursor);
-
-    if cursor.state == CursorState::Dragging && input.just_released(MouseButton::Left) {
-        cursor.state = CursorState::Idle;
-
-        if cursor_captured.0 {
-            commands.entity(cursor_entity).despawn_descendants();
-            return;
-        }
-
-        for &cursor_child_entity in cursor_children.iter().flat_map(|c| c.iter()) {
-            let (_, _, mut child_transform) =
-                q_dragged_entities.get_mut(cursor_child_entity).unwrap();
-            child_transform.translation =
-                cursor_transform.translation + child_transform.translation;
-        }
-
-        commands.entity(cursor_entity).clear_children();
-    }
+    cursor.state = CursorState::Dragging;
 }
 
 pub fn delete_selected(
@@ -315,23 +281,39 @@ pub fn delete_selected(
     }
 }
 
-//TODO: Find better way to do this, like with traits or commands or smth
 pub fn highlight_selected(
-    mut q_selected_entities: Query<&mut Stroke, With<Selected>>,
-    mut q_not_selected_entities: Query<&mut Stroke, Without<Selected>>,
+    q_selected_entities: Query<&Viewable<BoardEntityViewKind>, Added<Selected>>,
+    q_entities: Query<&Viewable<BoardEntityViewKind>>,
+    mut q_deselected: RemovedComponents<Selected>,
+    q_bounding_boxes: Query<&BoundingBox>,
+    q_selection_outlines: Query<(Entity, &Parent), With<SelectionOutline>>,
+    mut commands: Commands,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
-    for mut stroke in q_selected_entities.iter_mut() {
-        *stroke = Stroke::new(
-            render_settings.board_entity_stroke_color_selected,
-            render_settings.board_entity_stroke_width,
-        );
+    for viewable in q_selected_entities.iter() {
+        let view_entity = viewable.view().entity();
+        let bbox = q_bounding_boxes.get(view_entity).unwrap();
+        commands.entity(view_entity).with_children(|cb| {
+            let extents = match bbox.bounding_shape {
+                BoundingShape::Aabb(aabb) => aabb.half_size() * Vec2::splat(2.0),
+                BoundingShape::Circle(_) => panic!("tried to highlight non aabb bounding box"),
+            };
+
+            cb.spawn(SelectionOutlineBundle::new(&render_settings, extents));
+        });
     }
 
-    for mut stroke in q_not_selected_entities.iter_mut() {
-        *stroke = Stroke::new(
-            render_settings.board_entity_stroke_color,
-            render_settings.board_entity_stroke_width,
-        );
+    for deselected_entity in q_deselected.read() {
+        if let Ok(viewable) = q_entities.get(deselected_entity) {
+            let view_entity = viewable.view().entity();
+            let selection_outline_entity = q_selection_outlines
+                .iter()
+                .find(|so| so.1.get() == view_entity)
+                .unwrap()
+                .0;
+
+            commands.entity(selection_outline_entity).remove_parent();
+            commands.entity(selection_outline_entity).despawn();
+        }
     }
 }

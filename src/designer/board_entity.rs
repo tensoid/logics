@@ -1,24 +1,20 @@
 use std::ops::{Deref, DerefMut};
 
-use bevy::{math::VectorSpace, prelude::*};
-use moonshine_core::{
-    kind::Kind,
-    spawn::{Spawn, WithChildren},
-};
+use bevy::prelude::*;
+use moonshine_core::
+    kind::Kind
+;
 use moonshine_save::save::Save;
+use moonshine_view::Viewable;
 
-use crate::{events::events::SpawnBoardEntityEvent, get_cursor_mut};
 
-use super::{
-    bounding_box::BoundingBox,
-    cursor::{Cursor, CursorState},
-    render_settings::{self, CircuitBoardRenderingSettings},
-    selection::{Selected, SelectionOutlineBundle},
-};
+use super::
+    bounding_box::BoundingBox
+;
 
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
-pub struct Position(Vec2);
+pub struct Position(pub Vec2);
 
 impl Position {
     pub fn new(x: f32, y: f32) -> Self {
@@ -97,42 +93,13 @@ impl Kind for BoardEntityViewKind {
     type Filter = With<BoardEntityModel>;
 }
 
-// impl Spawn for BoardEntityBundle {
-//     type Output = BoardEntityBundle;
-
-//     fn spawn(&self, world: &World, entity: Entity) -> Self::Output {
-//         todo!()
-//     }
-// }
-
-/**
- * Handles task like correctly positioning the entity, or initializing a cursor drag.
- */
-pub fn manage_additional_spawn_tasks(
-    In(data_option): In<Option<(Entity, SpawnBoardEntityEvent)>>,
-    mut q_cursor: Query<(Entity, &mut Cursor)>,
-    mut commands: Commands,
-    q_selected_entities: Query<Entity, With<Selected>>,
+pub fn update_board_entity_position(
+    board_entities: Query<(&Viewable<BoardEntityViewKind>, &Position), Changed<Position>>,
+    mut transform: Query<&mut Transform>,
 ) {
-    let Some((entity, spawn_ev)) = data_option else {
-        return;
-    };
-
-    let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
-
-    if spawn_ev.init_drag {
-        for selected_entity in q_selected_entities.iter() {
-            commands.entity(selected_entity).remove::<Selected>();
-        }
-
-        cursor.state = CursorState::Dragging;
-        commands.entity(cursor_entity).add_child(entity);
-        commands.entity(entity).insert(Selected);
-    } else {
-        commands.entity(entity).insert(Transform::from_xyz(
-            spawn_ev.position.x,
-            spawn_ev.position.y,
-            0.0,
-        ));
+    for (viewable, position) in board_entities.iter() {
+        let view = viewable.view();
+        let mut transform = transform.get_mut(view.entity()).unwrap();
+        *transform = Transform::from_translation(position.extend(transform.translation.z))
     }
 }

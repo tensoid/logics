@@ -41,7 +41,7 @@ pub fn spawn_chip(
     asset_server: Res<AssetServer>,
     render_settings: Res<CircuitBoardRenderingSettings>,
     mut q_cursor: Query<(Entity, &mut Cursor)>,
-) -> Option<(Entity, SpawnBoardEntityEvent)> {
+) {
     let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
 
     for ev in spawn_ev.read() {
@@ -74,7 +74,7 @@ pub fn spawn_chip(
             font,
         };
 
-        let chip_entity = commands
+        commands
             .spawn((
                 ShapeBundle {
                     path: GeometryBuilder::build_as(&chip_shape),
@@ -143,11 +143,6 @@ pub fn spawn_chip(
                     SignalState::Low,
                     BoundingBox::circle_new(render_settings.binary_io_pin_radius, false),
                 ));
-            })
-            .id();
-
-        return Some((chip_entity, ev.clone()));
+            });
     }
-
-    None
 }
