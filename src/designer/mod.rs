@@ -13,7 +13,8 @@ pub mod wire;
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
 use board_entity::{
-    manage_additional_spawn_tasks, update_board_entity_position, BoardEntityViewKind, Position,
+    manage_additional_spawn_tasks, update_board_entity_position, BoardEntityModel,
+    BoardEntityViewKind, Position,
 };
 use io_pin::{BoardBinaryInput, BoardBinaryOutput};
 use moonshine_save::load::load_from_file_on_event;
@@ -51,9 +52,10 @@ pub struct DesignerPlugin;
 impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<DesignerState>()
+            .register_type::<BoardEntityModel>()
+            .register_type::<Position>()
             .register_type::<BoardBinaryInput>()
             .register_type::<BoardBinaryOutput>()
-            .register_type::<Position>()
             .register_view::<BoardEntityViewKind, BoardBinaryInput>()
             .register_view::<BoardEntityViewKind, BoardBinaryOutput>()
             .add_systems(Startup, spawn_cursor)

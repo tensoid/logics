@@ -68,7 +68,8 @@ impl BoardEntityViewBundle {
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct BoardEntityModel;
 
 #[derive(Bundle)]
