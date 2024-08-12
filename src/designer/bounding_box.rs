@@ -13,23 +13,23 @@ pub enum BoundingShape {
 pub struct BoundingBox {
     pub bounding_shape: BoundingShape,
     pub offset: Vec2,
-    pub interactable: bool,
+    pub selectable: bool,
 }
 
 impl BoundingBox {
-    pub fn rect_new(half_size: Vec2, interactable: bool) -> BoundingBox {
+    pub fn rect_new(half_size: Vec2, selectable: bool) -> BoundingBox {
         BoundingBox {
             bounding_shape: BoundingShape::Aabb(Aabb2d::new(Vec2::ZERO, half_size)),
             offset: Vec2::ZERO,
-            interactable,
+            selectable,
         }
     }
 
-    pub fn rect_with_offset(half_size: Vec2, offset: Vec2, interactable: bool) -> BoundingBox {
+    pub fn rect_with_offset(half_size: Vec2, offset: Vec2, selectable: bool) -> BoundingBox {
         BoundingBox {
             bounding_shape: BoundingShape::Aabb(Aabb2d::new(Vec2::ZERO, half_size)),
             offset,
-            interactable,
+            selectable,
         }
     }
 
@@ -37,7 +37,7 @@ impl BoundingBox {
         BoundingBox {
             bounding_shape: BoundingShape::Circle(BoundingCircle::new(Vec2::ZERO, radius)),
             offset,
-            interactable,
+            selectable: interactable,
         }
     }
 
@@ -45,7 +45,7 @@ impl BoundingBox {
         BoundingBox {
             bounding_shape: BoundingShape::Circle(BoundingCircle::new(Vec2::ZERO, radius)),
             offset: Vec2::ZERO,
-            interactable,
+            selectable: interactable,
         }
     }
 

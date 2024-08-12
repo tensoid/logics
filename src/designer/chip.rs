@@ -6,7 +6,7 @@ use crate::get_cursor_mut;
 use crate::simulation::expressions::Expr;
 
 use crate::designer::{
-    board_entity::BoardEntity, bounding_box::BoundingBox,
+    board_entity::BoardEntityView, bounding_box::BoundingBox,
     render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
 };
 
@@ -93,7 +93,7 @@ pub fn spawn_chip(
                 ChipExtents(chip_extents),
                 BoundingBox::rect_new(chip_extents / 2.0, true),
                 chip_spec.clone(),
-                BoardEntity,
+                BoardEntityView,
             ))
             .with_children(|chip| {
                 //Chip Name

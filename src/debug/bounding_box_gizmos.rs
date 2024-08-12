@@ -14,7 +14,7 @@ pub fn draw_bounding_boxes(
     q_bboxes: Query<&BoundingBox>,
 ) {
     for bbox in q_bboxes.iter() {
-        let color = match bbox.interactable {
+        let color = match bbox.selectable {
             false => LIME,
             true => RED,
         };

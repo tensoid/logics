@@ -13,9 +13,7 @@ mod ui;
 use camera::CameraPlugin;
 use debug::DebugPlugin;
 use designer::{
-    chip::{ChipSpec, ChipSpecs},
-    io_pin::BoardBinaryInput,
-    DesignerPlugin,
+    board_entity::Position, chip::{ChipSpec, ChipSpecs}, io_pin::BoardBinaryInput, DesignerPlugin
 };
 
 use events::EventsPlugin;
@@ -48,6 +46,7 @@ fn main() {
     app.add_plugins((SavePlugin, LoadPlugin));
 
     app.register_type::<BoardBinaryInput>();
+    app.register_type::<Position>();
 
     app.insert_resource(ChipSpecs(vec![
         ChipSpec {
