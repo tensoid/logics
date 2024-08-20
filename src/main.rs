@@ -44,7 +44,15 @@ fn main() {
     #[cfg(debug_assertions)]
     app.add_plugins(DebugPlugin);
 
-    app.add_plugins((SavePlugin, LoadPlugin));
+    app.add_plugins((SavePlugin, LoadPlugin))
+        .add_plugins(PanCamPlugin)
+        .add_plugins(ShapePlugin)
+        .add_plugins(CameraPlugin)
+        .add_plugins(DesignerPlugin)
+        .add_plugins(EventsPlugin)
+        .add_plugins(InputPlugin)
+        .add_plugins(SimulationPlugin)
+        .add_plugins(UIPlugin);
 
     app.insert_resource(ChipSpecs(vec![
         ChipSpec {
@@ -69,14 +77,7 @@ fn main() {
             name: "XOR-2".to_string(),
             expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
         },
-    ]))
-    .add_plugins(PanCamPlugin)
-    .add_plugins(ShapePlugin)
-    .add_plugins(CameraPlugin);
-    app.add_plugins(DesignerPlugin)
-        .add_plugins(EventsPlugin)
-        .add_plugins(InputPlugin)
-        .add_plugins(SimulationPlugin)
-        .add_plugins(UIPlugin)
-        .run();
+    ]));
+
+    app.run();
 }

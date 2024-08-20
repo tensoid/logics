@@ -4,7 +4,7 @@ use bevy_prototype_lyon::prelude::*;
 use crate::{get_cursor, get_cursor_mut};
 
 use super::{
-    bounding_box::BoundingBox, chip::{ChipInputPin, ChipOutputPin}, cursor::{Cursor, CursorState}, io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin}, render_settings::CircuitBoardRenderingSettings, signal_state::SignalState
+    bounding_box::BoundingBox, chip::{ChipInputPin, ChipOutputPin}, cursor::{Cursor, CursorState}, board_binary_io_pins::{BoardBinaryInputPin, BoardBinaryOutputPin}, render_settings::CircuitBoardRenderingSettings, signal_state::SignalState
 };
 
 #[derive(Component)]

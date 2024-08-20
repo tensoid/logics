@@ -9,6 +9,7 @@ use super::{
     board_entity::{BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position},
     bounding_box::BoundingBox,
     cursor::Cursor,
+    pin::{PinCollection, PinModel, PinModelCollection, PinType, PinView},
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
@@ -21,6 +22,7 @@ pub struct BoardBinaryInput;
 pub struct BoardBinaryInputBundle {
     board_binary_input: BoardBinaryInput,
     board_entity_model_bundle: BoardEntityModelBundle,
+    pin_model_collection: PinModelCollection,
 }
 
 impl BoardBinaryInputBundle {
@@ -28,6 +30,11 @@ impl BoardBinaryInputBundle {
         Self {
             board_binary_input: BoardBinaryInput,
             board_entity_model_bundle: BoardEntityModelBundle::new(position),
+            pin_model_collection: PinModelCollection(vec![PinModel {
+                label: "".into(),
+                pin_type: PinType::Output,
+                signal_state: SignalState::Low,
+            }]),
         }
     }
 }
@@ -110,6 +117,7 @@ pub struct BoardBinaryInputPin;
 #[derive(Bundle)]
 pub struct BoardBinaryInputPinBundle {
     board_binary_input_pin: BoardBinaryInputPin,
+    pin_view: PinView,
     shape_bundle: ShapeBundle,
     fill: Fill,
     bounding_box: BoundingBox,
@@ -119,6 +127,7 @@ impl BoardBinaryInputPinBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
         Self {
             board_binary_input_pin: BoardBinaryInputPin,
+            pin_view: PinView::new(0),
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Circle {
                     radius: render_settings.board_binary_io_pin_radius,
@@ -140,6 +149,33 @@ impl BoardBinaryInputPinBundle {
                 false,
             ),
         }
+    }
+}
+
+#[derive(Component)]
+struct BoardBinaryInputPinCollection;
+
+#[derive(Bundle)]
+struct BoardBinaryInputPinCollectionBundle {
+    board_binary_input_pin_collection: BoardBinaryInputPinCollection,
+    pin_collection: PinCollection,
+    spatial_bundle: SpatialBundle,
+}
+
+impl BoardBinaryInputPinCollectionBundle {
+    fn new() -> Self {
+        Self {
+            board_binary_input_pin_collection: BoardBinaryInputPinCollection,
+            pin_collection: PinCollection,
+            spatial_bundle: SpatialBundle::default(),
+        }
+    }
+
+    fn spawn_pins(
+        pin_collection: &mut ChildBuilder,
+        render_settings: &CircuitBoardRenderingSettings,
+    ) {
+        pin_collection.spawn(BoardBinaryInputPinBundle::new(render_settings));
     }
 }
 
@@ -321,7 +357,12 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
                 text_style,
                 true,
             ));
-            board_entity.spawn(BoardBinaryInputPinBundle::new(render_settings));
+
+            board_entity
+                .spawn(BoardBinaryInputPinCollectionBundle::new())
+                .with_children(|pc| {
+                    BoardBinaryInputPinCollectionBundle::spawn_pins(pc, render_settings)
+                });
         });
     }
 }

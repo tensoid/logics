@@ -3,12 +3,13 @@ pub mod bounding_box;
 pub mod chip;
 pub mod cursor;
 pub mod designer_state;
-pub mod io_pin;
+pub mod board_binary_io_pins;
 pub mod macros;
 pub mod render_settings;
 pub mod selection;
 pub mod signal_state;
 pub mod wire;
+pub mod pin;
 
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
@@ -16,7 +17,7 @@ use board_entity::{
     manage_additional_spawn_tasks, update_board_entity_position, BoardEntityModel,
     BoardEntityViewKind, Position,
 };
-use io_pin::{BoardBinaryInput, BoardBinaryOutput};
+use board_binary_io_pins::{BoardBinaryInput, BoardBinaryOutput};
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use moonshine_view::RegisterView;
@@ -32,10 +33,10 @@ use self::cursor::highlight_hovered_pin;
 use self::cursor::spawn_cursor;
 use self::cursor::update_cursor;
 use self::designer_state::DesignerState;
-use self::io_pin::spawn_board_binary_input;
-use self::io_pin::spawn_board_binary_output;
-use self::io_pin::toggle_board_input_switch;
-use self::io_pin::update_board_binary_displays;
+use self::board_binary_io_pins::spawn_board_binary_input;
+use self::board_binary_io_pins::spawn_board_binary_output;
+use self::board_binary_io_pins::toggle_board_input_switch;
+use self::board_binary_io_pins::update_board_binary_displays;
 use self::render_settings::init_render_settings;
 use self::selection::delete_selected;
 use self::selection::highlight_selected;
