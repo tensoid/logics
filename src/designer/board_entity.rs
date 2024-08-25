@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use bevy::{math::VectorSpace, prelude::*};
+use bevy::prelude::*;
 use moonshine_core::kind::Kind;
 use moonshine_save::save::Save;
 use moonshine_view::Viewable;

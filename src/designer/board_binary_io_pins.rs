@@ -6,7 +6,10 @@ use moonshine_view::prelude::*;
 use crate::{events::events::SpawnBoardEntityEvent, get_cursor};
 
 use super::{
-    board_entity::{BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position},
+    board_entity::{
+        BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind,
+        Position,
+    },
     bounding_box::BoundingBox,
     cursor::Cursor,
     pin::{PinCollection, PinModel, PinModelCollection, PinType, PinView},
@@ -424,58 +427,53 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryOutput {
 
 #[allow(clippy::type_complexity)]
 pub fn update_board_binary_displays(
-    q_io_pins: Query<
-        (&Parent, &SignalState),
+    q_board_binary_io: Query<
+        (&PinModelCollection, &Viewable<BoardEntityViewKind>),
         (
-            Or<(With<BoardBinaryInputPin>, With<BoardBinaryOutputPin>)>,
-            Changed<SignalState>,
+            Or<(With<BoardBinaryInput>, With<BoardBinaryOutput>)>,
+            Changed<PinModelCollection>,
         ),
     >,
-    mut q_io_display_texts: Query<(&mut Text, &Parent)>,
+    q_children: Query<&Children>,
+    mut q_displays: Query<&mut Text, With<BoardBinaryDisplay>>,
 ) {
-    for (parent, signal_state) in q_io_pins.iter() {
-        let mut io_display_text = q_io_display_texts
-            .iter_mut()
-            .find(|t| t.1 == parent)
-            .expect("BoardBinaryInput/BoardBinaryOutput has no Text child.");
+    for (pin_model_collection, viewable) in q_board_binary_io.iter() {
+        let view_entity = viewable.view().entity();
+        //TODO: build macro
+        for child_entity in q_children.iter_descendants(view_entity) {
+            if let Ok(mut display_text) = q_displays.get_mut(child_entity) {
+                display_text.sections[0].value = match pin_model_collection[0].signal_state {
+                    SignalState::High => "1".into(),
+                    SignalState::Low => "0".into(),
+                };
 
-        io_display_text.0.sections[0].value = match signal_state {
-            SignalState::High => "1".into(),
-            SignalState::Low => "0".into(),
-        };
+                break;
+            }
+        }
     }
 }
 
 pub fn toggle_board_input_switch(
     input: Res<ButtonInput<MouseButton>>,
-    q_inputs: Query<&Children, With<BoardBinaryInput>>,
-    q_input_switches: Query<(&Parent, &BoundingBox), With<BoardBinaryInputSwitch>>,
-    mut q_input_pins: Query<(&mut BoardBinaryInputPin, &mut SignalState)>,
+    q_input_switches: Query<(Entity, &BoundingBox), With<BoardBinaryInputSwitch>>,
     q_cursor: Query<&Transform, With<Cursor>>,
+    q_parents: Query<&Parent>,
+    q_board_entities: Query<&View<BoardEntityViewKind>>,
+    mut q_board_binary_input_model: Query<&mut PinModelCollection, With<BoardBinaryInput>>
 ) {
     let cursor_transform = get_cursor!(q_cursor);
 
     if input.just_pressed(MouseButton::Left) {
-        for (parent, bbox) in q_input_switches.iter() {
+        for (switch_entity, bbox) in q_input_switches.iter() {
             if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
                 continue;
             }
 
-            //TODO: find a way to make this easier (Child -> Parent -> Children -> Specific Children)
-            let parent_children = q_inputs
-                .get(parent.get())
-                .expect("BoardBinaryInputSwitch has no BoardBinaryInput parent.");
+            let board_entity = q_parents.iter_ancestors(switch_entity).last().unwrap();
+            let model_entity = q_board_entities.get(board_entity).unwrap().viewable().entity();
+            let mut pin_collection = q_board_binary_input_model.get_mut(model_entity).unwrap();
+            pin_collection[0].signal_state.toggle();
 
-            let board_binary_input_pin_entity = parent_children
-                .iter()
-                .find(|c| q_input_pins.get(**c).is_ok())
-                .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
-
-            let (_, mut board_binary_input_pin_state) = q_input_pins
-                .get_mut(*board_binary_input_pin_entity)
-                .expect("BoardBinaryInput has no BoardBinaryInputPin child.");
-
-            board_binary_input_pin_state.toggle();
             break;
         }
     }
