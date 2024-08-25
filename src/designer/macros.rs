@@ -13,5 +13,3 @@ macro_rules! get_cursor_mut {
             .expect("No cursor entity in the scene.")
     };
 }
-
-//TODO: maybe make getparent get children macro

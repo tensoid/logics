@@ -58,24 +58,24 @@ fn main() {
         ChipSpec {
             name: "AND-2".to_string(),
             //expressions: vec![Expr::from_string("0 & 1").unwrap()],
-            expression: Expr::from_string("0 & 1").unwrap(),
+            //expression: Expr::from_string("0 & 1").unwrap(),
         },
         ChipSpec {
             name: "NAND-2".to_string(),
             //expressions: vec![Expr::from_string("0 & 1").unwrap()],
-            expression: Expr::from_string("!(0 & 1)").unwrap(),
+            //expression: Expr::from_string("!(0 & 1)").unwrap(),
         },
         ChipSpec {
             name: "OR-2".to_string(),
-            expression: Expr::from_string("0 | 1").unwrap(),
+            //expression: Expr::from_string("0 | 1").unwrap(),
         },
         ChipSpec {
             name: "NOT".to_string(),
-            expression: Expr::from_string("!0").unwrap(),
+            //expression: Expr::from_string("!0").unwrap(),
         },
         ChipSpec {
             name: "XOR-2".to_string(),
-            expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
+            //expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
         },
     ]));
 

@@ -6,7 +6,7 @@ use super::{
     wire::Wire,
 };
 
-#[derive(PartialEq, Clone, Copy, Debug, Component)]
+#[derive(PartialEq, Clone, Copy, Debug, Component, Reflect)]
 pub enum SignalState {
     High,
     Low,

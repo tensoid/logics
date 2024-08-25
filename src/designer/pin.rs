@@ -1,19 +1,26 @@
-use super::signal_state::SignalState;
+use super::{
+    bounding_box::BoundingBox, render_settings::CircuitBoardRenderingSettings,
+    signal_state::SignalState,
+};
 use bevy::prelude::*;
+use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};
 use std::ops::{Deref, DerefMut};
 
+#[derive(Reflect)]
 pub enum PinType {
     Input,
     Output,
 }
 
+#[derive(Reflect)]
 pub struct PinModel {
     pub signal_state: SignalState,
     pub pin_type: PinType,
     pub label: String,
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct PinModelCollection(pub Vec<PinModel>);
 
 impl Deref for PinModelCollection {
@@ -41,5 +48,39 @@ pub struct PinView {
 impl PinView {
     pub fn new(index: u32) -> Self {
         Self { pin_index: index }
+    }
+}
+
+#[derive(Bundle)]
+pub struct PinViewBundle {
+    pin_view: PinView,
+    shape_bundle: ShapeBundle,
+    fill: Fill,
+    bounding_box: BoundingBox,
+}
+
+impl PinViewBundle {
+    pub fn new(
+        render_settings: &CircuitBoardRenderingSettings,
+        pin_index: u32,
+        radius: f32,
+        translation: Vec3,
+    ) -> Self {
+        Self {
+            pin_view: PinView::new(pin_index),
+            shape_bundle: ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Circle {
+                    radius,
+                    ..default()
+                }),
+                spatial: SpatialBundle {
+                    transform: Transform::from_translation(translation),
+                    ..default()
+                },
+                ..default()
+            },
+            fill: Fill::color(render_settings.pin_color),
+            bounding_box: BoundingBox::circle_new(radius, false),
+        }
     }
 }

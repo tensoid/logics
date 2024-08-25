@@ -1,6 +1,11 @@
 use bevy::prelude::*;
 
-use crate::designer::{chip::{Chip, ChipInputPin, ChipOutputPin, ChipSpec}, board_binary_io_pins::{BoardBinaryInputPin, BoardBinaryOutputPin}, signal_state::SignalState, wire::Wire};
+use crate::designer::{
+    board_binary_io_pins::{BoardBinaryInputPin, BoardBinaryOutputPin},
+    chip::{Chip, ChipInputPin, ChipOutputPin, ChipSpec},
+    signal_state::SignalState,
+    wire::Wire,
+};
 
 #[allow(clippy::type_complexity)]
 pub fn tick_simulation(
@@ -132,7 +137,7 @@ pub fn tick_simulation(
 
         let inputs: &Vec<bool> = &chip_input_pins.iter().map(|p| p.1.as_bool()).collect();
 
-        let result = chip_spec.expression.evaluate(inputs);
+        let result = true; //chip_spec.expression.evaluate(inputs);
 
         let result_signal_state = match result {
             true => SignalState::High,

@@ -6,13 +6,10 @@ use moonshine_view::prelude::*;
 use crate::{events::events::SpawnBoardEntityEvent, get_cursor};
 
 use super::{
-    board_entity::{
-        BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind,
-        Position,
-    },
+    board_entity::{BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position},
     bounding_box::BoundingBox,
     cursor::Cursor,
-    pin::{PinCollection, PinModel, PinModelCollection, PinType, PinView},
+    pin::{PinCollection, PinModel, PinModelCollection, PinType, PinViewBundle},
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
@@ -24,7 +21,7 @@ pub struct BoardBinaryInput;
 #[derive(Bundle)]
 pub struct BoardBinaryInputBundle {
     board_binary_input: BoardBinaryInput,
-    board_entity_model_bundle: BoardEntityModelBundle,
+    model_bundle: BoardEntityModelBundle,
     pin_model_collection: PinModelCollection,
 }
 
@@ -32,7 +29,7 @@ impl BoardBinaryInputBundle {
     fn new(position: Position) -> Self {
         Self {
             board_binary_input: BoardBinaryInput,
-            board_entity_model_bundle: BoardEntityModelBundle::new(position),
+            model_bundle: BoardEntityModelBundle::new(position),
             pin_model_collection: PinModelCollection(vec![PinModel {
                 label: "".into(),
                 pin_type: PinType::Output,
@@ -120,36 +117,22 @@ pub struct BoardBinaryInputPin;
 #[derive(Bundle)]
 pub struct BoardBinaryInputPinBundle {
     board_binary_input_pin: BoardBinaryInputPin,
-    pin_view: PinView,
-    shape_bundle: ShapeBundle,
-    fill: Fill,
-    bounding_box: BoundingBox,
+    pin_view_bundle: PinViewBundle,
 }
 
 impl BoardBinaryInputPinBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
         Self {
             board_binary_input_pin: BoardBinaryInputPin,
-            pin_view: PinView::new(0),
-            shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Circle {
-                    radius: render_settings.board_binary_io_pin_radius,
-                    ..default()
-                }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(
-                        render_settings.board_binary_input_extents.x / 2.0,
-                        0.0,
-                        0.02,
-                    ),
-                    ..default()
-                },
-                ..default()
-            },
-            fill: Fill::color(render_settings.pin_color),
-            bounding_box: BoundingBox::circle_new(
+            pin_view_bundle: PinViewBundle::new(
+                render_settings,
+                0,
                 render_settings.board_binary_io_pin_radius,
-                false,
+                Vec3::new(
+                    render_settings.board_binary_input_extents.x / 2.0,
+                    0.0,
+                    0.02,
+                ),
             ),
         }
     }
@@ -459,7 +442,7 @@ pub fn toggle_board_input_switch(
     q_cursor: Query<&Transform, With<Cursor>>,
     q_parents: Query<&Parent>,
     q_board_entities: Query<&View<BoardEntityViewKind>>,
-    mut q_board_binary_input_model: Query<&mut PinModelCollection, With<BoardBinaryInput>>
+    mut q_board_binary_input_model: Query<&mut PinModelCollection, With<BoardBinaryInput>>,
 ) {
     let cursor_transform = get_cursor!(q_cursor);
 
@@ -470,7 +453,11 @@ pub fn toggle_board_input_switch(
             }
 
             let board_entity = q_parents.iter_ancestors(switch_entity).last().unwrap();
-            let model_entity = q_board_entities.get(board_entity).unwrap().viewable().entity();
+            let model_entity = q_board_entities
+                .get(board_entity)
+                .unwrap()
+                .viewable()
+                .entity();
             let mut pin_collection = q_board_binary_input_model.get_mut(model_entity).unwrap();
             pin_collection[0].signal_state.toggle();
 
