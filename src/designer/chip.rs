@@ -4,29 +4,24 @@ use moonshine_core::object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 
 use crate::events::events::SpawnBoardEntityEvent;
-use crate::get_cursor_mut;
-use crate::simulation::expressions::Expr;
 
-use crate::designer::{
-    board_entity::BoardEntityView, bounding_box::BoundingBox,
-    render_settings::CircuitBoardRenderingSettings, signal_state::SignalState,
-};
+use crate::designer::{render_settings::CircuitBoardRenderingSettings, signal_state::SignalState};
 
 use super::board_entity::{
     BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position,
 };
-use super::cursor::Cursor;
-use super::pin::{PinCollection, PinModel, PinModelCollection, PinType, PinView, PinViewBundle};
+use super::pin::{PinCollection, PinModel, PinModelCollection, PinType, PinViewBundle};
 
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
-pub struct ChipSpec {
+pub struct BuiltinChip {
     pub name: String,
-    //pub expression: Expr,
+    pub num_inputs: i32,
+    pub num_outputs: i32,
 }
 
 #[derive(Resource)]
-pub struct ChipSpecs(pub Vec<ChipSpec>);
+pub struct BuiltinChips(pub Vec<BuiltinChip>);
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
@@ -35,15 +30,14 @@ pub struct Chip;
 #[derive(Bundle)]
 pub struct ChipBundle {
     chip: Chip,
-    chip_spec: ChipSpec,
+    builtin_chip: BuiltinChip,
     model_bundle: BoardEntityModelBundle,
     pin_model_collection: PinModelCollection,
 }
 
 impl ChipBundle {
-    fn new(chip_spec: ChipSpec, position: Position) -> Self {
-        let num_input_pins = 2;
-        let mut pin_models: Vec<PinModel> = (0..num_input_pins)
+    fn new(builtin_chip: BuiltinChip, position: Position) -> Self {
+        let mut pin_models: Vec<PinModel> = (0..builtin_chip.num_inputs)
             .map(|i| PinModel {
                 label: i.to_string(),
                 signal_state: SignalState::Low,
@@ -59,7 +53,7 @@ impl ChipBundle {
 
         Self {
             chip: Chip,
-            chip_spec,
+            builtin_chip,
             model_bundle: BoardEntityModelBundle::new(position),
             pin_model_collection: PinModelCollection(pin_models),
         }
@@ -100,12 +94,10 @@ pub struct ChipBodyBundle {
 }
 
 impl ChipBodyBundle {
-    fn new(render_settings: &CircuitBoardRenderingSettings, chip_spec: &ChipSpec) -> Self {
-        let num_input_pins = 2;
-
+    fn new(render_settings: &CircuitBoardRenderingSettings, builtin_chip: &BuiltinChip) -> Self {
         let chip_extents: Vec2 = Vec2::new(
-            render_settings.chip_pin_gap * (num_input_pins + 1) as f32,
-            render_settings.chip_pin_gap * (num_input_pins + 1) as f32,
+            render_settings.chip_pin_gap * (builtin_chip.num_inputs + 1) as f32,
+            render_settings.chip_pin_gap * (builtin_chip.num_inputs + 1) as f32,
         );
 
         Self {
@@ -207,23 +199,44 @@ impl ChipPinCollectionBundle {
     fn spawn_pins(
         pin_collection: &mut ChildBuilder,
         render_settings: &CircuitBoardRenderingSettings,
+        chip_extents: Vec2,
+        builtin_chip: &BuiltinChip,
     ) {
-        //pin_collection.spawn(ChipPinBundle::new(render_settings));
+        //Input pins
+        for i in 0..builtin_chip.num_inputs {
+            pin_collection.spawn(ChipInputPinBundle::new(
+                render_settings,
+                i as u32,
+                Vec3::new(
+                    -(chip_extents.x / 2.0),
+                    (i as f32 * render_settings.chip_pin_gap) - (chip_extents.y / 2.0)
+                        + render_settings.chip_pin_gap,
+                    0.01,
+                ),
+            ));
+        }
+
+        // Output pins
+        pin_collection.spawn(ChipOutputPinBundle::new(
+            render_settings,
+            builtin_chip.num_inputs as u32,
+            Vec3::new(chip_extents.x / 2.0, 0.0, 0.01),
+        ));
     }
 }
 
 pub fn spawn_chip(
     mut commands: Commands,
     mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
-    chip_specs: Res<ChipSpecs>,
+    builtin_chips: Res<BuiltinChips>,
 ) -> Option<(Entity, SpawnBoardEntityEvent)> {
     for ev in spawn_ev.read() {
-        let Some(chip_spec) = chip_specs.0.iter().find(|spec| spec.name == ev.name) else {
+        let Some(builtin_chip) = builtin_chips.0.iter().find(|chip| chip.name == ev.name) else {
             continue;
         };
 
         let entity = commands
-            .spawn(ChipBundle::new(chip_spec.clone(), ev.position.clone()))
+            .spawn(ChipBundle::new(builtin_chip.clone(), ev.position.clone()))
             .id();
 
         return Some((entity, ev.clone()));
@@ -250,135 +263,28 @@ impl BuildView<BoardEntityViewKind> for Chip {
         };
 
         let position = world.get::<Position>(object.entity()).unwrap();
-        let chip_spec = world.get::<ChipSpec>(object.entity()).unwrap();
-        let num_input_pins = 2;
+        let builtin_chip = world.get::<BuiltinChip>(object.entity()).unwrap();
 
         let chip_extents: Vec2 = Vec2::new(
-            render_settings.chip_pin_gap * (num_input_pins + 1) as f32,
-            render_settings.chip_pin_gap * (num_input_pins + 1) as f32,
+            render_settings.chip_pin_gap * (builtin_chip.num_inputs + 1) as f32,
+            render_settings.chip_pin_gap * (builtin_chip.num_inputs + 1) as f32,
         );
 
         view.insert(BoardEntityViewBundle::new(position.clone(), chip_extents))
             .with_children(|board_entity| {
-                board_entity.spawn(ChipLabelBundle::new(chip_spec.name.clone(), text_style));
-                board_entity.spawn(ChipBodyBundle::new(render_settings, chip_spec));
+                board_entity.spawn(ChipLabelBundle::new(builtin_chip.name.clone(), text_style));
+                board_entity.spawn(ChipBodyBundle::new(render_settings, builtin_chip));
 
                 board_entity
                     .spawn(ChipPinCollectionBundle::new())
-                    .with_children(|pc| ChipPinCollectionBundle::spawn_pins(pc, render_settings));
+                    .with_children(|pc| {
+                        ChipPinCollectionBundle::spawn_pins(
+                            pc,
+                            render_settings,
+                            chip_extents,
+                            builtin_chip,
+                        );
+                    });
             });
     }
 }
-
-// pub fn spawn_chip_d(
-//     mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
-//     mut commands: Commands,
-//     chip_specs: Res<ChipSpecs>,
-//     asset_server: Res<AssetServer>,
-//     render_settings: Res<CircuitBoardRenderingSettings>,
-//     mut q_cursor: Query<(Entity, &mut Cursor)>,
-// ) {
-//     let (cursor_entity, mut cursor) = get_cursor_mut!(q_cursor);
-
-//     for ev in spawn_ev.read() {
-//         let Some(chip_spec) = chip_specs.0.iter().find(|spec| spec.name == ev.name) else {
-//             continue;
-//         };
-
-//         let num_input_pins = chip_spec.expression.1;
-
-//         let chip_extents: Vec2 = Vec2::new(
-//             render_settings.chip_pin_gap * (num_input_pins + 1) as f32,
-//             render_settings.chip_pin_gap * (num_input_pins + 1) as f32,
-//         );
-
-//         let chip_shape = shapes::Rectangle {
-//             extents: chip_extents,
-//             ..default()
-//         };
-
-//         let pin_shape = shapes::Circle {
-//             radius: render_settings.chip_pin_radius,
-//             ..default()
-//         };
-
-//         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
-
-//         let text_style = TextStyle {
-//             font_size: 20.0,
-//             color: Color::BLACK,
-//             font,
-//         };
-
-//         commands
-//             .spawn((
-//                 ShapeBundle {
-//                     path: GeometryBuilder::build_as(&chip_shape),
-//                     spatial: SpatialBundle {
-//                         transform: Transform::IDENTITY,
-//                         ..default()
-//                     },
-//                     ..default()
-//                 },
-//                 Fill::color(render_settings.chip_color),
-//                 Stroke::new(
-//                     render_settings.board_entity_stroke_color,
-//                     render_settings.board_entity_stroke_width,
-//                 ),
-//                 Chip,
-//                 ChipExtents(chip_extents),
-//                 BoundingBox::rect_new(chip_extents / 2.0, true),
-//                 chip_spec.clone(),
-//                 BoardEntityView,
-//             ))
-//             .with_children(|chip| {
-//                 //Chip Name
-//                 chip.spawn(Text2dBundle {
-//                     text: Text::from_section(ev.name.to_uppercase(), text_style)
-//                         .with_justify(JustifyText::Center),
-//                     transform: Transform::from_xyz(0.0, 0.0, 0.01),
-//                     ..default()
-//                 });
-
-//                 // Input pins
-//                 for i in 0..num_input_pins {
-//                     chip.spawn((
-//                         ShapeBundle {
-//                             path: GeometryBuilder::build_as(&pin_shape),
-//                             spatial: SpatialBundle {
-//                                 transform: Transform::from_xyz(
-//                                     -(chip_extents.x / 2.0),
-//                                     (i as f32 * render_settings.chip_pin_gap)
-//                                         - (chip_extents.y / 2.0)
-//                                         + render_settings.chip_pin_gap,
-//                                     0.01,
-//                                 ),
-//                                 ..default()
-//                             },
-//                             ..default()
-//                         },
-//                         Fill::color(render_settings.pin_color),
-//                         ChipInputPin,
-//                         SignalState::Low,
-//                         BoundingBox::circle_new(render_settings.board_binary_io_pin_radius, false),
-//                     ));
-//                 }
-
-//                 // Output pins
-//                 chip.spawn((
-//                     ShapeBundle {
-//                         path: GeometryBuilder::build_as(&pin_shape),
-//                         spatial: SpatialBundle {
-//                             transform: Transform::from_xyz(chip_extents.x / 2.0, 0.0, 0.01),
-//                             ..default()
-//                         },
-//                         ..default()
-//                     },
-//                     Fill::color(render_settings.pin_color),
-//                     ChipOutputPin,
-//                     SignalState::Low,
-//                     BoundingBox::circle_new(render_settings.board_binary_io_pin_radius, false),
-//                 ));
-//             });
-//     }
-// }

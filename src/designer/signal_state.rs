@@ -1,15 +1,25 @@
+use std::ops::Not;
+
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 
-use super::{
-    render_settings::CircuitBoardRenderingSettings,
-    wire::Wire,
-};
+use super::{render_settings::CircuitBoardRenderingSettings, wire::Wire};
 
 #[derive(PartialEq, Clone, Copy, Debug, Component, Reflect)]
 pub enum SignalState {
     High,
     Low,
+}
+
+impl Not for SignalState {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        match self {
+            SignalState::High => SignalState::Low,
+            SignalState::Low => SignalState::High,
+        }
+    }
 }
 
 impl SignalState {

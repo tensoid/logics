@@ -4,13 +4,47 @@ use bevy_prototype_lyon::prelude::*;
 use crate::{get_cursor, get_cursor_mut};
 
 use super::{
-    bounding_box::BoundingBox, chip::{ChipInputPin, ChipOutputPin}, cursor::{Cursor, CursorState}, board_binary_io_pins::{BoardBinaryInputPin, BoardBinaryOutputPin}, render_settings::CircuitBoardRenderingSettings, signal_state::SignalState
+    board_binary_io::{BoardBinaryInputPin, BoardBinaryOutputPin},
+    bounding_box::BoundingBox,
+    chip::{ChipInputPin, ChipOutputPin},
+    cursor::{Cursor, CursorState},
+    render_settings::CircuitBoardRenderingSettings,
+    signal_state::SignalState,
 };
 
 #[derive(Component)]
 pub struct Wire {
     pub src_pin: Option<Entity>,
     pub dest_pin: Option<Entity>,
+}
+
+#[derive(Bundle)]
+pub struct WireBundle {
+    wire: Wire,
+    shape_bundle: ShapeBundle,
+    stroke: Stroke,
+    signal_state: SignalState,
+}
+
+impl WireBundle {
+    pub fn new(render_settings: &CircuitBoardRenderingSettings, wire: Wire) -> Self {
+        Self {
+            wire,
+            shape_bundle: ShapeBundle {
+                path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(0.0, 0.0, 0.005),
+                    ..default()
+                },
+                ..default()
+            },
+            stroke: Stroke::new(
+                render_settings.signal_low_color,
+                render_settings.wire_line_width,
+            ),
+            signal_state: SignalState::Low,
+        }
+    }
 }
 
 /**
@@ -94,22 +128,6 @@ pub fn drag_wire(
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
 
     if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
-        let wire_bundle = (
-            ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(0.0, 0.0, 0.005),
-                    ..default()
-                },
-                ..default()
-            },
-            Stroke::new(
-                render_settings.signal_low_color,
-                render_settings.wire_line_width,
-            ),
-            SignalState::Low,
-        );
-
         for (bbox, pin_entity) in q_wire_src_pins.iter() {
             if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
                 continue;
@@ -117,8 +135,8 @@ pub fn drag_wire(
 
             // cursor is on pin
             let wire = commands
-                .spawn((
-                    wire_bundle,
+                .spawn(WireBundle::new(
+                    render_settings.as_ref(),
                     Wire {
                         src_pin: Some(pin_entity),
                         dest_pin: None,

@@ -1,14 +1,14 @@
 use bevy::prelude::*;
+use simulation::evaluate_builtin_chips;
 
-use self::simulation::tick_simulation;
+use self::simulation::update_signals;
 
-pub mod expressions;
 pub mod simulation;
 
 pub struct SimulationPlugin;
 
 impl Plugin for SimulationPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, tick_simulation);
+        app.add_systems(Update, (evaluate_builtin_chips, update_signals).chain());
     }
 }

@@ -1,7 +1,7 @@
 use crate::{
     designer::{
         chip::Chip,
-        board_binary_io_pins::{BoardBinaryInputPin, BoardBinaryOutputPin},
+        board_binary_io::{BoardBinaryInputPin, BoardBinaryOutputPin},
     },
     get_cursor, get_cursor_mut,
 };

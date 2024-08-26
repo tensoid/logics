@@ -13,14 +13,14 @@ mod ui;
 use camera::CameraPlugin;
 use debug::DebugPlugin;
 use designer::{
-    chip::{ChipSpec, ChipSpecs},
+    chip::{BuiltinChip, BuiltinChips},
     DesignerPlugin,
 };
 
 use events::EventsPlugin;
 use input::InputPlugin;
 use moonshine_save::{load::LoadPlugin, save::SavePlugin};
-use simulation::{expressions::Expr, SimulationPlugin};
+use simulation::SimulationPlugin;
 use ui::UIPlugin;
 
 fn main() {
@@ -54,28 +54,31 @@ fn main() {
         .add_plugins(SimulationPlugin)
         .add_plugins(UIPlugin);
 
-    app.insert_resource(ChipSpecs(vec![
-        ChipSpec {
+    app.insert_resource(BuiltinChips(vec![
+        BuiltinChip {
             name: "AND-2".to_string(),
-            //expressions: vec![Expr::from_string("0 & 1").unwrap()],
-            //expression: Expr::from_string("0 & 1").unwrap(),
+            num_inputs: 2,
+            num_outputs: 1,
         },
-        ChipSpec {
+        BuiltinChip {
             name: "NAND-2".to_string(),
-            //expressions: vec![Expr::from_string("0 & 1").unwrap()],
-            //expression: Expr::from_string("!(0 & 1)").unwrap(),
+            num_inputs: 2,
+            num_outputs: 1,
         },
-        ChipSpec {
+        BuiltinChip {
             name: "OR-2".to_string(),
-            //expression: Expr::from_string("0 | 1").unwrap(),
+            num_inputs: 2,
+            num_outputs: 1,
         },
-        ChipSpec {
+        BuiltinChip {
             name: "NOT".to_string(),
-            //expression: Expr::from_string("!0").unwrap(),
+            num_inputs: 1,
+            num_outputs: 1,
         },
-        ChipSpec {
+        BuiltinChip {
             name: "XOR-2".to_string(),
-            //expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
+            num_inputs: 2,
+            num_outputs: 1,
         },
     ]));
 

@@ -1,4 +1,4 @@
-pub mod board_binary_io_pins;
+pub mod board_binary_io;
 pub mod board_entity;
 pub mod bounding_box;
 pub mod chip;
@@ -13,12 +13,12 @@ pub mod wire;
 
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
-use board_binary_io_pins::{BoardBinaryInput, BoardBinaryOutput};
+use board_binary_io::{BoardBinaryInput, BoardBinaryOutput};
 use board_entity::{
     manage_additional_spawn_tasks, update_board_entity_position, BoardEntityModel,
     BoardEntityViewKind, Position,
 };
-use chip::{Chip, ChipSpec};
+use chip::{BuiltinChip, Chip};
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use moonshine_view::RegisterView;
@@ -26,13 +26,13 @@ use pin::PinModelCollection;
 use selection::{release_drag, update_dragged_entities_position};
 
 use crate::events::events::{LoadEvent, SaveEvent};
-use crate::simulation::simulation::tick_simulation;
+use crate::simulation::simulation::update_signals;
 use crate::ui::cursor_captured::IsCursorCaptured;
 
-use self::board_binary_io_pins::spawn_board_binary_input;
-use self::board_binary_io_pins::spawn_board_binary_output;
-use self::board_binary_io_pins::toggle_board_input_switch;
-use self::board_binary_io_pins::update_board_binary_displays;
+use self::board_binary_io::spawn_board_binary_input;
+use self::board_binary_io::spawn_board_binary_output;
+use self::board_binary_io::toggle_board_input_switch;
+use self::board_binary_io::update_board_binary_displays;
 use self::bounding_box::update_bounding_boxes;
 use self::chip::spawn_chip;
 use self::cursor::highlight_hovered_pin;
@@ -60,7 +60,7 @@ impl Plugin for DesignerPlugin {
             .register_type::<BoardBinaryInput>()
             .register_type::<BoardBinaryOutput>()
             .register_type::<Chip>()
-            .register_type::<ChipSpec>()
+            .register_type::<BuiltinChip>()
             .register_type::<PinModelCollection>()
             .register_type::<BoardBinaryOutput>()
             .register_view::<BoardEntityViewKind, BoardBinaryInput>()
@@ -101,13 +101,13 @@ impl Plugin for DesignerPlugin {
                 Update,
                 spawn_board_binary_output.pipe(manage_additional_spawn_tasks),
             )
-            .add_systems(Update, update_signal_colors.after(tick_simulation))
+            .add_systems(Update, update_signal_colors.after(update_signals))
             .add_systems(Update, toggle_board_input_switch)
             .add_systems(
                 Update,
                 update_board_binary_displays
                     .after(toggle_board_input_switch)
-                    .after(tick_simulation),
+                    .after(update_signals),
             )
             .add_systems(Update, update_board_entity_position)
             // runs in post update because it requires that all despawning of dest pins has been completed to update the wires

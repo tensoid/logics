@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    designer::{board_entity::Position, chip::ChipSpecs, designer_state::DesignerState},
+    designer::{board_entity::Position, chip::BuiltinChips, designer_state::DesignerState},
     events::events::SpawnBoardEntityEvent,
 };
 
@@ -23,7 +23,7 @@ pub struct ChipButton;
 pub fn spawn_chip_selector(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    q_chip_specs: Res<ChipSpecs>,
+    q_chip_specs: Res<BuiltinChips>,
 ) {
     commands
         .spawn((
