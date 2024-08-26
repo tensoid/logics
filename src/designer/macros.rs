@@ -36,3 +36,37 @@ macro_rules! find_descendants {
         }
     };
 }
+
+#[macro_export]
+macro_rules! get_model {
+    ($q_parents:expr, $q_board_entities:expr, $q_models:expr, $wire_src_entity:expr) => {{
+        let src_board_entity = $q_parents
+            .iter_ancestors($wire_src_entity)
+            .last()
+            .expect("Entity does not have any Parents.");
+        let src_model_entity = $q_board_entities
+            .get(src_board_entity)
+            .expect("Entity does not have a BoardEntityView Parent.")
+            .viewable()
+            .entity();
+
+        $q_models.get(src_model_entity).ok()
+    }};
+}
+
+#[macro_export]
+macro_rules! get_model_mut {
+    ($q_parents:expr, $q_board_entities:expr, $q_models:expr, $wire_src_entity:expr) => {{
+        let src_board_entity = $q_parents
+            .iter_ancestors($wire_src_entity)
+            .last()
+            .expect("Entity does not have any Parents.");
+        let src_model_entity = $q_board_entities
+            .get(src_board_entity)
+            .expect("Entity does not have a BoardEntityView Parent.")
+            .viewable()
+            .entity();
+
+        $q_models.get_mut(src_model_entity).ok()
+    }};
+}

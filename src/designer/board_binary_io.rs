@@ -173,6 +173,7 @@ pub struct BoardBinaryOutput;
 pub struct BoardBinaryOutputBundle {
     board_binary_output: BoardBinaryOutput,
     board_entity_model_bundle: BoardEntityModelBundle,
+    pin_model_collection: PinModelCollection,
 }
 
 impl BoardBinaryOutputBundle {
@@ -180,6 +181,11 @@ impl BoardBinaryOutputBundle {
         Self {
             board_binary_output: BoardBinaryOutput,
             board_entity_model_bundle: BoardEntityModelBundle::new(position),
+            pin_model_collection: PinModelCollection(vec![PinModel {
+                label: "".into(),
+                pin_type: PinType::Input,
+                signal_state: SignalState::Low,
+            }]),
         }
     }
 }
@@ -225,34 +231,22 @@ pub struct BoardBinaryOutputPin;
 #[derive(Bundle)]
 pub struct BoardBinaryOutputPinBundle {
     board_binary_output_pin: BoardBinaryOutputPin,
-    shape_bundle: ShapeBundle,
-    fill: Fill,
-    bounding_box: BoundingBox,
+    pin_view_bundle: PinViewBundle,
 }
 
 impl BoardBinaryOutputPinBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
         Self {
             board_binary_output_pin: BoardBinaryOutputPin,
-            shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Circle {
-                    radius: render_settings.board_binary_io_pin_radius,
-                    ..default()
-                }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(
-                        -render_settings.board_binary_output_extents.x / 2.0,
-                        0.0,
-                        0.02,
-                    ),
-                    ..default()
-                },
-                ..default()
-            },
-            fill: Fill::color(render_settings.pin_color),
-            bounding_box: BoundingBox::circle_new(
+            pin_view_bundle: PinViewBundle::new(
+                render_settings,
+                0,
                 render_settings.board_binary_io_pin_radius,
-                false,
+                Vec3::new(
+                    -render_settings.board_binary_output_extents.x / 2.0,
+                    0.0,
+                    0.02,
+                ),
             ),
         }
     }

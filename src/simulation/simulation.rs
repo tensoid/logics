@@ -1,13 +1,15 @@
 use bevy::prelude::*;
 use moonshine_view::View;
 
-use crate::designer::{
-    board_binary_io::{BoardBinaryInputPin, BoardBinaryOutputPin},
-    board_entity::BoardEntityViewKind,
-    chip::{BuiltinChip, Chip, ChipInputPin, ChipOutputPin},
-    pin::{PinModelCollection, PinView},
-    signal_state::{self, SignalState},
-    wire::Wire,
+use crate::{
+    designer::{
+        board_entity::BoardEntityViewKind,
+        chip::BuiltinChip,
+        pin::{PinModelCollection, PinView},
+        signal_state::SignalState,
+        wire::Wire,
+    },
+    get_model, get_model_mut,
 };
 
 pub fn evaluate_builtin_chips(
@@ -80,18 +82,30 @@ pub fn update_signals(
             return;
         };
 
-        //TODO: make macro out of this (getting model from view) that returns Option
-        let src_pin_view = q_pin_views.get(wire_src_entity).unwrap();
-        let src_board_entity = q_parents.iter_ancestors(wire_src_entity).last().unwrap();
-        let src_model_entity = q_board_entities
-            .get(src_board_entity)
-            .unwrap()
-            .viewable()
-            .entity();
+        let src_pin_view = q_pin_views.get(wire_src_entity).unwrap(); //TODO: crashes when two port ins are connected to one port out and are then deleted
+        let Some(src_pin_model_collection) =
+            get_model!(q_parents, q_board_entities, q_chip_models, wire_src_entity)
+        else {
+            return;
+        };
 
-        let src_pin_model_collection = q_chip_models.get(src_model_entity).unwrap();
+        let src_pin_signal_state = src_pin_model_collection[src_pin_view.pin_index].signal_state;
 
-        // update wire state
-        // update dest pin state
+        *wire_signal_state = src_pin_signal_state;
+
+        let Some(wire_dest_entity) = wire.dest_pin else {
+            return;
+        };
+
+        let dest_pin_view = q_pin_views.get(wire_dest_entity).unwrap(); //TODO: probalby crashes too at some point
+        let Some(mut dest_pin_model_collection) =
+            get_model_mut!(q_parents, q_board_entities, q_chip_models, wire_dest_entity)
+        else {
+            return;
+        };
+
+        dest_pin_model_collection[dest_pin_view.pin_index].signal_state = src_pin_signal_state;
     }
 }
+
+//TODO: update floating pins

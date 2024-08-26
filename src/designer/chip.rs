@@ -135,7 +135,7 @@ pub struct ChipInputPinBundle {
 impl ChipInputPinBundle {
     fn new(
         render_settings: &CircuitBoardRenderingSettings,
-        pin_index: u32,
+        pin_index: usize,
         translation: Vec3,
     ) -> Self {
         Self {
@@ -162,7 +162,7 @@ pub struct ChipOutputPinBundle {
 impl ChipOutputPinBundle {
     fn new(
         render_settings: &CircuitBoardRenderingSettings,
-        pin_index: u32,
+        pin_index: usize,
         translation: Vec3,
     ) -> Self {
         Self {
@@ -206,7 +206,7 @@ impl ChipPinCollectionBundle {
         for i in 0..builtin_chip.num_inputs {
             pin_collection.spawn(ChipInputPinBundle::new(
                 render_settings,
-                i as u32,
+                i as usize,
                 Vec3::new(
                     -(chip_extents.x / 2.0),
                     (i as f32 * render_settings.chip_pin_gap) - (chip_extents.y / 2.0)
@@ -219,7 +219,7 @@ impl ChipPinCollectionBundle {
         // Output pins
         pin_collection.spawn(ChipOutputPinBundle::new(
             render_settings,
-            builtin_chip.num_inputs as u32,
+            builtin_chip.num_inputs as usize,
             Vec3::new(chip_extents.x / 2.0, 0.0, 0.01),
         ));
     }

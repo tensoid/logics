@@ -42,11 +42,11 @@ pub struct PinCollection;
 
 #[derive(Component)]
 pub struct PinView {
-    pub pin_index: u32,
+    pub pin_index: usize,
 }
 
 impl PinView {
-    pub fn new(index: u32) -> Self {
+    pub fn new(index: usize) -> Self {
         Self { pin_index: index }
     }
 }
@@ -62,7 +62,7 @@ pub struct PinViewBundle {
 impl PinViewBundle {
     pub fn new(
         render_settings: &CircuitBoardRenderingSettings,
-        pin_index: u32,
+        pin_index: usize,
         radius: f32,
         translation: Vec3,
     ) -> Self {
