@@ -13,8 +13,10 @@ impl Plugin for SimulationPlugin {
     fn build(&self, app: &mut App) {
         //TODO: currently running in post update because wires need to be deleted first if src or dest pin has been deleted
         app.add_systems(
-            PostUpdate,
-            (evaluate_builtin_chips, update_signals.after(update_wires)).chain(),
+            Update,
+            (evaluate_builtin_chips, update_signals)
+                .chain()
+                .after(update_wires),
         );
     }
 }

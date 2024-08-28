@@ -110,8 +110,7 @@ impl Plugin for DesignerPlugin {
                     .after(update_signals),
             )
             .add_systems(Update, update_board_entity_position)
-            // runs in post update because it requires that all despawning of dest pins has been completed to update the wires
-            .add_systems(PostUpdate, update_wires)
+            .add_systems(Update, update_wires)
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected)
             .add_systems(

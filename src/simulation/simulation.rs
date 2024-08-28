@@ -71,7 +71,7 @@ pub fn evaluate_builtin_chips(
 }
 
 pub fn update_signals(
-    mut q_wires: Query<(&Wire, &mut SignalState), With<Wire>>,
+    mut q_wires: Query<(&Wire, &mut SignalState)>,
     q_pin_views: Query<&PinView>,
     q_parents: Query<&Parent>,
     q_board_entities: Query<&View<BoardEntityViewKind>>,

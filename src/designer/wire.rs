@@ -52,6 +52,8 @@ impl WireBundle {
  * If the source or destination pin was deleted or the wire is just not connected this also deletes the wire entirely.
  */
 //TODO: Optimisation potential with only updating necessary wires.
+//TODO: maybe split into delete_dangling_wires and update_wires
+//TODO: clean up the indents
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
     mut q_wires: Query<(&mut Wire, &mut Path, &GlobalTransform, Entity)>,
@@ -65,7 +67,7 @@ pub fn update_wires(
     for (wire, mut wire_path, _, wire_entity) in q_wires.iter_mut() {
         let Some(wire_src_pin_entity) = wire.src_pin else {
             commands.entity(wire_entity).despawn();
-            return;
+            continue;
         };
 
         if let Some(wire_dest_pin_entity) = wire.dest_pin {
@@ -81,7 +83,7 @@ pub fn update_wires(
                 *wire_path = ShapePath::build_as(&new_wire);
             } else {
                 commands.entity(wire_entity).despawn();
-                return;
+                continue;
             }
         } else if let CursorState::DraggingWire(dragged_wire) = cursor.state {
             //TODO: move this to drag_wire
@@ -108,17 +110,11 @@ pub fn drag_wire(
     input: Res<ButtonInput<MouseButton>>,
     q_wire_src_pins: Query<
         (&BoundingBox, Entity),
-        (
-            Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
-            Without<Camera>,
-        ),
+        Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
     >,
     q_wire_dest_pins: Query<
         (&BoundingBox, Entity),
-        (
-            Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>,
-            Without<Camera>,
-        ),
+        Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>,
     >,
     mut q_wires: Query<&mut Wire>,
     mut q_cursor: Query<(&mut Cursor, &Transform), With<Cursor>>,
