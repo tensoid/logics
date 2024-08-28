@@ -1,10 +1,13 @@
+use std::collections::HashSet;
+
 use bevy::prelude::*;
 use moonshine_view::View;
 
 use crate::{
     designer::{
+        board_binary_io::BoardBinaryOutputPin,
         board_entity::BoardEntityViewKind,
-        chip::BuiltinChip,
+        chip::{BuiltinChip, ChipInputPin},
         pin::{PinModelCollection, PinView},
         signal_state::SignalState,
         wire::Wire,
@@ -12,6 +15,30 @@ use crate::{
     get_model, get_model_mut,
 };
 
+/// Sets the [`SignalState`] of all floating (unconnected) destination pins to [`SignalState::Low`].
+pub fn handle_floating_pins(
+    q_dest_pins: Query<(Entity, &PinView), Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
+    q_wires: Query<&Wire>,
+    q_parents: Query<&Parent>,
+    q_board_entities: Query<&View<BoardEntityViewKind>>,
+    mut q_chip_models: Query<&mut PinModelCollection>,
+) {
+    let dest_pin_entities: HashSet<Entity> = q_wires.iter().filter_map(|w| w.dest_pin).collect();
+
+    for (pin_entity, pin_view) in q_dest_pins.iter() {
+        if dest_pin_entities.contains(&pin_entity) {
+            continue;
+        }
+
+        if let Some(mut pin_model_collection) =
+            get_model_mut!(q_parents, q_board_entities, q_chip_models, pin_entity)
+        {
+            pin_model_collection[pin_view.pin_index].signal_state = SignalState::Low;
+        }
+    }
+}
+
+/// Evaluates all builtin chips and updates their models accordingly.
 pub fn evaluate_builtin_chips(
     mut q_builtin_chip_models: Query<(&BuiltinChip, &mut PinModelCollection)>,
 ) {
@@ -70,6 +97,7 @@ pub fn evaluate_builtin_chips(
     }
 }
 
+/// Syncronizes the destination pin with the source pin for every [`Wire`].
 pub fn update_signals(
     mut q_wires: Query<(&Wire, &mut SignalState)>,
     q_pin_views: Query<&PinView>,
@@ -107,5 +135,3 @@ pub fn update_signals(
         dest_pin_model_collection[dest_pin_view.pin_index].signal_state = src_pin_signal_state;
     }
 }
-
-//TODO: update floating pins
