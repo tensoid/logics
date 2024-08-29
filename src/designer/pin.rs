@@ -5,23 +5,79 @@ use super::{
 use bevy::prelude::*;
 use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};
 use std::ops::{Deref, DerefMut};
+use uuid::Uuid;
 
-#[derive(Reflect)]
+#[derive(Reflect, PartialEq, Clone)]
 pub enum PinType {
     Input,
     Output,
 }
 
-#[derive(Reflect)]
+#[derive(Reflect, Clone)]
 pub struct PinModel {
     pub signal_state: SignalState,
     pub pin_type: PinType,
     pub label: String,
+    pub uuid: Uuid,
 }
 
-#[derive(Component, Reflect)]
+impl PinModel {
+    pub fn new_input(label: String) -> Self {
+        Self {
+            label,
+            pin_type: PinType::Input,
+            signal_state: SignalState::Low,
+            uuid: Uuid::new_v4(),
+        }
+    }
+
+    pub fn new_output(label: String) -> Self {
+        Self {
+            label,
+            pin_type: PinType::Output,
+            signal_state: SignalState::Low,
+            uuid: Uuid::new_v4(),
+        }
+    }
+}
+
+#[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct PinModelCollection(pub Vec<PinModel>);
+
+impl PinModelCollection {
+    pub fn get_model(&self, uuid: Uuid) -> Option<&PinModel> {
+        self.iter().find(|m| m.uuid.eq(&uuid))
+    }
+
+    pub fn get_model_mut(&mut self, uuid: Uuid) -> Option<&mut PinModel> {
+        self.iter_mut().find(|m| m.uuid.eq(&uuid))
+    }
+
+    pub fn iter_inputs(&self) -> impl Iterator<Item = &PinModel> {
+        self.iter().filter(|m| m.pin_type.eq(&PinType::Input))
+    }
+
+    pub fn iter_inputs_mut(&mut self) -> impl Iterator<Item = &mut PinModel> {
+        self.iter_mut().filter(|m| m.pin_type.eq(&PinType::Input))
+    }
+
+    pub fn iter_outputs(&self) -> impl Iterator<Item = &PinModel> {
+        self.iter().filter(|m| m.pin_type.eq(&PinType::Output))
+    }
+
+    pub fn iter_outputs_mut(&mut self) -> impl Iterator<Item = &mut PinModel> {
+        self.iter_mut().filter(|m| m.pin_type.eq(&PinType::Input))
+    }
+
+    pub fn num_inputs(&self) -> usize {
+        self.iter_inputs().count()
+    }
+
+    pub fn num_outputs(&self) -> usize {
+        self.iter_outputs().count()
+    }
+}
 
 impl Deref for PinModelCollection {
     type Target = Vec<PinModel>;
@@ -57,12 +113,12 @@ impl PinCollectionBundle {
 
 #[derive(Component)]
 pub struct PinView {
-    pub pin_index: usize,
+    pub uuid: Uuid,
 }
 
 impl PinView {
-    pub fn new(index: usize) -> Self {
-        Self { pin_index: index }
+    pub fn new(uuid: Uuid) -> Self {
+        Self { uuid }
     }
 }
 
@@ -77,12 +133,12 @@ pub struct PinViewBundle {
 impl PinViewBundle {
     pub fn new(
         render_settings: &CircuitBoardRenderingSettings,
-        pin_index: usize,
+        uuid: Uuid,
         radius: f32,
         translation: Vec3,
     ) -> Self {
         Self {
-            pin_view: PinView::new(pin_index),
+            pin_view: PinView::new(uuid),
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Circle {
                     radius,

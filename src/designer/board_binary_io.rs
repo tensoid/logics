@@ -2,16 +2,15 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 use moonshine_core::prelude::*;
 use moonshine_view::prelude::*;
+use uuid::Uuid;
 
-use crate::{events::events::SpawnBoardEntityEvent, get_cursor};
+use crate::{events::events::SpawnBoardEntityEvent, find_descendant, get_cursor, get_model_mut};
 
 use super::{
     board_entity::{BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position},
     bounding_box::BoundingBox,
     cursor::Cursor,
-    pin::{
-        PinCollectionBundle, PinModel, PinModelCollection, PinType, PinViewBundle,
-    },
+    pin::{PinCollectionBundle, PinModel, PinModelCollection, PinType, PinViewBundle},
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
@@ -36,6 +35,7 @@ impl BoardBinaryInputBundle {
                 label: "".into(),
                 pin_type: PinType::Output,
                 signal_state: SignalState::Low,
+                uuid: Uuid::new_v4(),
             }]),
         }
     }
@@ -123,12 +123,12 @@ pub struct BoardBinaryInputPinBundle {
 }
 
 impl BoardBinaryInputPinBundle {
-    fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
+    fn new(render_settings: &CircuitBoardRenderingSettings, uuid: Uuid) -> Self {
         Self {
             board_binary_input_pin: BoardBinaryInputPin,
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
-                0,
+                uuid,
                 render_settings.board_binary_io_pin_radius,
                 Vec3::new(
                     render_settings.board_binary_input_extents.x / 2.0,
@@ -156,13 +156,6 @@ impl BoardBinaryInputPinCollectionBundle {
             pin_collection_bundle: PinCollectionBundle::new(),
         }
     }
-
-    fn spawn_pins(
-        pin_collection: &mut ChildBuilder,
-        render_settings: &CircuitBoardRenderingSettings,
-    ) {
-        pin_collection.spawn(BoardBinaryInputPinBundle::new(render_settings));
-    }
 }
 
 #[derive(Component, Reflect)]
@@ -185,6 +178,7 @@ impl BoardBinaryOutputBundle {
                 label: "".into(),
                 pin_type: PinType::Input,
                 signal_state: SignalState::Low,
+                uuid: Uuid::new_v4(),
             }]),
         }
     }
@@ -235,12 +229,12 @@ pub struct BoardBinaryOutputPinBundle {
 }
 
 impl BoardBinaryOutputPinBundle {
-    fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
+    fn new(render_settings: &CircuitBoardRenderingSettings, uuid: Uuid) -> Self {
         Self {
             board_binary_output_pin: BoardBinaryOutputPin,
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
-                0,
+                uuid,
                 render_settings.board_binary_io_pin_radius,
                 Vec3::new(
                     -render_settings.board_binary_output_extents.x / 2.0,
@@ -267,13 +261,6 @@ impl BoardBinaryOutputPinCollectionBundle {
             board_binary_output_pin_collection: BoardBinaryOutputPinCollection,
             pin_collection_bundle: PinCollectionBundle::new(),
         }
-    }
-
-    fn spawn_pins(
-        pin_collection: &mut ChildBuilder,
-        render_settings: &CircuitBoardRenderingSettings,
-    ) {
-        pin_collection.spawn(BoardBinaryOutputPinBundle::new(render_settings));
     }
 }
 
@@ -346,6 +333,7 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
         };
 
         let position = world.get::<Position>(object.entity()).unwrap();
+        let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
         view.insert(BoardEntityViewBundle::new(
             position.clone(),
@@ -366,7 +354,10 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
             board_entity
                 .spawn(BoardBinaryInputPinCollectionBundle::new())
                 .with_children(|pc| {
-                    BoardBinaryInputPinCollectionBundle::spawn_pins(pc, render_settings)
+                    pc.spawn(BoardBinaryInputPinBundle::new(
+                        render_settings,
+                        pin_model_collection[0].uuid,
+                    ));
                 });
         });
     }
@@ -410,6 +401,7 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryOutput {
         };
 
         let position = world.get::<Position>(object.entity()).unwrap();
+        let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
         view.insert(BoardEntityViewBundle::new(
             position.clone(),
@@ -425,7 +417,10 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryOutput {
             board_entity
                 .spawn(BoardBinaryOutputPinCollectionBundle::new())
                 .with_children(|pc| {
-                    BoardBinaryOutputPinCollectionBundle::spawn_pins(pc, render_settings)
+                    pc.spawn(BoardBinaryOutputPinBundle::new(
+                        render_settings,
+                        pin_model_collection[0].uuid,
+                    ));
                 });
         });
     }
@@ -445,17 +440,13 @@ pub fn update_board_binary_displays(
 ) {
     for (pin_model_collection, viewable) in q_board_binary_io.iter() {
         let view_entity = viewable.view().entity();
-        //TODO: build macro
-        for child_entity in q_children.iter_descendants(view_entity) {
-            if let Ok(mut display_text) = q_displays.get_mut(child_entity) {
-                display_text.sections[0].value = match pin_model_collection[0].signal_state {
-                    SignalState::High => "1".into(),
-                    SignalState::Low => "0".into(),
-                };
 
-                break;
-            }
-        }
+        find_descendant!(q_children, view_entity, q_displays, |target: &mut Text| {
+            target.sections[0].value = match pin_model_collection[0].signal_state {
+                SignalState::High => "1".into(),
+                SignalState::Low => "0".into(),
+            };
+        });
     }
 }
 
@@ -475,13 +466,15 @@ pub fn toggle_board_input_switch(
                 continue;
             }
 
-            let board_entity = q_parents.iter_ancestors(switch_entity).last().unwrap();
-            let model_entity = q_board_entities
-                .get(board_entity)
-                .unwrap()
-                .viewable()
-                .entity();
-            let mut pin_collection = q_board_binary_input_model.get_mut(model_entity).unwrap();
+            let Some(mut pin_collection) = get_model_mut!(
+                q_parents,
+                q_board_entities,
+                q_board_binary_input_model,
+                switch_entity
+            ) else {
+                return;
+            };
+
             pin_collection[0].signal_state.toggle();
 
             break;

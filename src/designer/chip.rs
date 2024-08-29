@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 use moonshine_core::object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
+use uuid::Uuid;
 
 use crate::events::events::SpawnBoardEntityEvent;
 
@@ -10,16 +11,13 @@ use crate::designer::{render_settings::CircuitBoardRenderingSettings, signal_sta
 use super::board_entity::{
     BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position,
 };
-use super::pin::{
-    PinCollection, PinCollectionBundle, PinModel, PinModelCollection, PinType, PinViewBundle,
-};
+use super::pin::{PinCollectionBundle, PinModel, PinModelCollection, PinType, PinViewBundle};
 
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
 pub struct BuiltinChip {
     pub name: String,
-    pub num_inputs: i32,
-    pub num_outputs: i32,
+    pub pin_model_collection: PinModelCollection,
 }
 
 #[derive(Resource)]
@@ -34,30 +32,14 @@ pub struct ChipBundle {
     chip: Chip,
     builtin_chip: BuiltinChip,
     model_bundle: BoardEntityModelBundle,
-    pin_model_collection: PinModelCollection,
 }
 
 impl ChipBundle {
-    fn new(builtin_chip: BuiltinChip, position: Position) -> Self {
-        let mut pin_models: Vec<PinModel> = (0..builtin_chip.num_inputs)
-            .map(|i| PinModel {
-                label: i.to_string(),
-                signal_state: SignalState::Low,
-                pin_type: PinType::Input,
-            })
-            .collect();
-
-        pin_models.push(PinModel {
-            label: "Y".into(),
-            signal_state: SignalState::Low,
-            pin_type: PinType::Output,
-        });
-
+    fn new(position: Position, builtin_chip: BuiltinChip) -> Self {
         Self {
             chip: Chip,
             builtin_chip,
             model_bundle: BoardEntityModelBundle::new(position),
-            pin_model_collection: PinModelCollection(pin_models),
         }
     }
 }
@@ -96,10 +78,14 @@ pub struct ChipBodyBundle {
 }
 
 impl ChipBodyBundle {
-    fn new(render_settings: &CircuitBoardRenderingSettings, builtin_chip: &BuiltinChip) -> Self {
-        let chip_extents: Vec2 = Vec2::new(
-            render_settings.chip_pin_gap * (builtin_chip.num_inputs + 1) as f32,
-            render_settings.chip_pin_gap * (builtin_chip.num_inputs + 1) as f32,
+    fn new(
+        render_settings: &CircuitBoardRenderingSettings,
+        pin_model_collection: &PinModelCollection,
+    ) -> Self {
+        let chip_extents = calculate_chip_extents(
+            render_settings,
+            pin_model_collection.num_inputs(),
+            pin_model_collection.num_outputs(),
         );
 
         Self {
@@ -135,16 +121,12 @@ pub struct ChipInputPinBundle {
 }
 
 impl ChipInputPinBundle {
-    fn new(
-        render_settings: &CircuitBoardRenderingSettings,
-        pin_index: usize,
-        translation: Vec3,
-    ) -> Self {
+    fn new(render_settings: &CircuitBoardRenderingSettings, uuid: Uuid, translation: Vec3) -> Self {
         Self {
             chip_input_pin: ChipInputPin,
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
-                pin_index,
+                uuid,
                 render_settings.chip_pin_radius,
                 translation,
             ),
@@ -162,16 +144,12 @@ pub struct ChipOutputPinBundle {
 }
 
 impl ChipOutputPinBundle {
-    fn new(
-        render_settings: &CircuitBoardRenderingSettings,
-        pin_index: usize,
-        translation: Vec3,
-    ) -> Self {
+    fn new(render_settings: &CircuitBoardRenderingSettings, uuid: Uuid, translation: Vec3) -> Self {
         Self {
             chip_output_pin: ChipOutputPin,
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
-                pin_index,
+                uuid,
                 render_settings.chip_pin_radius,
                 translation,
             ),
@@ -200,13 +178,13 @@ impl ChipPinCollectionBundle {
         pin_collection: &mut ChildBuilder,
         render_settings: &CircuitBoardRenderingSettings,
         chip_extents: Vec2,
-        builtin_chip: &BuiltinChip,
+        pin_model_collection: &PinModelCollection,
     ) {
         //Input pins
-        for i in 0..builtin_chip.num_inputs {
+        for (i, pin_model) in pin_model_collection.iter_inputs().enumerate() {
             pin_collection.spawn(ChipInputPinBundle::new(
                 render_settings,
-                i as usize,
+                pin_model.uuid,
                 Vec3::new(
                     -(chip_extents.x / 2.0),
                     (i as f32 * render_settings.chip_pin_gap) - (chip_extents.y / 2.0)
@@ -219,7 +197,7 @@ impl ChipPinCollectionBundle {
         // Output pins
         pin_collection.spawn(ChipOutputPinBundle::new(
             render_settings,
-            builtin_chip.num_inputs as usize,
+            pin_model_collection.iter_outputs().next().unwrap().uuid, //TODO: only works with one output chips
             Vec3::new(chip_extents.x / 2.0, 0.0, 0.01),
         ));
     }
@@ -236,7 +214,7 @@ pub fn spawn_chip(
         };
 
         let entity = commands
-            .spawn(ChipBundle::new(builtin_chip.clone(), ev.position.clone()))
+            .spawn(ChipBundle::new(ev.position.clone(), builtin_chip.clone()))
             .id();
 
         return Some((entity, ev.clone()));
@@ -265,15 +243,19 @@ impl BuildView<BoardEntityViewKind> for Chip {
         let position = world.get::<Position>(object.entity()).unwrap();
         let builtin_chip = world.get::<BuiltinChip>(object.entity()).unwrap();
 
-        let chip_extents: Vec2 = Vec2::new(
-            render_settings.chip_pin_gap * (builtin_chip.num_inputs + 1) as f32,
-            render_settings.chip_pin_gap * (builtin_chip.num_inputs + 1) as f32,
+        let chip_extents = calculate_chip_extents(
+            render_settings,
+            builtin_chip.pin_model_collection.num_inputs(),
+            builtin_chip.pin_model_collection.num_outputs(),
         );
 
         view.insert(BoardEntityViewBundle::new(position.clone(), chip_extents))
             .with_children(|board_entity| {
                 board_entity.spawn(ChipLabelBundle::new(builtin_chip.name.clone(), text_style));
-                board_entity.spawn(ChipBodyBundle::new(render_settings, builtin_chip));
+                board_entity.spawn(ChipBodyBundle::new(
+                    render_settings,
+                    &builtin_chip.pin_model_collection,
+                ));
 
                 board_entity
                     .spawn(ChipPinCollectionBundle::new())
@@ -282,9 +264,23 @@ impl BuildView<BoardEntityViewKind> for Chip {
                             pc,
                             render_settings,
                             chip_extents,
-                            builtin_chip,
+                            &builtin_chip.pin_model_collection,
                         );
                     });
             });
     }
+}
+
+/// Calculates the chip extents based on the amount of input/output pins.
+fn calculate_chip_extents(
+    render_settings: &CircuitBoardRenderingSettings,
+    num_inputs: usize,
+    num_outputs: usize,
+) -> Vec2 {
+    let max = num_inputs.max(num_outputs);
+
+    Vec2::new(
+        render_settings.chip_pin_gap * (max + 1) as f32,
+        render_settings.chip_pin_gap * (max + 1) as f32,
+    )
 }

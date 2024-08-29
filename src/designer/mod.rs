@@ -24,6 +24,8 @@ use moonshine_save::save::save_default;
 use moonshine_view::RegisterView;
 use pin::PinModelCollection;
 use selection::{release_drag, update_dragged_entities_position};
+use signal_state::SignalState;
+use wire::Wire;
 
 use crate::events::events::{LoadEvent, SaveEvent};
 use crate::simulation::simulation::update_signals;
@@ -63,9 +65,12 @@ impl Plugin for DesignerPlugin {
             .register_type::<BuiltinChip>()
             .register_type::<PinModelCollection>()
             .register_type::<BoardBinaryOutput>()
+            .register_type::<Wire>()
+            .register_type::<SignalState>()
             .register_view::<BoardEntityViewKind, BoardBinaryInput>()
             .register_view::<BoardEntityViewKind, BoardBinaryOutput>()
             .register_view::<BoardEntityViewKind, Chip>()
+            .register_view::<BoardEntityViewKind, Wire>()
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
             .add_systems(

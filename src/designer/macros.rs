@@ -1,3 +1,5 @@
+//TODO: comment macros and maybe rename the get_model
+
 #[macro_export]
 macro_rules! get_cursor {
     ($query:expr) => {
@@ -14,29 +16,31 @@ macro_rules! get_cursor_mut {
     };
 }
 
+//TODO: non mut version?
 #[macro_export]
 macro_rules! find_descendant {
-    ($q_children:expr, $view_entity:expr, $q_target:expr, $action:block) => {
+    ($q_children:expr, $view_entity:expr, $q_target:expr, $closure:expr) => {
         for child_entity in $q_children.iter_descendants($view_entity) {
             if let Ok(mut target) = $q_target.get_mut(child_entity) {
-                $action
+                $closure(&mut target);
                 break;
             }
         }
     };
 }
 
-#[macro_export]
-macro_rules! find_descendants {
-    ($q_children:expr, $view_entity:expr, $q_target:expr, $action:block) => {
-        for child_entity in $q_children.iter_descendants($view_entity) {
-            if let Ok(mut target) = $q_target.get_mut(child_entity) {
-                $action
-            }
-        }
-    };
-}
+// #[macro_export]
+// macro_rules! find_descendants {
+//     ($q_children:expr, $view_entity:expr, $q_target:expr, $closure:expr) => {
+//         for child_entity in $q_children.iter_descendants($view_entity) {
+//             if let Ok(mut target) = $q_target.get_mut(child_entity) {
+//                 $closure(&mut target);
+//             }
+//         }
+//     };
+// }
 
+//TODO: handle deletion in a stage where there can never be a view without its model in the update stage
 #[macro_export]
 macro_rules! get_model {
     ($q_parents:expr, $q_board_entities:expr, $q_models:expr, $wire_src_entity:expr) => {{

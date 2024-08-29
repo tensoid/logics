@@ -14,6 +14,8 @@ use camera::CameraPlugin;
 use debug::DebugPlugin;
 use designer::{
     chip::{BuiltinChip, BuiltinChips},
+    pin::{PinModel, PinModelCollection, PinType},
+    signal_state::SignalState,
     DesignerPlugin,
 };
 
@@ -22,6 +24,7 @@ use input::InputPlugin;
 use moonshine_save::{load::LoadPlugin, save::SavePlugin};
 use simulation::SimulationPlugin;
 use ui::UIPlugin;
+use uuid::Uuid;
 
 fn main() {
     let mut app = App::new();
@@ -56,29 +59,43 @@ fn main() {
 
     app.insert_resource(BuiltinChips(vec![
         BuiltinChip {
-            name: "AND-2".to_string(),
-            num_inputs: 2,
-            num_outputs: 1,
+            name: "AND-2".into(),
+            pin_model_collection: PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_input("B".into()),
+                PinModel::new_output("Y".into()),
+            ]),
         },
         BuiltinChip {
-            name: "NAND-2".to_string(),
-            num_inputs: 2,
-            num_outputs: 1,
+            name: "NAND-2".into(),
+            pin_model_collection: PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_input("B".into()),
+                PinModel::new_output("Y".into()),
+            ]),
         },
         BuiltinChip {
-            name: "OR-2".to_string(),
-            num_inputs: 2,
-            num_outputs: 1,
+            name: "OR-2".into(),
+            pin_model_collection: PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_input("B".into()),
+                PinModel::new_output("Y".into()),
+            ]),
         },
         BuiltinChip {
-            name: "NOT".to_string(),
-            num_inputs: 1,
-            num_outputs: 1,
+            name: "NOT".into(),
+            pin_model_collection: PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_output("Y".into()),
+            ]),
         },
         BuiltinChip {
-            name: "XOR-2".to_string(),
-            num_inputs: 2,
-            num_outputs: 1,
+            name: "XOR-2".into(),
+            pin_model_collection: PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_input("B".into()),
+                PinModel::new_output("Y".into()),
+            ]),
         },
     ]));
 

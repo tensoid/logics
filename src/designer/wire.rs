@@ -1,35 +1,62 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
+use moonshine_core::object::Object;
+use moonshine_save::save::Save;
+use moonshine_view::{BuildView, ViewCommands, Viewable};
+use uuid::Uuid;
 
 use crate::{get_cursor, get_cursor_mut};
 
 use super::{
     board_binary_io::{BoardBinaryInputPin, BoardBinaryOutputPin},
+    board_entity::{BoardEntityModel, BoardEntityViewKind},
     bounding_box::BoundingBox,
     chip::{ChipInputPin, ChipOutputPin},
     cursor::{Cursor, CursorState},
+    pin::PinView,
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
 
-#[derive(Component)]
+#[derive(Component, Reflect, Clone)]
+#[reflect(Component)]
 pub struct Wire {
-    pub src_pin: Option<Entity>,
-    pub dest_pin: Option<Entity>,
+    pub src_pin_uuid: Option<Uuid>,
+    pub dest_pin_uuid: Option<Uuid>,
 }
 
 #[derive(Bundle)]
 pub struct WireBundle {
     wire: Wire,
-    shape_bundle: ShapeBundle,
-    stroke: Stroke,
+    save: Save,
     signal_state: SignalState,
+    board_entity_model: BoardEntityModel,
 }
 
 impl WireBundle {
-    pub fn new(render_settings: &CircuitBoardRenderingSettings, wire: Wire) -> Self {
+    pub fn new(wire: Wire) -> Self {
         Self {
             wire,
+            signal_state: SignalState::Low,
+            save: Save,
+            board_entity_model: BoardEntityModel,
+        }
+    }
+}
+
+#[derive(Component)]
+pub struct WireView;
+
+#[derive(Bundle)]
+pub struct WireViewBundle {
+    wire_view: WireView,
+    shape_bundle: ShapeBundle,
+    stroke: Stroke,
+}
+
+impl WireViewBundle {
+    pub fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
+        Self {
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
                 spatial: SpatialBundle {
@@ -42,8 +69,20 @@ impl WireBundle {
                 render_settings.signal_low_color,
                 render_settings.wire_line_width,
             ),
-            signal_state: SignalState::Low,
+            wire_view: WireView,
         }
+    }
+}
+
+impl BuildView<BoardEntityViewKind> for Wire {
+    fn build(
+        world: &World,
+        _: Object<BoardEntityViewKind>,
+        view: &mut ViewCommands<BoardEntityViewKind>,
+    ) {
+        let render_settings = world.resource::<CircuitBoardRenderingSettings>();
+
+        view.insert(WireViewBundle::new(render_settings));
     }
 }
 
@@ -53,27 +92,40 @@ impl WireBundle {
  */
 //TODO: Optimisation potential with only updating necessary wires.
 //TODO: maybe split into delete_dangling_wires and update_wires
-//TODO: clean up the indents
+//TODO: clean up the indents and ugly stuff
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
-    mut q_wires: Query<(&mut Wire, &mut Path, &GlobalTransform, Entity)>,
-    q_dest_pins: Query<&GlobalTransform, Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
-    q_src_pins: Query<&GlobalTransform, Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>>,
+    mut q_wires: Query<(&mut Wire, &Viewable<BoardEntityViewKind>, Entity)>,
+    q_dest_pins: Query<
+        (&GlobalTransform, &PinView),
+        Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>,
+    >,
+    q_src_pins: Query<
+        (&GlobalTransform, &PinView),
+        Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
+    >,
     q_cursor: Query<(&Cursor, &Transform)>,
+    mut q_wire_views: Query<&mut Path, With<WireView>>,
     mut commands: Commands,
 ) {
     let (cursor, cursor_transform) = get_cursor!(q_cursor);
 
-    for (wire, mut wire_path, _, wire_entity) in q_wires.iter_mut() {
-        let Some(wire_src_pin_entity) = wire.src_pin else {
+    for (wire, mut wire_viewable, wire_entity) in q_wires.iter_mut() {
+        let Some(wire_src_pin_uuid) = wire.src_pin_uuid else {
             commands.entity(wire_entity).despawn();
             continue;
         };
 
-        if let Some(wire_dest_pin_entity) = wire.dest_pin {
-            if let (Ok(wire_src_pin_transform), Ok(wire_dest_pin_transform)) = (
-                q_src_pins.get(wire_src_pin_entity),
-                q_dest_pins.get(wire_dest_pin_entity),
+        let mut wire_path = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
+
+        if let Some(wire_dest_pin_uuid) = wire.dest_pin_uuid {
+            if let (Some((wire_src_pin_transform, _)), Some((wire_dest_pin_transform, _))) = (
+                q_src_pins
+                    .iter()
+                    .find(|(_, p)| p.uuid.eq(&wire_src_pin_uuid)),
+                q_dest_pins
+                    .iter()
+                    .find(|(_, p)| p.uuid.eq(&wire_dest_pin_uuid)),
             ) {
                 let new_wire = shapes::Line(
                     wire_src_pin_transform.translation().truncate(),
@@ -88,7 +140,9 @@ pub fn update_wires(
         } else if let CursorState::DraggingWire(dragged_wire) = cursor.state {
             //TODO: move this to drag_wire
             if dragged_wire.eq(&wire_entity) {
-                if let Ok(wire_src_pin_transform) = q_src_pins.get(wire_src_pin_entity) {
+                if let Some((wire_src_pin_transform, _)) = q_src_pins
+                .iter()
+                .find(|(_, p)| p.uuid.eq(&wire_src_pin_uuid)) {
                     let new_wire = shapes::Line(
                         wire_src_pin_transform.translation().truncate(),
                         cursor_transform.translation.truncate(),
@@ -109,35 +163,31 @@ pub fn update_wires(
 pub fn drag_wire(
     input: Res<ButtonInput<MouseButton>>,
     q_wire_src_pins: Query<
-        (&BoundingBox, Entity),
+        (&BoundingBox, &PinView),
         Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
     >,
     q_wire_dest_pins: Query<
-        (&BoundingBox, Entity),
+        (&BoundingBox, &PinView),
         Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>,
     >,
     mut q_wires: Query<&mut Wire>,
     mut q_cursor: Query<(&mut Cursor, &Transform), With<Cursor>>,
     mut commands: Commands,
-    render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
 
     if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
-        for (bbox, pin_entity) in q_wire_src_pins.iter() {
+        for (bbox, pin_view) in q_wire_src_pins.iter() {
             if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
                 continue;
             }
 
             // cursor is on pin
             let wire = commands
-                .spawn(WireBundle::new(
-                    render_settings.as_ref(),
-                    Wire {
-                        src_pin: Some(pin_entity),
-                        dest_pin: None,
-                    },
-                ))
+                .spawn(WireBundle::new(Wire {
+                    src_pin_uuid: Some(pin_view.uuid),
+                    dest_pin_uuid: None,
+                }))
                 .id();
             cursor.state = CursorState::DraggingWire(wire);
             return;
@@ -147,10 +197,10 @@ pub fn drag_wire(
     if let CursorState::DraggingWire(wire_entity) = cursor.state {
         if let Ok(mut wire) = q_wires.get_mut(wire_entity) {
             if input.just_released(MouseButton::Left) {
-                for (bbox, pin_entity) in q_wire_dest_pins.iter() {
+                for (bbox, pin_view) in q_wire_dest_pins.iter() {
                     if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
                         // connect wire to pin
-                        wire.dest_pin = Some(pin_entity);
+                        wire.dest_pin_uuid = Some(pin_view.uuid);
                         cursor.state = CursorState::Idle;
                         return;
                     }

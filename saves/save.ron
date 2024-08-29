@@ -1,9 +1,111 @@
 (
   resources: {},
   entities: {
-    4294967314: (
+    4294967336: (
       components: {
-        "logics::designer::io_pin::BoardBinaryInput": (),
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::chip::Chip": (),
+        "logics::designer::board_entity::Position": ((
+          x: 55.999985,
+          y: 144.79996,
+        )),
+        "logics::designer::chip::BuiltinChip": (
+          name: "AND-2",
+          pin_model_collection: ([
+            (
+              signal_state: Low,
+              pin_type: Input,
+              label: "A",
+              uuid: "7bc8f2e2-a14b-42b6-b021-9669ed4b730d",
+            ),
+            (
+              signal_state: Low,
+              pin_type: Input,
+              label: "B",
+              uuid: "e7b39b45-ddc4-48b2-aed2-d73b7b5c9715",
+            ),
+            (
+              signal_state: Low,
+              pin_type: Output,
+              label: "Y",
+              uuid: "ec98edf9-cab9-4f34-ae6e-1d116fce72ba",
+            ),
+          ]),
+        ),
+      },
+    ),
+    4294967344: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::wire::Wire": (
+          src_pin_uuid: Some("ec98edf9-cab9-4f34-ae6e-1d116fce72ba"),
+          dest_pin_uuid: Some("6502f185-abea-424c-af70-a41026a1cde0"),
+        ),
+        "logics::designer::signal_state::SignalState": Low,
+      },
+    ),
+    8589934612: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::board_binary_io::BoardBinaryOutput": (),
+        "logics::designer::board_entity::Position": ((
+          x: 153.6,
+          y: -75.20001,
+        )),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            signal_state: Low,
+            pin_type: Input,
+            label: "",
+            uuid: "6502f185-abea-424c-af70-a41026a1cde0",
+          ),
+        ]),
+      },
+    ),
+    8589934618: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::wire::Wire": (
+          src_pin_uuid: Some("b5fe3326-8981-4c5d-9498-02f5d3054d36"),
+          dest_pin_uuid: Some("d1e4321a-1404-40e2-bcc6-d30e20195b96"),
+        ),
+        "logics::designer::signal_state::SignalState": High,
+      },
+    ),
+    8589934624: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::board_binary_io::BoardBinaryInput": (),
+        "logics::designer::board_entity::Position": ((
+          x: -126.40007,
+          y: 25.599989,
+        )),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            signal_state: High,
+            pin_type: Output,
+            label: "",
+            uuid: "b5fe3326-8981-4c5d-9498-02f5d3054d36",
+          ),
+        ]),
+      },
+    ),
+    8589934625: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::board_binary_io::BoardBinaryOutput": (),
+        "logics::designer::board_entity::Position": ((
+          x: 147.20001,
+          y: 16.799982,
+        )),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            signal_state: High,
+            pin_type: Input,
+            label: "",
+            uuid: "d1e4321a-1404-40e2-bcc6-d30e20195b96",
+          ),
+        ]),
       },
     ),
   },
