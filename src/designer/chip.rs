@@ -10,7 +10,9 @@ use crate::designer::{render_settings::CircuitBoardRenderingSettings, signal_sta
 use super::board_entity::{
     BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position,
 };
-use super::pin::{PinCollection, PinModel, PinModelCollection, PinType, PinViewBundle};
+use super::pin::{
+    PinCollection, PinCollectionBundle, PinModel, PinModelCollection, PinType, PinViewBundle,
+};
 
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
@@ -183,16 +185,14 @@ struct ChipPinCollection;
 #[derive(Bundle)]
 struct ChipPinCollectionBundle {
     chip_pin_collection: ChipPinCollection,
-    pin_collection: PinCollection,
-    spatial_bundle: SpatialBundle,
+    pin_collection_bundle: PinCollectionBundle,
 }
 
 impl ChipPinCollectionBundle {
     fn new() -> Self {
         Self {
             chip_pin_collection: ChipPinCollection,
-            pin_collection: PinCollection,
-            spatial_bundle: SpatialBundle::default(),
+            pin_collection_bundle: PinCollectionBundle::new(),
         }
     }
 

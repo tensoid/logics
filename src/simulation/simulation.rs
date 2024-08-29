@@ -16,6 +16,7 @@ use crate::{
 };
 
 /// Sets the [`SignalState`] of all floating (unconnected) destination pins to [`SignalState::Low`].
+#[allow(clippy::type_complexity)]
 pub fn handle_floating_pins(
     q_dest_pins: Query<(Entity, &PinView), Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
     q_wires: Query<&Wire>,

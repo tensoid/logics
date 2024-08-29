@@ -9,7 +9,9 @@ use super::{
     board_entity::{BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position},
     bounding_box::BoundingBox,
     cursor::Cursor,
-    pin::{PinCollection, PinModel, PinModelCollection, PinType, PinViewBundle},
+    pin::{
+        PinCollectionBundle, PinModel, PinModelCollection, PinType, PinViewBundle,
+    },
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
@@ -144,16 +146,14 @@ struct BoardBinaryInputPinCollection;
 #[derive(Bundle)]
 struct BoardBinaryInputPinCollectionBundle {
     board_binary_input_pin_collection: BoardBinaryInputPinCollection,
-    pin_collection: PinCollection,
-    spatial_bundle: SpatialBundle,
+    pin_collection_bundle: PinCollectionBundle,
 }
 
 impl BoardBinaryInputPinCollectionBundle {
     fn new() -> Self {
         Self {
             board_binary_input_pin_collection: BoardBinaryInputPinCollection,
-            pin_collection: PinCollection,
-            spatial_bundle: SpatialBundle::default(),
+            pin_collection_bundle: PinCollectionBundle::new(),
         }
     }
 
@@ -249,6 +249,31 @@ impl BoardBinaryOutputPinBundle {
                 ),
             ),
         }
+    }
+}
+
+#[derive(Component)]
+struct BoardBinaryOutputPinCollection;
+
+#[derive(Bundle)]
+struct BoardBinaryOutputPinCollectionBundle {
+    board_binary_output_pin_collection: BoardBinaryOutputPinCollection,
+    pin_collection_bundle: PinCollectionBundle,
+}
+
+impl BoardBinaryOutputPinCollectionBundle {
+    fn new() -> Self {
+        Self {
+            board_binary_output_pin_collection: BoardBinaryOutputPinCollection,
+            pin_collection_bundle: PinCollectionBundle::new(),
+        }
+    }
+
+    fn spawn_pins(
+        pin_collection: &mut ChildBuilder,
+        render_settings: &CircuitBoardRenderingSettings,
+    ) {
+        pin_collection.spawn(BoardBinaryOutputPinBundle::new(render_settings));
     }
 }
 
@@ -397,7 +422,11 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryOutput {
                 text_style,
                 false,
             ));
-            board_entity.spawn(BoardBinaryOutputPinBundle::new(render_settings));
+            board_entity
+                .spawn(BoardBinaryOutputPinCollectionBundle::new())
+                .with_children(|pc| {
+                    BoardBinaryOutputPinCollectionBundle::spawn_pins(pc, render_settings)
+                });
         });
     }
 }

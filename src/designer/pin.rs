@@ -40,6 +40,21 @@ impl DerefMut for PinModelCollection {
 #[derive(Component)]
 pub struct PinCollection;
 
+#[derive(Bundle)]
+pub struct PinCollectionBundle {
+    pin_collection: PinCollection,
+    spatial_bundle: SpatialBundle,
+}
+
+impl PinCollectionBundle {
+    pub fn new() -> Self {
+        Self {
+            pin_collection: PinCollection,
+            spatial_bundle: SpatialBundle::default(),
+        }
+    }
+}
+
 #[derive(Component)]
 pub struct PinView {
     pub pin_index: usize,
