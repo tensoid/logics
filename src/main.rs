@@ -13,7 +13,7 @@ mod ui;
 use camera::CameraPlugin;
 use debug::DebugPlugin;
 use designer::{
-    chip::{BuiltinChip, BuiltinChips},
+    chip::{BuiltinChip, BuiltinChipBundle, BuiltinChips},
     pin::{PinModel, PinModelCollection, PinType},
     signal_state::SignalState,
     DesignerPlugin,
@@ -58,45 +58,45 @@ fn main() {
         .add_plugins(UIPlugin);
 
     app.insert_resource(BuiltinChips(vec![
-        BuiltinChip {
-            name: "AND-2".into(),
-            pin_model_collection: PinModelCollection(vec![
+        BuiltinChipBundle::new(
+            "AND-2".into(),
+            PinModelCollection(vec![
                 PinModel::new_input("A".into()),
                 PinModel::new_input("B".into()),
                 PinModel::new_output("Y".into()),
             ]),
-        },
-        BuiltinChip {
-            name: "NAND-2".into(),
-            pin_model_collection: PinModelCollection(vec![
+        ),
+        BuiltinChipBundle::new(
+            "NAND-2".into(),
+            PinModelCollection(vec![
                 PinModel::new_input("A".into()),
                 PinModel::new_input("B".into()),
                 PinModel::new_output("Y".into()),
             ]),
-        },
-        BuiltinChip {
-            name: "OR-2".into(),
-            pin_model_collection: PinModelCollection(vec![
+        ),
+        BuiltinChipBundle::new(
+            "OR-2".into(),
+            PinModelCollection(vec![
                 PinModel::new_input("A".into()),
                 PinModel::new_input("B".into()),
                 PinModel::new_output("Y".into()),
             ]),
-        },
-        BuiltinChip {
-            name: "NOT".into(),
-            pin_model_collection: PinModelCollection(vec![
+        ),
+        BuiltinChipBundle::new(
+            "NOT".into(),
+            PinModelCollection(vec![
                 PinModel::new_input("A".into()),
                 PinModel::new_output("Y".into()),
             ]),
-        },
-        BuiltinChip {
-            name: "XOR-2".into(),
-            pin_model_collection: PinModelCollection(vec![
+        ),
+        BuiltinChipBundle::new(
+            "XOR-2".into(),
+            PinModelCollection(vec![
                 PinModel::new_input("A".into()),
                 PinModel::new_input("B".into()),
                 PinModel::new_output("Y".into()),
             ]),
-        },
+        ),
     ]));
 
     app.run();

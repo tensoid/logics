@@ -23,7 +23,7 @@ pub struct ChipButton;
 pub fn spawn_chip_selector(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    q_chip_specs: Res<BuiltinChips>,
+    q_builtin_chips: Res<BuiltinChips>,
 ) {
     commands
         .spawn((
@@ -36,10 +36,10 @@ pub fn spawn_chip_selector(
             },
         ))
         .with_children(|cs| {
-            for chip_name in q_chip_specs
+            for chip_name in q_builtin_chips
                 .0
                 .iter()
-                .map(|spec| spec.name.clone())
+                .map(|cb| cb.builtin_chip.name.clone())
                 .chain(vec!["PORT-IN".to_string(), "PORT-OUT".to_string()])
             {
                 cs.spawn((

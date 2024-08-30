@@ -22,21 +22,25 @@ pub struct PinModel {
 }
 
 impl PinModel {
+    /// Creates a new PinModel with [`PinType::Input`].
+    /// This does not create a [`Uuid`] and instead sets the uuid field to all zeros.
     pub fn new_input(label: String) -> Self {
         Self {
             label,
             pin_type: PinType::Input,
             signal_state: SignalState::Low,
-            uuid: Uuid::new_v4(),
+            uuid: Uuid::nil(),
         }
     }
 
+    /// Creates a new PinModel with [`PinType::Output`].
+    /// This does not create a [`Uuid`] and instead sets the uuid field to all zeros.
     pub fn new_output(label: String) -> Self {
         Self {
             label,
             pin_type: PinType::Output,
             signal_state: SignalState::Low,
-            uuid: Uuid::new_v4(),
+            uuid: Uuid::nil(),
         }
     }
 }
@@ -76,6 +80,11 @@ impl PinModelCollection {
 
     pub fn num_outputs(&self) -> usize {
         self.iter_outputs().count()
+    }
+
+    /// Creates new uuids for all pins to avoid spawning two builtin chips with equal pin uuids.
+    pub fn randomize_pin_uuids(&mut self) {
+        self.iter_mut().for_each(|m| m.uuid = Uuid::new_v4());
     }
 }
 

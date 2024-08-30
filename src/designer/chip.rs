@@ -6,22 +6,36 @@ use uuid::Uuid;
 
 use crate::events::events::SpawnBoardEntityEvent;
 
-use crate::designer::{render_settings::CircuitBoardRenderingSettings, signal_state::SignalState};
+use crate::designer::render_settings::CircuitBoardRenderingSettings;
 
 use super::board_entity::{
     BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position,
 };
-use super::pin::{PinCollectionBundle, PinModel, PinModelCollection, PinType, PinViewBundle};
+use super::pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle};
 
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
 pub struct BuiltinChip {
     pub name: String,
+}
+
+#[derive(Bundle, Clone)]
+pub struct BuiltinChipBundle {
+    pub builtin_chip: BuiltinChip,
     pub pin_model_collection: PinModelCollection,
 }
 
+impl BuiltinChipBundle {
+    pub fn new(name: String, pin_model_collection: PinModelCollection) -> Self {
+        Self {
+            builtin_chip: BuiltinChip { name },
+            pin_model_collection,
+        }
+    }
+}
+
 #[derive(Resource)]
-pub struct BuiltinChips(pub Vec<BuiltinChip>);
+pub struct BuiltinChips(pub Vec<BuiltinChipBundle>);
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
@@ -30,15 +44,15 @@ pub struct Chip;
 #[derive(Bundle)]
 pub struct ChipBundle {
     chip: Chip,
-    builtin_chip: BuiltinChip,
+    builtin_chip_bundle: BuiltinChipBundle,
     model_bundle: BoardEntityModelBundle,
 }
 
 impl ChipBundle {
-    fn new(position: Position, builtin_chip: BuiltinChip) -> Self {
+    fn new(position: Position, builtin_chip_bundle: BuiltinChipBundle) -> Self {
         Self {
             chip: Chip,
-            builtin_chip,
+            builtin_chip_bundle,
             model_bundle: BoardEntityModelBundle::new(position),
         }
     }
@@ -209,12 +223,21 @@ pub fn spawn_chip(
     builtin_chips: Res<BuiltinChips>,
 ) -> Option<(Entity, SpawnBoardEntityEvent)> {
     for ev in spawn_ev.read() {
-        let Some(builtin_chip) = builtin_chips.0.iter().find(|chip| chip.name == ev.name) else {
+        let Some(builtin_chip_blueprint) = builtin_chips
+            .0
+            .iter()
+            .find(|chip| chip.builtin_chip.name == ev.name)
+        else {
             continue;
         };
 
+        let mut builtin_chip_bundle = builtin_chip_blueprint.clone();
+        builtin_chip_bundle
+            .pin_model_collection
+            .randomize_pin_uuids();
+
         let entity = commands
-            .spawn(ChipBundle::new(ev.position.clone(), builtin_chip.clone()))
+            .spawn(ChipBundle::new(ev.position.clone(), builtin_chip_bundle))
             .id();
 
         return Some((entity, ev.clone()));
@@ -241,21 +264,19 @@ impl BuildView<BoardEntityViewKind> for Chip {
         };
 
         let position = world.get::<Position>(object.entity()).unwrap();
+        let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
         let builtin_chip = world.get::<BuiltinChip>(object.entity()).unwrap();
 
         let chip_extents = calculate_chip_extents(
             render_settings,
-            builtin_chip.pin_model_collection.num_inputs(),
-            builtin_chip.pin_model_collection.num_outputs(),
+            pin_model_collection.num_inputs(),
+            pin_model_collection.num_outputs(),
         );
 
         view.insert(BoardEntityViewBundle::new(position.clone(), chip_extents))
             .with_children(|board_entity| {
                 board_entity.spawn(ChipLabelBundle::new(builtin_chip.name.clone(), text_style));
-                board_entity.spawn(ChipBodyBundle::new(
-                    render_settings,
-                    &builtin_chip.pin_model_collection,
-                ));
+                board_entity.spawn(ChipBodyBundle::new(render_settings, &pin_model_collection));
 
                 board_entity
                     .spawn(ChipPinCollectionBundle::new())
@@ -264,7 +285,7 @@ impl BuildView<BoardEntityViewKind> for Chip {
                             pc,
                             render_settings,
                             chip_extents,
-                            &builtin_chip.pin_model_collection,
+                            &pin_model_collection,
                         );
                     });
             });

@@ -16,22 +16,42 @@ use crate::{
     get_model, get_model_mut,
 };
 
-/// Sets the [`SignalState`] of all floating (unconnected) destination pins to [`SignalState::Low`].
+// /// Sets the [`SignalState`] of all floating (unconnected) destination pins to [`SignalState::Low`].
+// #[allow(clippy::type_complexity)]
+// pub fn handle_floating_pins(
+//     q_dest_pins: Query<(&PinView, Entity), Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
+//     q_wires: Query<&Wire>,
+//     q_parents: Query<&Parent>,
+//     q_board_entities: Query<&View<BoardEntityViewKind>>,
+//     mut q_chip_models: Query<&mut PinModelCollection>,
+// ) {
+//     let dest_pin_uuids: HashSet<Uuid> = q_wires.iter().filter_map(|w| w.dest_pin_uuid).collect();
+
+//     for (pin_view, pin_entity) in q_dest_pins.iter() {
+//         if dest_pin_uuids.contains(&pin_view.uuid) {
+//             continue;
+//         }
+
+//         if let Some(mut pin_model_collection) =
+//             get_model_mut!(q_parents, q_board_entities, q_chip_models, pin_entity)
+//         {
+//             pin_model_collection
+//                 .get_model_mut(pin_view.uuid)
+//                 .unwrap()
+//                 .signal_state = SignalState::Low;
+//         }
+//     }
+// }
+
+/// Sets the [`SignalState`] of all input pins to [`SignalState::Low`] to prepare for update signals.
 #[allow(clippy::type_complexity)]
-pub fn handle_floating_pins(
+pub fn reset_input_pins(
     q_dest_pins: Query<(&PinView, Entity), Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
-    q_wires: Query<&Wire>,
     q_parents: Query<&Parent>,
     q_board_entities: Query<&View<BoardEntityViewKind>>,
     mut q_chip_models: Query<&mut PinModelCollection>,
 ) {
-    let dest_pin_uuids: HashSet<Uuid> = q_wires.iter().filter_map(|w| w.dest_pin_uuid).collect();
-
     for (pin_view, pin_entity) in q_dest_pins.iter() {
-        if dest_pin_uuids.contains(&pin_view.uuid) {
-            continue;
-        }
-
         if let Some(mut pin_model_collection) =
             get_model_mut!(q_parents, q_board_entities, q_chip_models, pin_entity)
         {
@@ -112,7 +132,8 @@ pub fn update_signals(
 ) {
     for (wire, mut wire_signal_state) in q_wires.iter_mut() {
         let Some(wire_src_uuid) = wire.src_pin_uuid else {
-            return;
+            println!("No src pin uuid");
+            continue;
         };
 
         let (src_pin_view, src_pin_entity) = q_pin_views
@@ -122,7 +143,8 @@ pub fn update_signals(
         let Some(src_pin_model_collection) =
             get_model!(q_parents, q_board_entities, q_chip_models, src_pin_entity)
         else {
-            return;
+            println!("No src pin model");
+            continue;
         };
 
         let src_pin_signal_state = src_pin_model_collection
@@ -132,8 +154,13 @@ pub fn update_signals(
 
         *wire_signal_state = src_pin_signal_state;
 
+        if src_pin_signal_state == SignalState::Low {
+            continue;
+        }
+
         let Some(wire_dest_uuid) = wire.dest_pin_uuid else {
-            return;
+            println!("No dest pin uuid");
+            continue;
         };
 
         let (dest_pin_view, dest_pin_entity) = q_pin_views
@@ -143,12 +170,13 @@ pub fn update_signals(
         let Some(mut dest_pin_model_collection) =
             get_model_mut!(q_parents, q_board_entities, q_chip_models, dest_pin_entity)
         else {
-            return;
+            println!("No dest pin model");
+            continue;
         };
 
         dest_pin_model_collection
             .get_model_mut(dest_pin_view.uuid)
             .unwrap()
-            .signal_state = src_pin_signal_state;
+            .signal_state = SignalState::High;
     }
 }

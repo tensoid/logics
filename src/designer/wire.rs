@@ -141,8 +141,9 @@ pub fn update_wires(
             //TODO: move this to drag_wire
             if dragged_wire.eq(&wire_entity) {
                 if let Some((wire_src_pin_transform, _)) = q_src_pins
-                .iter()
-                .find(|(_, p)| p.uuid.eq(&wire_src_pin_uuid)) {
+                    .iter()
+                    .find(|(_, p)| p.uuid.eq(&wire_src_pin_uuid))
+                {
                     let new_wire = shapes::Line(
                         wire_src_pin_transform.translation().truncate(),
                         cursor_transform.translation.truncate(),
