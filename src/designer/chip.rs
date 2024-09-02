@@ -11,7 +11,7 @@ use crate::designer::render_settings::CircuitBoardRenderingSettings;
 use super::board_entity::{
     BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position,
 };
-use super::pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle};
+use super::pin::{PinCollectionBundle, PinModelCollection, PinViewBundle};
 
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
@@ -102,6 +102,16 @@ impl ChipBodyBundle {
             pin_model_collection.num_outputs(),
         );
 
+        let points = vec![
+            Vec2::new(-1.0, -1.0),
+            Vec2::new(-1.0, 1.0),
+            Vec2::new(1.0, 1.0),
+            Vec2::new(1.0, -1.0),
+        ]
+        .into_iter()
+        .map(|x| x * (chip_extents / 2.0))
+        .collect();
+
         Self {
             chip_body: ChipBody,
             fill: Fill::color(render_settings.chip_color),
@@ -110,9 +120,10 @@ impl ChipBodyBundle {
                 render_settings.board_entity_stroke_width,
             ),
             shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Rectangle {
-                    extents: chip_extents,
-                    ..default()
+                path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
+                    points,
+                    radius: 5.0,
+                    closed: false,
                 }),
                 spatial: SpatialBundle {
                     transform: Transform::IDENTITY,
@@ -201,8 +212,7 @@ impl ChipPinCollectionBundle {
                 pin_model.uuid,
                 Vec3::new(
                     -(chip_extents.x / 2.0),
-                    (i as f32 * render_settings.chip_pin_gap) - (chip_extents.y / 2.0)
-                        + render_settings.chip_pin_gap,
+                    ((i as f32 + 0.75) * render_settings.chip_pin_gap) - (chip_extents.y / 2.0),
                     0.01,
                 ),
             ));
@@ -258,7 +268,7 @@ impl BuildView<BoardEntityViewKind> for Chip {
         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
         let text_style = TextStyle {
-            font_size: 20.0,
+            font_size: render_settings.chip_label_font_size,
             color: Color::BLACK,
             font,
         };
@@ -276,7 +286,7 @@ impl BuildView<BoardEntityViewKind> for Chip {
         view.insert(BoardEntityViewBundle::new(position.clone(), chip_extents))
             .with_children(|board_entity| {
                 board_entity.spawn(ChipLabelBundle::new(builtin_chip.name.clone(), text_style));
-                board_entity.spawn(ChipBodyBundle::new(render_settings, &pin_model_collection));
+                board_entity.spawn(ChipBodyBundle::new(render_settings, pin_model_collection));
 
                 board_entity
                     .spawn(ChipPinCollectionBundle::new())
@@ -285,7 +295,7 @@ impl BuildView<BoardEntityViewKind> for Chip {
                             pc,
                             render_settings,
                             chip_extents,
-                            &pin_model_collection,
+                            pin_model_collection,
                         );
                     });
             });
@@ -301,7 +311,7 @@ fn calculate_chip_extents(
     let max = num_inputs.max(num_outputs);
 
     Vec2::new(
-        render_settings.chip_pin_gap * (max + 1) as f32,
-        render_settings.chip_pin_gap * (max + 1) as f32,
+        render_settings.chip_pin_gap * (max as f32 + 1.0),
+        render_settings.chip_pin_gap * (max as f32 + 0.5),
     )
 }

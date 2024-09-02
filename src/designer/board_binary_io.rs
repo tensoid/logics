@@ -91,6 +91,16 @@ pub struct BoardBinaryInputBodyBundle {
 
 impl BoardBinaryInputBodyBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
+        let points = vec![
+            Vec2::new(-1.0, -1.0),
+            Vec2::new(-1.0, 1.0),
+            Vec2::new(1.0, 1.0),
+            Vec2::new(1.0, -1.0),
+        ]
+        .into_iter()
+        .map(|x| x * (render_settings.board_binary_input_extents / 2.0))
+        .collect();
+
         Self {
             board_binary_input_body: BoardBinaryInputBody,
             fill: Fill::color(render_settings.board_binary_io_color),
@@ -99,9 +109,10 @@ impl BoardBinaryInputBodyBundle {
                 render_settings.board_entity_stroke_width,
             ),
             shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Rectangle {
-                    extents: render_settings.board_binary_input_extents,
-                    ..default()
+                path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
+                    points,
+                    radius: 5.0,
+                    closed: false,
                 }),
                 spatial: SpatialBundle {
                     transform: Transform::from_xyz(0.0, 0.0, 0.0),
@@ -197,6 +208,16 @@ pub struct BoardBinaryOutputBodyBundle {
 
 impl BoardBinaryOutputBodyBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
+        let points = vec![
+            Vec2::new(-1.0, -1.0),
+            Vec2::new(-1.0, 1.0),
+            Vec2::new(1.0, 1.0),
+            Vec2::new(1.0, -1.0),
+        ]
+        .into_iter()
+        .map(|x| x * (render_settings.board_binary_output_extents / 2.0))
+        .collect();
+
         Self {
             board_binary_output_body: BoardBinaryOutputBody,
             fill: Fill::color(render_settings.board_binary_io_color),
@@ -205,9 +226,10 @@ impl BoardBinaryOutputBodyBundle {
                 render_settings.board_entity_stroke_width,
             ),
             shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::Rectangle {
-                    extents: render_settings.board_binary_output_extents,
-                    ..default()
+                path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
+                    points,
+                    radius: 5.0,
+                    closed: false,
                 }),
                 spatial: SpatialBundle {
                     transform: Transform::from_xyz(0.0, 0.0, 0.0),
@@ -276,9 +298,17 @@ pub struct BoardBinaryDisplayBundle {
 impl BoardBinaryDisplayBundle {
     fn new(
         render_settings: &CircuitBoardRenderingSettings,
-        text_style: TextStyle,
+        asset_server: &AssetServer,
         is_input: bool,
     ) -> Self {
+        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
+
+        let text_style = TextStyle {
+            font_size: render_settings.board_binary_io_display_font_size,
+            color: Color::BLACK,
+            font,
+        };
+
         let x_offset = match is_input {
             true => render_settings.board_binary_input_extents.x / 4.0,
             false => 0.0,
@@ -323,15 +353,6 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
         let asset_server = world.resource::<AssetServer>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
-        //TODO: store textstyle somewhere else like render settings
-        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
-
-        let text_style = TextStyle {
-            font_size: 20.0,
-            color: Color::BLACK,
-            font,
-        };
-
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
@@ -347,7 +368,7 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
             board_entity.spawn(BoardBinaryInputBodyBundle::new(render_settings));
             board_entity.spawn(BoardBinaryDisplayBundle::new(
                 render_settings,
-                text_style,
+                asset_server,
                 true,
             ));
 
@@ -391,15 +412,6 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryOutput {
         let asset_server = world.resource::<AssetServer>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
-        //TODO: store textstyle somewhere else like render settings
-        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
-
-        let text_style = TextStyle {
-            font_size: 20.0,
-            color: Color::BLACK,
-            font,
-        };
-
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
@@ -411,7 +423,7 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryOutput {
             board_entity.spawn(BoardBinaryOutputBodyBundle::new(render_settings));
             board_entity.spawn(BoardBinaryDisplayBundle::new(
                 render_settings,
-                text_style,
+                asset_server,
                 false,
             ));
             board_entity
