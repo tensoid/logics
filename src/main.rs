@@ -13,62 +13,91 @@ mod ui;
 use camera::CameraPlugin;
 use debug::DebugPlugin;
 use designer::{
-    chip::{ChipSpec, ChipSpecs},
+    chip::{BuiltinChip, BuiltinChipBundle, BuiltinChips},
+    pin::{PinModel, PinModelCollection, PinType},
+    signal_state::SignalState,
     DesignerPlugin,
 };
 
 use events::EventsPlugin;
 use input::InputPlugin;
-use simulation::{expressions::Expr, SimulationPlugin};
+use moonshine_save::{load::LoadPlugin, save::SavePlugin};
+use simulation::SimulationPlugin;
 use ui::UIPlugin;
+use uuid::Uuid;
 
 fn main() {
     let mut app = App::new();
 
-    app.insert_resource(AssetMetaCheck::Never);
-
-    app.add_plugins(DefaultPlugins.set(WindowPlugin {
-        primary_window: Some(Window {
-            canvas: Some("#logics-canvas".into()),
-            ..default()
-        }),
-        ..default()
-    }));
+    app.add_plugins(
+        DefaultPlugins
+            .set(WindowPlugin {
+                primary_window: Some(Window {
+                    canvas: Some("#logics-canvas".into()),
+                    ..default()
+                }),
+                ..default()
+            })
+            .set(AssetPlugin {
+                meta_check: AssetMetaCheck::Never,
+                ..default()
+            }),
+    );
 
     #[cfg(debug_assertions)]
     app.add_plugins(DebugPlugin);
 
-    app.insert_resource(ChipSpecs(vec![
-        ChipSpec {
-            name: "AND-2".to_string(),
-            //expressions: vec![Expr::from_string("0 & 1").unwrap()],
-            expression: Expr::from_string("0 & 1").unwrap(),
-        },
-        ChipSpec {
-            name: "NAND-2".to_string(),
-            //expressions: vec![Expr::from_string("0 & 1").unwrap()],
-            expression: Expr::from_string("!(0 & 1)").unwrap(),
-        },
-        ChipSpec {
-            name: "OR-2".to_string(),
-            expression: Expr::from_string("0 | 1").unwrap(),
-        },
-        ChipSpec {
-            name: "NOT".to_string(),
-            expression: Expr::from_string("!0").unwrap(),
-        },
-        ChipSpec {
-            name: "XOR-2".to_string(),
-            expression: Expr::from_string("(0 | 1) & !(0 & 1)").unwrap(),
-        },
-    ]))
-    .add_plugins(PanCamPlugin)
-    .add_plugins(ShapePlugin)
-    .add_plugins(CameraPlugin);
-    app.add_plugins(DesignerPlugin)
+    app.add_plugins((SavePlugin, LoadPlugin))
+        .add_plugins(PanCamPlugin)
+        .add_plugins(ShapePlugin)
+        .add_plugins(CameraPlugin)
+        .add_plugins(DesignerPlugin)
         .add_plugins(EventsPlugin)
         .add_plugins(InputPlugin)
         .add_plugins(SimulationPlugin)
-        .add_plugins(UIPlugin)
-        .run();
+        .add_plugins(UIPlugin);
+
+    app.insert_resource(BuiltinChips(vec![
+        BuiltinChipBundle::new(
+            "AND-2".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_input("B".into()),
+                PinModel::new_output("Y".into()),
+            ]),
+        ),
+        BuiltinChipBundle::new(
+            "NAND-2".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_input("B".into()),
+                PinModel::new_output("Y".into()),
+            ]),
+        ),
+        BuiltinChipBundle::new(
+            "OR-2".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_input("B".into()),
+                PinModel::new_output("Y".into()),
+            ]),
+        ),
+        BuiltinChipBundle::new(
+            "NOT".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_output("Y".into()),
+            ]),
+        ),
+        BuiltinChipBundle::new(
+            "XOR-2".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("A".into()),
+                PinModel::new_input("B".into()),
+                PinModel::new_output("Y".into()),
+            ]),
+        ),
+    ]));
+
+    app.run();
 }

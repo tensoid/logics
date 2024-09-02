@@ -15,7 +15,7 @@ fn spawn_camera(mut commands: Commands) {
         enabled: true,
         zoom_to_cursor: false,
         min_scale: 1.,
-        max_scale: Some(40.),
+        max_scale: 40.0,
         ..default()
     });
 }

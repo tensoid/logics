@@ -1,17 +1,31 @@
-use bevy::prelude::*;
+use std::ops::Not;
+
+use bevy::{ecs::reflect, prelude::*};
 use bevy_prototype_lyon::prelude::*;
+use moonshine_view::Viewable;
 
 use super::{
-    chip::{ChipInputPin, ChipOutputPin},
-    io_pin::{BoardBinaryInputPin, BoardBinaryOutputPin},
+    board_entity::BoardEntityViewKind,
     render_settings::CircuitBoardRenderingSettings,
-    wire::Wire,
+    wire::{Wire, WireView},
 };
 
-#[derive(PartialEq, Clone, Copy, Debug, Component)]
+#[derive(PartialEq, Clone, Copy, Debug, Component, Reflect)]
+#[reflect(Component)]
 pub enum SignalState {
     High,
     Low,
+}
+
+impl Not for SignalState {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        match self {
+            SignalState::High => SignalState::Low,
+            SignalState::Low => SignalState::High,
+        }
+    }
 }
 
 impl SignalState {
@@ -36,23 +50,22 @@ impl SignalState {
  */
 #[allow(clippy::type_complexity)]
 pub fn update_signal_colors(
-    mut q_wires: Query<(&mut Stroke, &SignalState), With<Wire>>,
+    q_wires: Query<(&Viewable<BoardEntityViewKind>, &SignalState), With<Wire>>,
+    mut q_wire_views: Query<&mut Stroke, With<WireView>>,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
     // Color Wires
-    for (mut stroke, signal_state) in q_wires.iter_mut() {
-        let signal_wire_stroke = match signal_state {
-            SignalState::Low => Stroke::new(
-                render_settings.signal_low_color,
-                render_settings.wire_line_width,
-            ),
+    for (wire_viewable, signal_state) in q_wires.iter() {
+        let mut wire_stroke = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
 
-            SignalState::High => Stroke::new(
-                render_settings.signal_high_color,
-                render_settings.wire_line_width,
-            ),
-        };
+        let signal_wire_stroke = Stroke::new(
+            match signal_state {
+                SignalState::Low => render_settings.signal_low_color,
+                SignalState::High => render_settings.signal_high_color,
+            },
+            render_settings.wire_line_width,
+        );
 
-        *stroke = signal_wire_stroke;
+        *wire_stroke = signal_wire_stroke;
     }
 }
