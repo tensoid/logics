@@ -61,40 +61,49 @@ fn main() {
         BuiltinChipBundle::new(
             "AND-2".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_input("B".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_input("B".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
         BuiltinChipBundle::new(
             "NAND-2".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_input("B".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_input("B".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
         BuiltinChipBundle::new(
             "OR-2".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_input("B".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_input("B".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
         BuiltinChipBundle::new(
             "NOT".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
         BuiltinChipBundle::new(
             "XOR-2".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_input("B".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_input("B".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
+            ]),
+        ),
+        BuiltinChipBundle::new(
+            "JK-FlipFlop".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("K".into(), Uuid::nil()),
+                PinModel::new_input("C".into(), Uuid::nil()),
+                PinModel::new_input("J".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
     ]));

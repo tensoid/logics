@@ -12,6 +12,7 @@ use super::{
     board_entity::{BoardEntityModel, BoardEntityViewKind},
     bounding_box::BoundingBox,
     chip::{ChipInputPin, ChipOutputPin},
+    clock::ClockPin,
     cursor::{Cursor, CursorState},
     pin::PinView,
     render_settings::CircuitBoardRenderingSettings,
@@ -102,7 +103,11 @@ pub fn update_wires(
     >,
     q_src_pins: Query<
         (&GlobalTransform, &PinView),
-        Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
+        Or<(
+            With<ChipOutputPin>,
+            With<BoardBinaryInputPin>,
+            With<ClockPin>,
+        )>,
     >,
     q_cursor: Query<(&Cursor, &Transform)>,
     mut q_wire_views: Query<&mut Path, With<WireView>>,
@@ -165,7 +170,11 @@ pub fn drag_wire(
     input: Res<ButtonInput<MouseButton>>,
     q_wire_src_pins: Query<
         (&BoundingBox, &PinView),
-        Or<(With<ChipOutputPin>, With<BoardBinaryInputPin>)>,
+        Or<(
+            With<ChipOutputPin>,
+            With<BoardBinaryInputPin>,
+            With<ClockPin>,
+        )>,
     >,
     q_wire_dest_pins: Query<
         (&BoundingBox, &PinView),

@@ -31,12 +31,10 @@ impl BoardBinaryInputBundle {
         Self {
             board_binary_input: BoardBinaryInput,
             model_bundle: BoardEntityModelBundle::new(position),
-            pin_model_collection: PinModelCollection(vec![PinModel {
-                label: "".into(),
-                pin_type: PinType::Output,
-                signal_state: SignalState::Low,
-                uuid: Uuid::new_v4(),
-            }]),
+            pin_model_collection: PinModelCollection(vec![PinModel::new_output(
+                "".into(),
+                Uuid::new_v4(),
+            )]),
         }
     }
 }
@@ -111,13 +109,10 @@ impl BoardBinaryInputBodyBundle {
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
                     points,
-                    radius: 5.0,
+                    radius: render_settings.board_entity_edge_radius,
                     closed: false,
                 }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(0.0, 0.0, 0.0),
-                    ..default()
-                },
+                spatial: SpatialBundle::default(),
                 ..default()
             },
         }
@@ -185,12 +180,10 @@ impl BoardBinaryOutputBundle {
         Self {
             board_binary_output: BoardBinaryOutput,
             board_entity_model_bundle: BoardEntityModelBundle::new(position),
-            pin_model_collection: PinModelCollection(vec![PinModel {
-                label: "".into(),
-                pin_type: PinType::Input,
-                signal_state: SignalState::Low,
-                uuid: Uuid::new_v4(),
-            }]),
+            pin_model_collection: PinModelCollection(vec![PinModel::new_input(
+                "".into(),
+                Uuid::new_v4(),
+            )]),
         }
     }
 }
@@ -228,13 +221,10 @@ impl BoardBinaryOutputBodyBundle {
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
                     points,
-                    radius: 5.0,
+                    radius: render_settings.board_entity_edge_radius,
                     closed: false,
                 }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(0.0, 0.0, 0.0),
-                    ..default()
-                },
+                spatial: SpatialBundle::default(),
                 ..default()
             },
         }

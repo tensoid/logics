@@ -15,6 +15,7 @@ pub enum PinType {
 
 #[derive(Reflect, Clone)]
 pub struct PinModel {
+    pub previous_signal_state: SignalState,
     pub signal_state: SignalState,
     pub pin_type: PinType,
     pub label: String,
@@ -23,24 +24,24 @@ pub struct PinModel {
 
 impl PinModel {
     /// Creates a new PinModel with [`PinType::Input`].
-    /// This does not create a [`Uuid`] and instead sets the uuid field to all zeros.
-    pub fn new_input(label: String) -> Self {
+    pub fn new_input(label: String, uuid: Uuid) -> Self {
         Self {
             label,
             pin_type: PinType::Input,
             signal_state: SignalState::Low,
-            uuid: Uuid::nil(),
+            previous_signal_state: SignalState::Low,
+            uuid,
         }
     }
 
     /// Creates a new PinModel with [`PinType::Output`].
-    /// This does not create a [`Uuid`] and instead sets the uuid field to all zeros.
-    pub fn new_output(label: String) -> Self {
+    pub fn new_output(label: String, uuid: Uuid) -> Self {
         Self {
             label,
             pin_type: PinType::Output,
             signal_state: SignalState::Low,
-            uuid: Uuid::nil(),
+            previous_signal_state: SignalState::Low,
+            uuid,
         }
     }
 }
@@ -162,5 +163,13 @@ impl PinViewBundle {
             fill: Fill::color(render_settings.pin_color),
             bounding_box: BoundingBox::circle_new(radius, false),
         }
+    }
+}
+
+pub fn update_previous_signal_states(mut q_pin_model_collection: Query<&mut PinModelCollection>) {
+    for mut pin_model_collection in q_pin_model_collection.iter_mut() {
+        pin_model_collection
+            .iter_mut()
+            .for_each(|c| c.previous_signal_state = c.signal_state);
     }
 }

@@ -114,6 +114,32 @@ pub fn evaluate_builtin_chips(
                     SignalState::Low
                 };
             }
+            "JK-FlipFlop" => {
+                println!(
+                    "{:?} -> {:?}",
+                    pin_model_collection[2].previous_signal_state,
+                    pin_model_collection[2].signal_state
+                );
+
+                // High-Edge triggered
+                if pin_model_collection[2].previous_signal_state != SignalState::Low
+                    || pin_model_collection[2].signal_state != SignalState::High
+                {
+                    continue;
+                }
+
+                println!("High edge");
+
+                pin_model_collection[3].signal_state = match (
+                    pin_model_collection[0].signal_state,
+                    pin_model_collection[1].signal_state,
+                ) {
+                    (SignalState::Low, SignalState::Low) => pin_model_collection[3].signal_state,
+                    (SignalState::Low, SignalState::High) => SignalState::Low,
+                    (SignalState::High, SignalState::Low) => SignalState::High,
+                    (SignalState::High, SignalState::High) => !pin_model_collection[3].signal_state,
+                } //TODO: form all into this
+            }
             _ => panic!(
                 "Tried to evaluate unknown BuiltinChip: {}",
                 builtin_chip.name
