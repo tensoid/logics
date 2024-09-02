@@ -76,8 +76,8 @@ impl Plugin for DesignerPlugin {
             .register_view::<BoardEntityViewKind, Wire>()
             .register_view::<BoardEntityViewKind, Clock>()
             .add_systems(Startup, spawn_cursor)
+            .add_systems(PreUpdate, update_previous_signal_states)
             .add_systems(PreUpdate, update_cursor)
-            .add_systems(PreUpdate, tick_clocks)
             .add_systems(
                 PreUpdate,
                 (
@@ -89,6 +89,7 @@ impl Plugin for DesignerPlugin {
                 Update,
                 drag_wire.run_if(resource_equals(IsCursorCaptured(false))),
             )
+            .add_systems(Update, tick_clocks)
             .add_systems(
                 Update,
                 (
@@ -112,19 +113,18 @@ impl Plugin for DesignerPlugin {
                 spawn_board_binary_output.pipe(manage_additional_spawn_tasks),
             )
             .add_systems(Update, spawn_clock.pipe(manage_additional_spawn_tasks))
-            .add_systems(Update, update_signal_colors.after(update_signals))
+            .add_systems(Update, update_signal_colors.after(update_signals)) //TODO: observers?
             .add_systems(Update, toggle_board_input_switch)
             .add_systems(
                 Update,
                 update_board_binary_displays
-                    .after(toggle_board_input_switch)
+                    .after(toggle_board_input_switch) //TODO: observers?
                     .after(update_signals),
             )
             .add_systems(Update, update_board_entity_position)
             .add_systems(Update, update_wires)
             .add_systems(PostUpdate, update_dragged_entities_position)
-            .add_systems(PostUpdate, highlight_selected)
-            .add_systems(PostUpdate, update_previous_signal_states)
+            .add_systems(PostUpdate, highlight_selected) //TODO: observers?
             .add_systems(
                 PostUpdate,
                 update_bounding_boxes.after(TransformSystem::TransformPropagate),

@@ -32,7 +32,7 @@ impl BoardBinaryInputBundle {
             board_binary_input: BoardBinaryInput,
             model_bundle: BoardEntityModelBundle::new(position),
             pin_model_collection: PinModelCollection(vec![PinModel::new_output(
-                "".into(),
+                "Q".into(),
                 Uuid::new_v4(),
             )]),
         }
@@ -181,7 +181,7 @@ impl BoardBinaryOutputBundle {
             board_binary_output: BoardBinaryOutput,
             board_entity_model_bundle: BoardEntityModelBundle::new(position),
             pin_model_collection: PinModelCollection(vec![PinModel::new_input(
-                "".into(),
+                "Q".into(),
                 Uuid::new_v4(),
             )]),
         }
@@ -367,7 +367,7 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryInput {
                 .with_children(|pc| {
                     pc.spawn(BoardBinaryInputPinBundle::new(
                         render_settings,
-                        pin_model_collection[0].uuid,
+                        pin_model_collection["Q"].uuid,
                     ));
                 });
         });
@@ -421,7 +421,7 @@ impl BuildView<BoardEntityViewKind> for BoardBinaryOutput {
                 .with_children(|pc| {
                     pc.spawn(BoardBinaryOutputPinBundle::new(
                         render_settings,
-                        pin_model_collection[0].uuid,
+                        pin_model_collection["Q"].uuid,
                     ));
                 });
         });
@@ -444,7 +444,7 @@ pub fn update_board_binary_displays(
         let view_entity = viewable.view().entity();
 
         find_descendant!(q_children, view_entity, q_displays, |target: &mut Text| {
-            target.sections[0].value = match pin_model_collection[0].signal_state {
+            target.sections[0].value = match pin_model_collection["Q"].signal_state {
                 SignalState::High => "1".into(),
                 SignalState::Low => "0".into(),
             };
@@ -477,7 +477,7 @@ pub fn toggle_board_input_switch(
                 return;
             };
 
-            pin_collection[0].signal_state.toggle();
+            pin_collection["Q"].signal_state.toggle();
 
             break;
         }

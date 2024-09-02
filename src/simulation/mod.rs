@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 use simulation::{evaluate_builtin_chips, reset_input_pins};
 
-use crate::designer::wire::update_wires;
+use crate::designer::{
+    board_binary_io::toggle_board_input_switch, clock::tick_clocks, wire::update_wires,
+};
 
 use self::simulation::update_signals;
 
@@ -15,7 +17,9 @@ impl Plugin for SimulationPlugin {
             Update,
             (evaluate_builtin_chips, reset_input_pins, update_signals)
                 .chain()
-                .after(update_wires),
+                .after(update_wires)
+                .after(tick_clocks)
+                .after(toggle_board_input_switch),
         );
     }
 }

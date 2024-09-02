@@ -13,9 +13,8 @@ mod ui;
 use camera::CameraPlugin;
 use debug::DebugPlugin;
 use designer::{
-    chip::{BuiltinChip, BuiltinChipBundle, BuiltinChips},
-    pin::{PinModel, PinModelCollection, PinType},
-    signal_state::SignalState,
+    chip::{BuiltinChipBundle, BuiltinChips},
+    pin::{PinModel, PinModelCollection},
     DesignerPlugin,
 };
 

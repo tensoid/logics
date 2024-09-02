@@ -4,7 +4,7 @@ use super::{
 };
 use bevy::prelude::*;
 use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};
-use std::ops::{Deref, DerefMut};
+use std::ops::{Deref, DerefMut, Index, IndexMut};
 use uuid::Uuid;
 
 #[derive(Reflect, PartialEq, Clone)]
@@ -103,6 +103,20 @@ impl DerefMut for PinModelCollection {
     }
 }
 
+impl Index<&str> for PinModelCollection {
+    type Output = PinModel;
+
+    fn index(&self, index: &str) -> &Self::Output {
+        self.iter().find(|m| m.label == index).unwrap()
+    }
+}
+
+impl IndexMut<&str> for PinModelCollection {
+    fn index_mut(&mut self, index: &str) -> &mut Self::Output {
+        self.iter_mut().find(|m| m.label == index).unwrap()
+    }
+}
+
 #[derive(Component)]
 pub struct PinCollection;
 
@@ -167,9 +181,9 @@ impl PinViewBundle {
 }
 
 pub fn update_previous_signal_states(mut q_pin_model_collection: Query<&mut PinModelCollection>) {
-    for mut pin_model_collection in q_pin_model_collection.iter_mut() {
-        pin_model_collection
-            .iter_mut()
-            .for_each(|c| c.previous_signal_state = c.signal_state);
-    }
+    // for mut pin_model_collection in q_pin_model_collection.iter_mut() {
+    //     pin_model_collection
+    //         .iter_mut()
+    //         .for_each(|c| c.previous_signal_state = c.signal_state);
+    // }
 }

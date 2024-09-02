@@ -70,9 +70,9 @@ pub fn evaluate_builtin_chips(
     for (builtin_chip, mut pin_model_collection) in q_builtin_chip_models.iter_mut() {
         match builtin_chip.name.as_str() {
             "AND-2" => {
-                pin_model_collection[2].signal_state = if pin_model_collection[0].signal_state
+                pin_model_collection["Q"].signal_state = if pin_model_collection["A"].signal_state
                     == SignalState::High
-                    && pin_model_collection[1].signal_state == SignalState::High
+                    && pin_model_collection["B"].signal_state == SignalState::High
                 {
                     SignalState::High
                 } else {
@@ -80,9 +80,9 @@ pub fn evaluate_builtin_chips(
                 };
             }
             "NAND-2" => {
-                pin_model_collection[2].signal_state = if pin_model_collection[0].signal_state
+                pin_model_collection["Q"].signal_state = if pin_model_collection["A"].signal_state
                     == SignalState::High
-                    && pin_model_collection[1].signal_state == SignalState::High
+                    && pin_model_collection["B"].signal_state == SignalState::High
                 {
                     SignalState::Low
                 } else {
@@ -90,9 +90,9 @@ pub fn evaluate_builtin_chips(
                 };
             }
             "OR-2" => {
-                pin_model_collection[2].signal_state = if pin_model_collection[0].signal_state
+                pin_model_collection["Q"].signal_state = if pin_model_collection["A"].signal_state
                     == SignalState::High
-                    || pin_model_collection[1].signal_state == SignalState::High
+                    || pin_model_collection["B"].signal_state == SignalState::High
                 {
                     SignalState::High
                 } else {
@@ -100,14 +100,14 @@ pub fn evaluate_builtin_chips(
                 };
             }
             "NOT" => {
-                pin_model_collection[1].signal_state = !pin_model_collection[0].signal_state;
+                pin_model_collection["B"].signal_state = !pin_model_collection["A"].signal_state;
             }
             "XOR-2" => {
-                pin_model_collection[2].signal_state = if (pin_model_collection[0].signal_state
+                pin_model_collection["Q"].signal_state = if (pin_model_collection["A"].signal_state
                     == SignalState::High
-                    && pin_model_collection[1].signal_state == SignalState::Low)
-                    || (pin_model_collection[0].signal_state == SignalState::Low
-                        && pin_model_collection[1].signal_state == SignalState::High)
+                    && pin_model_collection["B"].signal_state == SignalState::Low)
+                    || (pin_model_collection["A"].signal_state == SignalState::Low
+                        && pin_model_collection["B"].signal_state == SignalState::High)
                 {
                     SignalState::High
                 } else {
@@ -115,29 +115,31 @@ pub fn evaluate_builtin_chips(
                 };
             }
             "JK-FlipFlop" => {
-                println!(
-                    "{:?} -> {:?}",
-                    pin_model_collection[2].previous_signal_state,
-                    pin_model_collection[2].signal_state
-                );
+                // println!(
+                //     "{:?} -> {:?}",
+                //     pin_model_collection["Q"].previous_signal_state,
+                //     pin_model_collection["Q"].signal_state
+                // );
 
                 // High-Edge triggered
-                if pin_model_collection[2].previous_signal_state != SignalState::Low
-                    || pin_model_collection[2].signal_state != SignalState::High
+                if pin_model_collection["Q"].previous_signal_state != SignalState::Low
+                    || pin_model_collection["Q"].signal_state != SignalState::High
                 {
                     continue;
                 }
 
                 println!("High edge");
 
-                pin_model_collection[3].signal_state = match (
-                    pin_model_collection[0].signal_state,
-                    pin_model_collection[1].signal_state,
+                pin_model_collection["Q"].signal_state = match (
+                    pin_model_collection["J"].signal_state,
+                    pin_model_collection["K"].signal_state,
                 ) {
-                    (SignalState::Low, SignalState::Low) => pin_model_collection[3].signal_state,
+                    (SignalState::Low, SignalState::Low) => pin_model_collection["Q"].signal_state,
                     (SignalState::Low, SignalState::High) => SignalState::Low,
                     (SignalState::High, SignalState::Low) => SignalState::High,
-                    (SignalState::High, SignalState::High) => !pin_model_collection[3].signal_state,
+                    (SignalState::High, SignalState::High) => {
+                        !pin_model_collection["Q"].signal_state
+                    }
                 } //TODO: form all into this
             }
             _ => panic!(
@@ -158,7 +160,6 @@ pub fn update_signals(
 ) {
     for (wire, mut wire_signal_state) in q_wires.iter_mut() {
         let Some(wire_src_uuid) = wire.src_pin_uuid else {
-            println!("No src pin uuid");
             continue;
         };
 
@@ -169,7 +170,6 @@ pub fn update_signals(
         let Some(src_pin_model_collection) =
             get_model!(q_parents, q_board_entities, q_chip_models, src_pin_entity)
         else {
-            println!("No src pin model");
             continue;
         };
 
@@ -185,7 +185,6 @@ pub fn update_signals(
         }
 
         let Some(wire_dest_uuid) = wire.dest_pin_uuid else {
-            println!("No dest pin uuid");
             continue;
         };
 
@@ -196,7 +195,6 @@ pub fn update_signals(
         let Some(mut dest_pin_model_collection) =
             get_model_mut!(q_parents, q_board_entities, q_chip_models, dest_pin_entity)
         else {
-            println!("No dest pin model");
             continue;
         };
 

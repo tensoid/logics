@@ -13,9 +13,8 @@ use crate::events::events::SpawnBoardEntityEvent;
 
 use super::{
     board_entity::{BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position},
-    pin::{PinCollectionBundle, PinModel, PinModelCollection, PinType, PinViewBundle},
+    pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
     render_settings::CircuitBoardRenderingSettings,
-    signal_state::SignalState,
 };
 
 #[derive(Component, Reflect)]
@@ -45,7 +44,7 @@ impl ClockBundle {
             clock: Clock::new(timer_seconds),
             model_bundle: BoardEntityModelBundle::new(position),
             pin_model_collection: PinModelCollection(vec![PinModel::new_output(
-                "".into(),
+                "Q".into(),
                 Uuid::new_v4(),
             )]),
         }
@@ -182,7 +181,7 @@ impl BuildView<BoardEntityViewKind> for Clock {
                 .with_children(|pc| {
                     pc.spawn(ClockPinBundle::new(
                         render_settings,
-                        pin_model_collection[0].uuid,
+                        pin_model_collection["Q"].uuid,
                     ));
                 });
         });
@@ -194,7 +193,7 @@ pub fn tick_clocks(mut q_clocks: Query<(&mut Clock, &mut PinModelCollection)>, t
         clock.timer.tick(time.delta());
 
         if clock.timer.finished() {
-            pin_model_collection[0].signal_state.toggle();
+            pin_model_collection["Q"].signal_state.toggle();
         }
     }
 }
