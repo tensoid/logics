@@ -95,6 +95,36 @@ impl ClockBodyBundle {
 }
 
 #[derive(Component)]
+pub struct ClockLabel;
+
+#[derive(Bundle)]
+pub struct ClockLabelBundle {
+    clock_label: ClockLabel,
+    text_bundle: Text2dBundle,
+}
+
+impl ClockLabelBundle {
+    fn new(render_settings: &CircuitBoardRenderingSettings, asset_server: &AssetServer) -> Self {
+        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
+
+        let text_style = TextStyle {
+            font_size: render_settings.board_binary_io_display_font_size, // TODO: settings
+            color: Color::BLACK,
+            font,
+        };
+
+        Self {
+            clock_label: ClockLabel,
+            text_bundle: Text2dBundle {
+                text: Text::from_section("C", text_style).with_justify(JustifyText::Center),
+                transform: Transform::from_xyz(0.0, 0.0, 0.01),
+                ..default()
+            },
+        }
+    }
+}
+
+#[derive(Component)]
 pub struct ClockPin;
 
 #[derive(Bundle)]
@@ -165,6 +195,7 @@ impl BuildView<BoardEntityViewKind> for Clock {
         view: &mut ViewCommands<BoardEntityViewKind>,
     ) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
+        let asset_server = world.resource::<AssetServer>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
@@ -175,6 +206,7 @@ impl BuildView<BoardEntityViewKind> for Clock {
         ))
         .with_children(|board_entity| {
             board_entity.spawn(ClockBodyBundle::new(render_settings));
+            board_entity.spawn(ClockLabelBundle::new(render_settings, asset_server));
 
             board_entity
                 .spawn(ClockPinCollectionBundle::new())
@@ -193,7 +225,7 @@ pub fn tick_clocks(mut q_clocks: Query<(&mut Clock, &mut PinModelCollection)>, t
         clock.timer.tick(time.delta());
 
         if clock.timer.finished() {
-            pin_model_collection["Q"].signal_state.toggle();
+            pin_model_collection["Q"].next_signal_state = !pin_model_collection["Q"].signal_state;
         }
     }
 }

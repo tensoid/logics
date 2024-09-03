@@ -24,7 +24,7 @@ use clock::{spawn_clock, tick_clocks, Clock};
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use moonshine_view::RegisterView;
-use pin::{update_previous_signal_states, PinModelCollection};
+use pin::{commit_signal_updates, PinModelCollection};
 use selection::{release_drag, update_dragged_entities_position};
 use signal_state::SignalState;
 use wire::Wire;
@@ -76,7 +76,6 @@ impl Plugin for DesignerPlugin {
             .register_view::<BoardEntityViewKind, Wire>()
             .register_view::<BoardEntityViewKind, Clock>()
             .add_systems(Startup, spawn_cursor)
-            .add_systems(PreUpdate, update_previous_signal_states)
             .add_systems(PreUpdate, update_cursor)
             .add_systems(
                 PreUpdate,
@@ -118,13 +117,14 @@ impl Plugin for DesignerPlugin {
             .add_systems(
                 Update,
                 update_board_binary_displays
-                    .after(toggle_board_input_switch) //TODO: observers?
-                    .after(update_signals),
+                .after(toggle_board_input_switch) //TODO: observers?
+                .after(update_signals),
             )
             .add_systems(Update, update_board_entity_position)
             .add_systems(Update, update_wires)
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected) //TODO: observers?
+            .add_systems(PostUpdate, commit_signal_updates)//TODO: observers?
             .add_systems(
                 PostUpdate,
                 update_bounding_boxes.after(TransformSystem::TransformPropagate),

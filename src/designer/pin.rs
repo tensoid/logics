@@ -17,6 +17,7 @@ pub enum PinType {
 pub struct PinModel {
     pub previous_signal_state: SignalState,
     pub signal_state: SignalState,
+    pub next_signal_state: SignalState,
     pub pin_type: PinType,
     pub label: String,
     pub uuid: Uuid,
@@ -28,8 +29,9 @@ impl PinModel {
         Self {
             label,
             pin_type: PinType::Input,
-            signal_state: SignalState::Low,
             previous_signal_state: SignalState::Low,
+            signal_state: SignalState::Low,
+            next_signal_state: SignalState::Low,
             uuid,
         }
     }
@@ -39,8 +41,9 @@ impl PinModel {
         Self {
             label,
             pin_type: PinType::Output,
-            signal_state: SignalState::Low,
             previous_signal_state: SignalState::Low,
+            signal_state: SignalState::Low,
+            next_signal_state: SignalState::Low,
             uuid,
         }
     }
@@ -180,10 +183,11 @@ impl PinViewBundle {
     }
 }
 
-pub fn update_previous_signal_states(mut q_pin_model_collection: Query<&mut PinModelCollection>) {
-    // for mut pin_model_collection in q_pin_model_collection.iter_mut() {
-    //     pin_model_collection
-    //         .iter_mut()
-    //         .for_each(|c| c.previous_signal_state = c.signal_state);
-    // }
+pub fn commit_signal_updates(mut q_pin_model_collection: Query<&mut PinModelCollection>) {
+    for mut pin_model_collection in q_pin_model_collection.iter_mut() {
+        pin_model_collection.iter_mut().for_each(|c| {
+            c.previous_signal_state = c.signal_state;
+            c.signal_state = c.next_signal_state;
+        });
+    }
 }

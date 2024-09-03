@@ -1,4 +1,4 @@
-use bevy::{asset::AssetMetaCheck, prelude::*};
+use bevy::{asset::AssetMetaCheck, prelude::*, window::PresentMode};
 use bevy_pancam::PanCamPlugin;
 use bevy_prototype_lyon::prelude::*;
 
@@ -33,6 +33,7 @@ fn main() {
             .set(WindowPlugin {
                 primary_window: Some(Window {
                     canvas: Some("#logics-canvas".into()),
+                    present_mode: PresentMode::Fifo,
                     ..default()
                 }),
                 ..default()

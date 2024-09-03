@@ -477,7 +477,7 @@ pub fn toggle_board_input_switch(
                 return;
             };
 
-            pin_collection["Q"].signal_state.toggle();
+            pin_collection["Q"].next_signal_state = !pin_collection["Q"].signal_state;
 
             break;
         }

@@ -45,6 +45,7 @@ impl SignalState {
 }
 
 //TODO: make faster by not updating colors that havent changed.
+//TODO: maybe move to wire.rs
 /**
  * Updates all colors that are bound to a signal, e.g. pins or wires.
  */
