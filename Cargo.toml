@@ -12,6 +12,7 @@ moonshine-save = "0.3.9"
 moonshine-view = "0.1.5"
 moonshine-core = "0.2.0"
 uuid = "1.10.0"
+bevy_framepace = "0.17.1"
 
 [profile.dev]
 opt-level = 1

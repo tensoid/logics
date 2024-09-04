@@ -1,4 +1,5 @@
 use bevy::{asset::AssetMetaCheck, prelude::*, window::PresentMode};
+use bevy_framepace::{FramepacePlugin, FramepaceSettings, Limiter};
 use bevy_pancam::PanCamPlugin;
 use bevy_prototype_lyon::prelude::*;
 
@@ -43,6 +44,15 @@ fn main() {
                 ..default()
             }),
     );
+
+    // FIXME
+    // Limit FPS as temorary workaround for has_event issue.
+    // With FPS above 60, systems with the run condition has_event get executed multiple times
+    // per event and this causes a crash in the moonshine_save crate upon saving or loading.
+    app.add_plugins(FramepacePlugin);
+    app.add_systems(Startup, |mut settings: ResMut<FramepaceSettings>| {
+        settings.limiter = Limiter::from_framerate(60.0);
+    });
 
     #[cfg(debug_assertions)]
     app.add_plugins(DebugPlugin);
@@ -125,4 +135,8 @@ fn main() {
     ]));
 
     app.run();
+}
+
+fn limit_fps(mut settings: ResMut<FramepaceSettings>) {
+    settings.limiter = Limiter::from_framerate(30.0);
 }

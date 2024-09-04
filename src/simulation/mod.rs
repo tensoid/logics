@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use simulation::{evaluate_builtin_chips, reset_input_pins};
 
+use crate::designer::wire::update_wires;
 
 use self::simulation::update_signals;
 
@@ -12,7 +13,9 @@ impl Plugin for SimulationPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (evaluate_builtin_chips, reset_input_pins, update_signals).chain(),
+            (evaluate_builtin_chips, reset_input_pins, update_signals)
+                .chain()
+                .after(update_wires),
         );
     }
 }

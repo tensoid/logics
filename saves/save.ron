@@ -1,27 +1,27 @@
 (
   resources: {},
   entities: {
-    4294967318: (
+    4294967322: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
           src_pin_uuid: Some("8297e6b1-3cb6-4b59-99c8-124aa1a4cfff"),
           dest_pin_uuid: Some("0b19bd8a-0b1c-4a70-823e-bb0c07c28ba7"),
         ),
-        "logics::designer::signal_state::SignalState": High,
+        "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967319: (
+    4294967323: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
           src_pin_uuid: Some("d1766160-fe5e-4831-8a7e-8b24cace2934"),
           dest_pin_uuid: Some("517da2cf-4dbc-4e52-908a-f01269e57e56"),
         ),
-        "logics::designer::signal_state::SignalState": Low,
+        "logics::designer::signal_state::SignalState": High,
       },
     ),
-    4294967320: (
+    4294967324: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -31,7 +31,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967321: (
+    4294967325: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -41,7 +41,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967322: (
+    4294967326: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -51,27 +51,27 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967323: (
+    4294967327: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::board_binary_io::BoardBinaryOutput": (),
         "logics::designer::pin::PinModelCollection": ([
           (
-            previous_signal_state: Low,
-            signal_state: Low,
-            next_signal_state: Low,
+            previous_signal_state: High,
+            signal_state: High,
+            next_signal_state: High,
             pin_type: Input,
             label: "Q",
             uuid: "438f9d58-c042-4763-bdbc-99a46a019882",
           ),
         ]),
         "logics::designer::board_entity::Position": ((
-          x: -42.40004,
-          y: -242.39984,
+          x: -32.91266,
+          y: -241.53732,
         )),
       },
     ),
-    4294967324: (
+    4294967328: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -81,7 +81,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967325: (
+    4294967329: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -91,7 +91,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967326: (
+    4294967330: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -101,15 +101,15 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967327: (
+    4294967331: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::chip::Chip": (),
         "logics::designer::pin::PinModelCollection": ([
           (
-            previous_signal_state: Low,
-            signal_state: Low,
-            next_signal_state: Low,
+            previous_signal_state: High,
+            signal_state: High,
+            next_signal_state: High,
             pin_type: Input,
             label: "A",
             uuid: "517da2cf-4dbc-4e52-908a-f01269e57e56",
@@ -132,15 +132,15 @@
           ),
         ]),
         "logics::designer::board_entity::Position": ((
-          x: 82.39998,
-          y: 131.99998,
+          x: 80.64002,
+          y: 134.63998,
         )),
         "logics::designer::chip::BuiltinChip": (
           name: "AND-2",
         ),
       },
     ),
-    4294967328: (
+    4294967332: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -150,7 +150,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967329: (
+    4294967333: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -160,7 +160,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967330: (
+    4294967334: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -170,7 +170,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967331: (
+    4294967335: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -180,7 +180,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967332: (
+    4294967336: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::board_binary_io::BoardBinaryOutput": (),
@@ -195,12 +195,12 @@
           ),
         ]),
         "logics::designer::board_entity::Position": ((
-          x: 49.599976,
+          x: 41.83757,
           y: -242.40015,
         )),
       },
     ),
-    4294967333: (
+    4294967337: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::clock::Clock": (
@@ -208,7 +208,7 @@
             stopwatch: (
               elapsed: (
                 secs: 0,
-                nanos: 152494700,
+                nanos: 155540400,
               ),
               paused: false,
             ),
@@ -237,7 +237,7 @@
         )),
       },
     ),
-    4294967334: (
+    4294967338: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -247,17 +247,17 @@
         "logics::designer::signal_state::SignalState": High,
       },
     ),
-    4294967335: (
+    4294967339: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
           src_pin_uuid: Some("d1766160-fe5e-4831-8a7e-8b24cace2934"),
           dest_pin_uuid: Some("438f9d58-c042-4763-bdbc-99a46a019882"),
         ),
-        "logics::designer::signal_state::SignalState": Low,
+        "logics::designer::signal_state::SignalState": High,
       },
     ),
-    4294967336: (
+    4294967340: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -267,7 +267,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967337: (
+    4294967341: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::board_binary_io::BoardBinaryInput": (),
@@ -287,7 +287,7 @@
         )),
       },
     ),
-    4294967338: (
+    4294967342: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -297,7 +297,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967339: (
+    4294967343: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -307,27 +307,27 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967340: (
+    4294967344: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::board_binary_io::BoardBinaryOutput": (),
         "logics::designer::pin::PinModelCollection": ([
           (
-            previous_signal_state: High,
-            signal_state: High,
-            next_signal_state: High,
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
             pin_type: Input,
             label: "Q",
             uuid: "0b19bd8a-0b1c-4a70-823e-bb0c07c28ba7",
           ),
         ]),
         "logics::designer::board_entity::Position": ((
-          x: -88.00002,
-          y: -242.4,
+          x: -69.88777,
+          y: -241.53752,
         )),
       },
     ),
-    4294967341: (
+    4294967345: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -337,7 +337,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967342: (
+    4294967346: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::chip::Chip": (),
@@ -367,9 +367,9 @@
             uuid: "c3144fe1-da63-41d5-84d2-6cfc8336a7ec",
           ),
           (
-            previous_signal_state: Low,
-            signal_state: Low,
-            next_signal_state: Low,
+            previous_signal_state: High,
+            signal_state: High,
+            next_signal_state: High,
             pin_type: Output,
             label: "Q",
             uuid: "d1766160-fe5e-4831-8a7e-8b24cace2934",
@@ -384,7 +384,7 @@
         ),
       },
     ),
-    4294967343: (
+    4294967347: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::board_binary_io::BoardBinaryOutput": (),
@@ -404,7 +404,7 @@
         )),
       },
     ),
-    4294967344: (
+    4294967348: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -414,7 +414,7 @@
         "logics::designer::signal_state::SignalState": Low,
       },
     ),
-    4294967345: (
+    4294967349: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::chip::Chip": (),
@@ -461,7 +461,7 @@
         ),
       },
     ),
-    4294967346: (
+    4294967350: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::wire::Wire": (
@@ -471,7 +471,7 @@
         "logics::designer::signal_state::SignalState": High,
       },
     ),
-    4294967347: (
+    4294967351: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::chip::Chip": (),
@@ -501,9 +501,9 @@
             uuid: "be19ebfe-8044-4119-baef-20b9bc47bc1e",
           ),
           (
-            previous_signal_state: High,
-            signal_state: High,
-            next_signal_state: High,
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
             pin_type: Output,
             label: "Q",
             uuid: "8297e6b1-3cb6-4b59-99c8-124aa1a4cfff",
@@ -518,7 +518,7 @@
         ),
       },
     ),
-    4294967348: (
+    4294967352: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::chip::Chip": (),
@@ -557,7 +557,7 @@
         ),
       },
     ),
-    4294967349: (
+    4294967353: (
       components: {
         "logics::designer::board_entity::BoardEntityModel": (),
         "logics::designer::chip::Chip": (),
@@ -602,6 +602,172 @@
         "logics::designer::chip::BuiltinChip": (
           name: "JK-FF",
         ),
+      },
+    ),
+    4294967451: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::chip::Chip": (),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "K",
+            uuid: "f3542d7a-ccd1-4b4d-a2f2-e3e23b9be5f8",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "C",
+            uuid: "1e086299-febe-47f1-9d39-69acd7b88020",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "J",
+            uuid: "05cbb2a1-193f-4bf6-bfcb-7fccee5a6ece",
+          ),
+          (
+            previous_signal_state: High,
+            signal_state: High,
+            next_signal_state: High,
+            pin_type: Output,
+            label: "Q",
+            uuid: "b441bc54-733e-4595-aac0-e04d829a575e",
+          ),
+        ]),
+        "logics::designer::board_entity::Position": ((
+          x: 336.15997,
+          y: 10.559989,
+        )),
+        "logics::designer::chip::BuiltinChip": (
+          name: "JK-FF",
+        ),
+      },
+    ),
+    4294967461: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::board_binary_io::BoardBinaryOutput": (),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            previous_signal_state: High,
+            signal_state: High,
+            next_signal_state: High,
+            pin_type: Input,
+            label: "Q",
+            uuid: "efdf0692-092e-4351-8553-6c4270a3fc71",
+          ),
+        ]),
+        "logics::designer::board_entity::Position": ((
+          x: -107.93793,
+          y: -241.155,
+        )),
+      },
+    ),
+    4294967469: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::chip::Chip": (),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "B",
+            uuid: "eeb9bac1-4288-419a-bf63-0374c208919f",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "A",
+            uuid: "c281ead1-d594-4797-953e-b1a2b893f337",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Output,
+            label: "Q",
+            uuid: "105b2951-8280-4d4b-b9c0-8fc602cf4672",
+          ),
+        ]),
+        "logics::designer::board_entity::Position": ((
+          x: 258.72003,
+          y: 138.15999,
+        )),
+        "logics::designer::chip::BuiltinChip": (
+          name: "AND-2",
+        ),
+      },
+    ),
+    4294967477: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::wire::Wire": (
+          src_pin_uuid: Some("8297e6b1-3cb6-4b59-99c8-124aa1a4cfff"),
+          dest_pin_uuid: Some("eeb9bac1-4288-419a-bf63-0374c208919f"),
+        ),
+        "logics::designer::signal_state::SignalState": Low,
+      },
+    ),
+    4294967479: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::wire::Wire": (
+          src_pin_uuid: Some("bf39ed63-6a1d-4342-8e59-cf734583fbf2"),
+          dest_pin_uuid: Some("c281ead1-d594-4797-953e-b1a2b893f337"),
+        ),
+        "logics::designer::signal_state::SignalState": Low,
+      },
+    ),
+    4294967481: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::wire::Wire": (
+          src_pin_uuid: Some("d2348ac4-e9ce-4859-a5e2-1bb72431ecb7"),
+          dest_pin_uuid: Some("1e086299-febe-47f1-9d39-69acd7b88020"),
+        ),
+        "logics::designer::signal_state::SignalState": Low,
+      },
+    ),
+    4294967483: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::wire::Wire": (
+          src_pin_uuid: Some("105b2951-8280-4d4b-b9c0-8fc602cf4672"),
+          dest_pin_uuid: Some("05cbb2a1-193f-4bf6-bfcb-7fccee5a6ece"),
+        ),
+        "logics::designer::signal_state::SignalState": Low,
+      },
+    ),
+    4294967485: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::wire::Wire": (
+          src_pin_uuid: Some("105b2951-8280-4d4b-b9c0-8fc602cf4672"),
+          dest_pin_uuid: Some("f3542d7a-ccd1-4b4d-a2f2-e3e23b9be5f8"),
+        ),
+        "logics::designer::signal_state::SignalState": Low,
+      },
+    ),
+    8589934763: (
+      components: {
+        "logics::designer::board_entity::BoardEntityModel": (),
+        "logics::designer::wire::Wire": (
+          src_pin_uuid: Some("b441bc54-733e-4595-aac0-e04d829a575e"),
+          dest_pin_uuid: Some("efdf0692-092e-4351-8553-6c4270a3fc71"),
+        ),
+        "logics::designer::signal_state::SignalState": High,
       },
     ),
   },
