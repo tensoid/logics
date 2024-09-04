@@ -80,7 +80,7 @@ pub fn evaluate_builtin_chips(
                     _ => SignalState::Low,
                 };
             }
-            "JK-FlipFlop" => {
+            "JK-FF" => {
                 // High-Edge triggered
                 if pin_model_collection["C"].previous_signal_state != SignalState::Low
                     || pin_model_collection["C"].signal_state != SignalState::High
@@ -99,6 +99,31 @@ pub fn evaluate_builtin_chips(
                         !pin_model_collection["Q"].signal_state
                     }
                 }
+            }
+            "D-FF" => {
+                // High-Edge triggered
+                if pin_model_collection["C"].previous_signal_state != SignalState::Low
+                    || pin_model_collection["C"].signal_state != SignalState::High
+                {
+                    continue;
+                }
+
+                pin_model_collection["Q"].next_signal_state =
+                    pin_model_collection["D"].signal_state;
+            }
+            "T-FF" => {
+                // High-Edge triggered
+                if pin_model_collection["C"].previous_signal_state != SignalState::Low
+                    || pin_model_collection["C"].signal_state != SignalState::High
+                {
+                    continue;
+                }
+
+                pin_model_collection["Q"].next_signal_state =
+                    match pin_model_collection["T"].signal_state {
+                        SignalState::Low => pin_model_collection["Q"].signal_state,
+                        SignalState::High => !pin_model_collection["Q"].signal_state,
+                    }
             }
             _ => panic!(
                 "Tried to evaluate unknown BuiltinChip: {}",
