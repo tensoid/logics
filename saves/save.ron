@@ -380,7 +380,7 @@
           y: 8.799964,
         )),
         "logics::designer::chip::BuiltinChip": (
-          name: "JK-FlipFlop",
+          name: "JK-FF",
         ),
       },
     ),
@@ -457,7 +457,7 @@
           y: 6.399998,
         )),
         "logics::designer::chip::BuiltinChip": (
-          name: "JK-FlipFlop",
+          name: "JK-FF",
         ),
       },
     ),
@@ -514,7 +514,7 @@
           y: 8.800011,
         )),
         "logics::designer::chip::BuiltinChip": (
-          name: "JK-FlipFlop",
+          name: "JK-FF",
         ),
       },
     ),
@@ -600,7 +600,7 @@
           y: 10.39996,
         )),
         "logics::designer::chip::BuiltinChip": (
-          name: "JK-FlipFlop",
+          name: "JK-FF",
         ),
       },
     ),

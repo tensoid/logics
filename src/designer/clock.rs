@@ -71,12 +71,12 @@ impl ClockBodyBundle {
             Vec2::new(1.0, -1.0),
         ]
         .into_iter()
-        .map(|x| x * (render_settings.board_binary_output_extents / 2.0)) // TODO: into settings
+        .map(|x| x * (render_settings.clock_extents / 2.0)) // TODO: into settings
         .collect();
 
         Self {
             clock_body: ClockBody,
-            fill: Fill::color(render_settings.board_binary_io_color), // TODO: into settings
+            fill: Fill::color(render_settings.clock_color), // TODO: into settings
             stroke: Stroke::new(
                 render_settings.board_entity_stroke_color,
                 render_settings.board_entity_stroke_width,
@@ -108,7 +108,7 @@ impl ClockLabelBundle {
         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
         let text_style = TextStyle {
-            font_size: render_settings.board_binary_io_display_font_size, // TODO: settings
+            font_size: render_settings.clock_label_font_size, // TODO: settings
             color: Color::BLACK,
             font,
         };
@@ -140,9 +140,9 @@ impl ClockPinBundle {
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
                 uuid,
-                render_settings.board_binary_io_pin_radius, // TODO: into settings
+                render_settings.clock_pin_radius, // TODO: into settings
                 Vec3::new(
-                    render_settings.board_binary_output_extents.x / 2.0, // TODO: into settings
+                    render_settings.clock_extents.x / 2.0, // TODO: into settings
                     0.0,
                     0.02,
                 ),
@@ -202,7 +202,7 @@ impl BuildView<BoardEntityViewKind> for Clock {
 
         view.insert(BoardEntityViewBundle::new(
             position.clone(),
-            render_settings.board_binary_output_extents, // TODO: into settings
+            render_settings.clock_extents, // TODO: into settings
         ))
         .with_children(|board_entity| {
             board_entity.spawn(ClockBodyBundle::new(render_settings));
