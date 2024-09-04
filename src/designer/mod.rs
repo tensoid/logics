@@ -3,6 +3,7 @@ pub mod board_entity;
 pub mod bounding_box;
 pub mod chip;
 pub mod clock;
+pub mod copy_paste;
 pub mod cursor;
 pub mod designer_state;
 pub mod macros;
@@ -21,6 +22,7 @@ use board_entity::{
 };
 use chip::{BuiltinChip, Chip};
 use clock::{spawn_clock, tick_clocks, Clock};
+use copy_paste::{copy, paste};
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use moonshine_view::RegisterView;
@@ -77,6 +79,8 @@ impl Plugin for DesignerPlugin {
             .register_view::<BoardEntityViewKind, Clock>()
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
+            .add_systems(PreUpdate, copy)
+            .add_systems(PreUpdate, paste)
             .add_systems(
                 PreUpdate,
                 (
@@ -117,14 +121,14 @@ impl Plugin for DesignerPlugin {
             .add_systems(
                 Update,
                 update_board_binary_displays
-                .after(toggle_board_input_switch) //TODO: observers?
-                .after(update_signals),
+                    .after(toggle_board_input_switch) //TODO: observers?
+                    .after(update_signals),
             )
             .add_systems(Update, update_board_entity_position)
             .add_systems(Update, update_wires)
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected) //TODO: observers?
-            .add_systems(PostUpdate, commit_signal_updates)//TODO: observers?
+            .add_systems(PostUpdate, commit_signal_updates) //TODO: observers?
             .add_systems(
                 PostUpdate,
                 update_bounding_boxes.after(TransformSystem::TransformPropagate),

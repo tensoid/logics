@@ -16,7 +16,13 @@ pub struct SpawnBoardEntityEvent {
 pub struct ToggleDebugModeEvent;
 
 #[derive(Event)]
-pub struct DeleteSelectedEvent;
+pub struct DeleteEvent;
+
+#[derive(Event)]
+pub struct CopyEvent;
+
+#[derive(Event)]
+pub struct PasteEvent;
 
 #[derive(Event)]
 pub struct SaveEvent;

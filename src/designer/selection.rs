@@ -11,8 +11,7 @@ use bevy_prototype_lyon::{
 use moonshine_view::{View, Viewable};
 
 use crate::{
-    events::events::DeleteSelectedEvent, get_cursor, get_cursor_mut,
-    ui::cursor_captured::IsCursorCaptured,
+    events::events::DeleteEvent, get_cursor, get_cursor_mut, ui::cursor_captured::IsCursorCaptured,
 };
 
 use super::{
@@ -298,7 +297,7 @@ pub fn update_dragged_entities_position(
 pub fn delete_selected(
     mut commands: Commands,
     q_selected_entities: Query<Entity, With<Selected>>,
-    mut delete_ev: EventReader<DeleteSelectedEvent>,
+    mut delete_ev: EventReader<DeleteEvent>,
 ) {
     for _ in delete_ev.read() {
         for selected_entity in q_selected_entities.iter() {
