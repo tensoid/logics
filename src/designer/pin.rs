@@ -4,7 +4,7 @@ use super::{
 };
 use bevy::prelude::*;
 use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};
-use std::ops::{Deref, DerefMut};
+use std::ops::{Deref, DerefMut, Index, IndexMut};
 use uuid::Uuid;
 
 #[derive(Reflect, PartialEq, Clone)]
@@ -15,7 +15,9 @@ pub enum PinType {
 
 #[derive(Reflect, Clone)]
 pub struct PinModel {
+    pub previous_signal_state: SignalState,
     pub signal_state: SignalState,
+    pub next_signal_state: SignalState,
     pub pin_type: PinType,
     pub label: String,
     pub uuid: Uuid,
@@ -23,24 +25,26 @@ pub struct PinModel {
 
 impl PinModel {
     /// Creates a new PinModel with [`PinType::Input`].
-    /// This does not create a [`Uuid`] and instead sets the uuid field to all zeros.
-    pub fn new_input(label: String) -> Self {
+    pub fn new_input(label: String, uuid: Uuid) -> Self {
         Self {
             label,
             pin_type: PinType::Input,
+            previous_signal_state: SignalState::Low,
             signal_state: SignalState::Low,
-            uuid: Uuid::nil(),
+            next_signal_state: SignalState::Low,
+            uuid,
         }
     }
 
     /// Creates a new PinModel with [`PinType::Output`].
-    /// This does not create a [`Uuid`] and instead sets the uuid field to all zeros.
-    pub fn new_output(label: String) -> Self {
+    pub fn new_output(label: String, uuid: Uuid) -> Self {
         Self {
             label,
             pin_type: PinType::Output,
+            previous_signal_state: SignalState::Low,
             signal_state: SignalState::Low,
-            uuid: Uuid::nil(),
+            next_signal_state: SignalState::Low,
+            uuid,
         }
     }
 }
@@ -99,6 +103,20 @@ impl Deref for PinModelCollection {
 impl DerefMut for PinModelCollection {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
+    }
+}
+
+impl Index<&str> for PinModelCollection {
+    type Output = PinModel;
+
+    fn index(&self, index: &str) -> &Self::Output {
+        self.iter().find(|m| m.label == index).unwrap()
+    }
+}
+
+impl IndexMut<&str> for PinModelCollection {
+    fn index_mut(&mut self, index: &str) -> &mut Self::Output {
+        self.iter_mut().find(|m| m.label == index).unwrap()
     }
 }
 
@@ -162,5 +180,14 @@ impl PinViewBundle {
             fill: Fill::color(render_settings.pin_color),
             bounding_box: BoundingBox::circle_new(radius, false),
         }
+    }
+}
+
+pub fn commit_signal_updates(mut q_pin_model_collection: Query<&mut PinModelCollection>) {
+    for mut pin_model_collection in q_pin_model_collection.iter_mut() {
+        pin_model_collection.iter_mut().for_each(|c| {
+            c.previous_signal_state = c.signal_state;
+            c.signal_state = c.next_signal_state;
+        });
     }
 }

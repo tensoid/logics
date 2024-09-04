@@ -40,7 +40,11 @@ pub fn spawn_chip_selector(
                 .0
                 .iter()
                 .map(|cb| cb.builtin_chip.name.clone())
-                .chain(vec!["PORT-IN".to_string(), "PORT-OUT".to_string()])
+                .chain(vec![
+                    "PORT-IN".to_string(),
+                    "PORT-OUT".to_string(),
+                    "CLOCK".to_string(),
+                ])
             {
                 cs.spawn((
                     ChipButton,

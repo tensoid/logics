@@ -1,4 +1,5 @@
-use bevy::{asset::AssetMetaCheck, prelude::*};
+use bevy::{asset::AssetMetaCheck, prelude::*, window::PresentMode};
+use bevy_framepace::{FramepacePlugin, FramepaceSettings, Limiter};
 use bevy_pancam::PanCamPlugin;
 use bevy_prototype_lyon::prelude::*;
 
@@ -13,9 +14,8 @@ mod ui;
 use camera::CameraPlugin;
 use debug::DebugPlugin;
 use designer::{
-    chip::{BuiltinChip, BuiltinChipBundle, BuiltinChips},
-    pin::{PinModel, PinModelCollection, PinType},
-    signal_state::SignalState,
+    chip::{BuiltinChipBundle, BuiltinChips},
+    pin::{PinModel, PinModelCollection},
     DesignerPlugin,
 };
 
@@ -34,6 +34,7 @@ fn main() {
             .set(WindowPlugin {
                 primary_window: Some(Window {
                     canvas: Some("#logics-canvas".into()),
+                    present_mode: PresentMode::Fifo,
                     ..default()
                 }),
                 ..default()
@@ -43,6 +44,15 @@ fn main() {
                 ..default()
             }),
     );
+
+    // FIXME
+    // Limit FPS as temorary workaround for has_event issue.
+    // With FPS above 60, systems with the run condition has_event get executed multiple times
+    // per event and this causes a crash in the moonshine_save crate upon saving or loading.
+    app.add_plugins(FramepacePlugin);
+    app.add_systems(Startup, |mut settings: ResMut<FramepaceSettings>| {
+        settings.limiter = Limiter::from_framerate(60.0);
+    });
 
     #[cfg(debug_assertions)]
     app.add_plugins(DebugPlugin);
@@ -61,43 +71,72 @@ fn main() {
         BuiltinChipBundle::new(
             "AND-2".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_input("B".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("B".into(), Uuid::nil()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
         BuiltinChipBundle::new(
             "NAND-2".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_input("B".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("B".into(), Uuid::nil()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
         BuiltinChipBundle::new(
             "OR-2".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_input("B".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("B".into(), Uuid::nil()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
         BuiltinChipBundle::new(
             "NOT".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
         BuiltinChipBundle::new(
             "XOR-2".into(),
             PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_input("B".into()),
-                PinModel::new_output("Y".into()),
+                PinModel::new_input("B".into(), Uuid::nil()),
+                PinModel::new_input("A".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
+            ]),
+        ),
+        BuiltinChipBundle::new(
+            "JK-FF".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("K".into(), Uuid::nil()),
+                PinModel::new_input("C".into(), Uuid::nil()),
+                PinModel::new_input("J".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
+            ]),
+        ),
+        BuiltinChipBundle::new(
+            "D-FF".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("C".into(), Uuid::nil()),
+                PinModel::new_input("D".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
+            ]),
+        ),
+        BuiltinChipBundle::new(
+            "T-FF".into(),
+            PinModelCollection(vec![
+                PinModel::new_input("C".into(), Uuid::nil()),
+                PinModel::new_input("T".into(), Uuid::nil()),
+                PinModel::new_output("Q".into(), Uuid::nil()),
             ]),
         ),
     ]));
 
     app.run();
+}
+
+fn limit_fps(mut settings: ResMut<FramepaceSettings>) {
+    settings.limiter = Limiter::from_framerate(30.0);
 }

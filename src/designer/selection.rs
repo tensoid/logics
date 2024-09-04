@@ -90,6 +90,7 @@ pub fn spawn_selection_box(
         return;
     }
 
+    //TODO: bundle
     commands.spawn((
         SelectionBox,
         ShapeBundle {

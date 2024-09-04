@@ -1,8 +1,5 @@
-use std::collections::HashSet;
-
 use bevy::prelude::*;
 use moonshine_view::View;
-use uuid::Uuid;
 
 use crate::{
     designer::{
@@ -15,33 +12,6 @@ use crate::{
     },
     get_model, get_model_mut,
 };
-
-// /// Sets the [`SignalState`] of all floating (unconnected) destination pins to [`SignalState::Low`].
-// #[allow(clippy::type_complexity)]
-// pub fn handle_floating_pins(
-//     q_dest_pins: Query<(&PinView, Entity), Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
-//     q_wires: Query<&Wire>,
-//     q_parents: Query<&Parent>,
-//     q_board_entities: Query<&View<BoardEntityViewKind>>,
-//     mut q_chip_models: Query<&mut PinModelCollection>,
-// ) {
-//     let dest_pin_uuids: HashSet<Uuid> = q_wires.iter().filter_map(|w| w.dest_pin_uuid).collect();
-
-//     for (pin_view, pin_entity) in q_dest_pins.iter() {
-//         if dest_pin_uuids.contains(&pin_view.uuid) {
-//             continue;
-//         }
-
-//         if let Some(mut pin_model_collection) =
-//             get_model_mut!(q_parents, q_board_entities, q_chip_models, pin_entity)
-//         {
-//             pin_model_collection
-//                 .get_model_mut(pin_view.uuid)
-//                 .unwrap()
-//                 .signal_state = SignalState::Low;
-//         }
-//     }
-// }
 
 /// Sets the [`SignalState`] of all input pins to [`SignalState::Low`] to prepare for update signals.
 #[allow(clippy::type_complexity)]
@@ -58,7 +28,7 @@ pub fn reset_input_pins(
             pin_model_collection
                 .get_model_mut(pin_view.uuid)
                 .unwrap()
-                .signal_state = SignalState::Low;
+                .next_signal_state = SignalState::Low;
         }
     }
 }
@@ -70,49 +40,90 @@ pub fn evaluate_builtin_chips(
     for (builtin_chip, mut pin_model_collection) in q_builtin_chip_models.iter_mut() {
         match builtin_chip.name.as_str() {
             "AND-2" => {
-                pin_model_collection[2].signal_state = if pin_model_collection[0].signal_state
-                    == SignalState::High
-                    && pin_model_collection[1].signal_state == SignalState::High
-                {
-                    SignalState::High
-                } else {
-                    SignalState::Low
+                pin_model_collection["Q"].next_signal_state = match (
+                    pin_model_collection["A"].signal_state,
+                    pin_model_collection["B"].signal_state,
+                ) {
+                    (SignalState::High, SignalState::High) => SignalState::High,
+                    _ => SignalState::Low,
                 };
             }
             "NAND-2" => {
-                pin_model_collection[2].signal_state = if pin_model_collection[0].signal_state
-                    == SignalState::High
-                    && pin_model_collection[1].signal_state == SignalState::High
-                {
-                    SignalState::Low
-                } else {
-                    SignalState::High
+                pin_model_collection["Q"].next_signal_state = match (
+                    pin_model_collection["A"].signal_state,
+                    pin_model_collection["B"].signal_state,
+                ) {
+                    (SignalState::High, SignalState::High) => SignalState::Low,
+                    _ => SignalState::High,
                 };
             }
             "OR-2" => {
-                pin_model_collection[2].signal_state = if pin_model_collection[0].signal_state
-                    == SignalState::High
-                    || pin_model_collection[1].signal_state == SignalState::High
-                {
-                    SignalState::High
-                } else {
-                    SignalState::Low
+                pin_model_collection["Q"].next_signal_state = match (
+                    pin_model_collection["A"].signal_state,
+                    pin_model_collection["B"].signal_state,
+                ) {
+                    (SignalState::Low, SignalState::Low) => SignalState::Low,
+                    _ => SignalState::High,
                 };
             }
             "NOT" => {
-                pin_model_collection[1].signal_state = !pin_model_collection[0].signal_state;
+                pin_model_collection["Q"].next_signal_state =
+                    !pin_model_collection["A"].signal_state;
             }
             "XOR-2" => {
-                pin_model_collection[2].signal_state = if (pin_model_collection[0].signal_state
-                    == SignalState::High
-                    && pin_model_collection[1].signal_state == SignalState::Low)
-                    || (pin_model_collection[0].signal_state == SignalState::Low
-                        && pin_model_collection[1].signal_state == SignalState::High)
-                {
-                    SignalState::High
-                } else {
-                    SignalState::Low
+                pin_model_collection["Q"].next_signal_state = match (
+                    pin_model_collection["A"].signal_state,
+                    pin_model_collection["B"].signal_state,
+                ) {
+                    (SignalState::Low, SignalState::High) => SignalState::High,
+                    (SignalState::High, SignalState::Low) => SignalState::High,
+                    _ => SignalState::Low,
                 };
+            }
+            "JK-FF" => {
+                // High-Edge triggered
+                if pin_model_collection["C"].previous_signal_state != SignalState::Low
+                    || pin_model_collection["C"].signal_state != SignalState::High
+                {
+                    continue;
+                }
+
+                pin_model_collection["Q"].next_signal_state = match (
+                    pin_model_collection["J"].signal_state,
+                    pin_model_collection["K"].signal_state,
+                ) {
+                    (SignalState::Low, SignalState::Low) => pin_model_collection["Q"].signal_state,
+                    (SignalState::Low, SignalState::High) => SignalState::Low,
+                    (SignalState::High, SignalState::Low) => SignalState::High,
+                    (SignalState::High, SignalState::High) => {
+                        !pin_model_collection["Q"].signal_state
+                    }
+                }
+            }
+            "D-FF" => {
+                // High-Edge triggered
+                if pin_model_collection["C"].previous_signal_state != SignalState::Low
+                    || pin_model_collection["C"].signal_state != SignalState::High
+                {
+                    continue;
+                }
+
+                pin_model_collection["Q"].next_signal_state =
+                    pin_model_collection["D"].signal_state;
+            }
+            "T-FF" => {
+                // High-Edge triggered
+                if pin_model_collection["C"].previous_signal_state != SignalState::Low
+                    || pin_model_collection["C"].signal_state != SignalState::High
+                {
+                    continue;
+                }
+
+                pin_model_collection["Q"].next_signal_state =
+                    match pin_model_collection["T"].signal_state {
+                        SignalState::Low => pin_model_collection["Q"].signal_state,
+                        SignalState::High => !pin_model_collection["Q"].signal_state,
+                    }
             }
             _ => panic!(
                 "Tried to evaluate unknown BuiltinChip: {}",
@@ -132,18 +143,16 @@ pub fn update_signals(
 ) {
     for (wire, mut wire_signal_state) in q_wires.iter_mut() {
         let Some(wire_src_uuid) = wire.src_pin_uuid else {
-            println!("No src pin uuid");
             continue;
         };
 
         let (src_pin_view, src_pin_entity) = q_pin_views
             .iter()
             .find(|(p, _)| p.uuid.eq(&wire_src_uuid))
-            .unwrap();
+            .unwrap(); //TODO: crashes
         let Some(src_pin_model_collection) =
             get_model!(q_parents, q_board_entities, q_chip_models, src_pin_entity)
         else {
-            println!("No src pin model");
             continue;
         };
 
@@ -159,7 +168,6 @@ pub fn update_signals(
         }
 
         let Some(wire_dest_uuid) = wire.dest_pin_uuid else {
-            println!("No dest pin uuid");
             continue;
         };
 
@@ -170,13 +178,12 @@ pub fn update_signals(
         let Some(mut dest_pin_model_collection) =
             get_model_mut!(q_parents, q_board_entities, q_chip_models, dest_pin_entity)
         else {
-            println!("No dest pin model");
             continue;
         };
 
         dest_pin_model_collection
             .get_model_mut(dest_pin_view.uuid)
             .unwrap()
-            .signal_state = SignalState::High;
+            .next_signal_state = SignalState::High;
     }
 }

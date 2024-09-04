@@ -122,13 +122,10 @@ impl ChipBodyBundle {
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
                     points,
-                    radius: 5.0,
+                    radius: render_settings.board_entity_edge_radius,
                     closed: false,
                 }),
-                spatial: SpatialBundle {
-                    transform: Transform::IDENTITY,
-                    ..default()
-                },
+                spatial: SpatialBundle::default(),
                 ..default()
             },
         }

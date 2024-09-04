@@ -115,6 +115,7 @@ pub fn manage_additional_spawn_tasks(
     mut commands: Commands,
     q_selected_entities: Query<Entity, With<Selected>>,
 ) {
+    //TODO: some_or_return!(), ok_or_return!() macros
     let Some((entity, spawn_ev)) = data_option else {
         return;
     };

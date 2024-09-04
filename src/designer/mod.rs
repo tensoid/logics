@@ -2,6 +2,7 @@ pub mod board_binary_io;
 pub mod board_entity;
 pub mod bounding_box;
 pub mod chip;
+pub mod clock;
 pub mod cursor;
 pub mod designer_state;
 pub mod macros;
@@ -19,10 +20,11 @@ use board_entity::{
     BoardEntityViewKind, Position,
 };
 use chip::{BuiltinChip, Chip};
+use clock::{spawn_clock, tick_clocks, Clock};
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use moonshine_view::RegisterView;
-use pin::PinModelCollection;
+use pin::{commit_signal_updates, PinModelCollection};
 use selection::{release_drag, update_dragged_entities_position};
 use signal_state::SignalState;
 use wire::Wire;
@@ -67,10 +69,12 @@ impl Plugin for DesignerPlugin {
             .register_type::<BoardBinaryOutput>()
             .register_type::<Wire>()
             .register_type::<SignalState>()
+            .register_type::<Clock>()
             .register_view::<BoardEntityViewKind, BoardBinaryInput>()
             .register_view::<BoardEntityViewKind, BoardBinaryOutput>()
             .register_view::<BoardEntityViewKind, Chip>()
             .register_view::<BoardEntityViewKind, Wire>()
+            .register_view::<BoardEntityViewKind, Clock>()
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
             .add_systems(
@@ -84,6 +88,7 @@ impl Plugin for DesignerPlugin {
                 Update,
                 drag_wire.run_if(resource_equals(IsCursorCaptured(false))),
             )
+            .add_systems(Update, tick_clocks)
             .add_systems(
                 Update,
                 (
@@ -106,18 +111,20 @@ impl Plugin for DesignerPlugin {
                 Update,
                 spawn_board_binary_output.pipe(manage_additional_spawn_tasks),
             )
-            .add_systems(Update, update_signal_colors.after(update_signals))
+            .add_systems(Update, spawn_clock.pipe(manage_additional_spawn_tasks))
+            .add_systems(Update, update_signal_colors.after(update_signals)) //TODO: observers?
             .add_systems(Update, toggle_board_input_switch)
             .add_systems(
                 Update,
                 update_board_binary_displays
-                    .after(toggle_board_input_switch)
-                    .after(update_signals),
+                .after(toggle_board_input_switch) //TODO: observers?
+                .after(update_signals),
             )
             .add_systems(Update, update_board_entity_position)
             .add_systems(Update, update_wires)
             .add_systems(PostUpdate, update_dragged_entities_position)
-            .add_systems(PostUpdate, highlight_selected)
+            .add_systems(PostUpdate, highlight_selected) //TODO: observers?
+            .add_systems(PostUpdate, commit_signal_updates)//TODO: observers?
             .add_systems(
                 PostUpdate,
                 update_bounding_boxes.after(TransformSystem::TransformPropagate),
