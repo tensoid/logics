@@ -9,18 +9,28 @@ use moonshine_core::object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
-use crate::events::events::SpawnBoardEntityEvent;
-
-use super::{
-    board_entity::{BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position},
+use crate::designer::{
     pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
+    position::Position,
     render_settings::CircuitBoardRenderingSettings,
 };
+
+use super::device::{Device, DeviceModelBundle, DeviceViewBundle, DeviceViewKind};
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
 pub struct Clock {
     timer: Timer,
+}
+
+impl Device for Clock {
+    fn create_bundle(position: Position) -> impl Bundle {
+        ClockBundle::new(position, 0.2)
+    }
+
+    fn device_id() -> &'static str {
+        "CLOCK"
+    }
 }
 
 impl Clock {
@@ -34,7 +44,7 @@ impl Clock {
 #[derive(Bundle)]
 pub struct ClockBundle {
     clock: Clock,
-    model_bundle: BoardEntityModelBundle,
+    model_bundle: DeviceModelBundle,
     pin_model_collection: PinModelCollection,
 }
 
@@ -42,11 +52,8 @@ impl ClockBundle {
     fn new(position: Position, timer_seconds: f32) -> Self {
         Self {
             clock: Clock::new(timer_seconds),
-            model_bundle: BoardEntityModelBundle::new(position),
-            pin_model_collection: PinModelCollection(vec![PinModel::new_output(
-                "Q".into(),
-                Uuid::new_v4(),
-            )]),
+            model_bundle: DeviceModelBundle::new(position),
+            pin_model_collection: PinModelCollection(vec![PinModel::new_output("Q".into())]),
         }
     }
 }
@@ -78,13 +85,13 @@ impl ClockBodyBundle {
             clock_body: ClockBody,
             fill: Fill::color(render_settings.clock_color), // TODO: into settings
             stroke: Stroke::new(
-                render_settings.board_entity_stroke_color,
-                render_settings.board_entity_stroke_width,
+                render_settings.device_stroke_color,
+                render_settings.device_stroke_width,
             ),
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
                     points,
-                    radius: render_settings.board_entity_edge_radius,
+                    radius: render_settings.device_edge_radius,
                     closed: false,
                 }),
                 spatial: SpatialBundle::default(),
@@ -169,30 +176,11 @@ impl ClockPinCollectionBundle {
     }
 }
 
-pub fn spawn_clock(
-    mut commands: Commands,
-    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
-) -> Option<(Entity, SpawnBoardEntityEvent)> {
-    for ev in spawn_ev.read() {
-        if ev.name != "CLOCK" {
-            continue;
-        }
-
-        let entity = commands
-            .spawn(ClockBundle::new(ev.position.clone(), 0.2))
-            .id();
-
-        return Some((entity, ev.clone()));
-    }
-
-    None
-}
-
-impl BuildView<BoardEntityViewKind> for Clock {
+impl BuildView<DeviceViewKind> for Clock {
     fn build(
         world: &World,
-        object: Object<BoardEntityViewKind>,
-        view: &mut ViewCommands<BoardEntityViewKind>,
+        object: Object<DeviceViewKind>,
+        view: &mut ViewCommands<DeviceViewKind>,
     ) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
         let asset_server = world.resource::<AssetServer>();
@@ -200,15 +188,15 @@ impl BuildView<BoardEntityViewKind> for Clock {
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
-        view.insert(BoardEntityViewBundle::new(
+        view.insert(DeviceViewBundle::new(
             position.clone(),
             render_settings.clock_extents, // TODO: into settings
         ))
-        .with_children(|board_entity| {
-            board_entity.spawn(ClockBodyBundle::new(render_settings));
-            board_entity.spawn(ClockLabelBundle::new(render_settings, asset_server));
+        .with_children(|device| {
+            device.spawn(ClockBodyBundle::new(render_settings));
+            device.spawn(ClockLabelBundle::new(render_settings, asset_server));
 
-            board_entity
+            device
                 .spawn(ClockPinCollectionBundle::new())
                 .with_children(|pc| {
                     pc.spawn(ClockPinBundle::new(

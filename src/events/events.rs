@@ -3,11 +3,11 @@ use std::path::Path;
 use bevy::prelude::*;
 use moonshine_save::FilePath;
 
-use crate::designer::board_entity::Position;
+use crate::designer::position::Position;
 
 #[derive(Event, Clone)]
-pub struct SpawnBoardEntityEvent {
-    pub name: String,
+pub struct SpawnDeviceEvent {
+    pub device_id: String,
     pub position: Position,
     pub init_drag: bool,
 }

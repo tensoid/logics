@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
 use crate::{
-    designer::{board_entity::Position, chip::BuiltinChips, designer_state::DesignerState},
-    events::events::SpawnBoardEntityEvent,
+    designer::{devices::device::DeviceIds, position::Position},
+    events::events::SpawnDeviceEvent,
 };
 
 use super::styles::*;
@@ -23,7 +23,7 @@ pub struct ChipButton;
 pub fn spawn_chip_selector(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    q_builtin_chips: Res<BuiltinChips>,
+    q_device_ids: Res<DeviceIds>,
 ) {
     commands
         .spawn((
@@ -36,16 +36,7 @@ pub fn spawn_chip_selector(
             },
         ))
         .with_children(|cs| {
-            for chip_name in q_builtin_chips
-                .0
-                .iter()
-                .map(|cb| cb.builtin_chip.name.clone())
-                .chain(vec![
-                    "PORT-IN".to_string(),
-                    "PORT-OUT".to_string(),
-                    "CLOCK".to_string(),
-                ])
-            {
+            for device_id in q_device_ids.devices.iter() {
                 cs.spawn((
                     ChipButton,
                     ButtonBundle {
@@ -56,7 +47,7 @@ pub fn spawn_chip_selector(
                 ))
                 .with_children(|b| {
                     b.spawn(TextBundle::from_section(
-                        chip_name,
+                        device_id,
                         chip_button_text_style(&asset_server),
                     ));
                 });
@@ -80,7 +71,7 @@ pub fn chip_selector_button_interact(
         (Changed<Interaction>, With<ChipButton>),
     >,
     q_texts: Query<&Text>,
-    mut spawn_ev_writer: EventWriter<SpawnBoardEntityEvent>,
+    mut spawn_ev_writer: EventWriter<SpawnDeviceEvent>,
 ) {
     for (interaction, mut background_color, children) in q_buttons.iter_mut() {
         let button_text = q_texts.get(*children.first().unwrap()).unwrap();
@@ -95,11 +86,11 @@ pub fn chip_selector_button_interact(
             Interaction::Pressed => {
                 *background_color = chip_button_background_color_pressed();
 
-                let chip_name = button_text.sections.first().unwrap().value.clone();
+                let device_id = button_text.sections.first().unwrap().value.clone();
 
-                spawn_ev_writer.send(SpawnBoardEntityEvent {
-                    name: chip_name,
-                    position: Position(Vec2::ZERO),
+                spawn_ev_writer.send(SpawnDeviceEvent {
+                    device_id,
+                    position: Position::ZERO,
                     init_drag: true,
                 });
             }

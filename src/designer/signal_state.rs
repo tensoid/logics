@@ -5,9 +5,7 @@ use bevy_prototype_lyon::prelude::*;
 use moonshine_view::Viewable;
 
 use super::{
-    board_entity::BoardEntityViewKind,
-    render_settings::CircuitBoardRenderingSettings,
-    wire::{Wire, WireView},
+    devices::device::DeviceViewKind, render_settings::CircuitBoardRenderingSettings, wire::{Wire, WireView}
 };
 
 #[derive(PartialEq, Clone, Copy, Debug, Component, Reflect)]
@@ -51,7 +49,7 @@ impl SignalState {
  */
 #[allow(clippy::type_complexity)]
 pub fn update_signal_colors(
-    q_wires: Query<(&Viewable<BoardEntityViewKind>, &SignalState), With<Wire>>,
+    q_wires: Query<(&Viewable<DeviceViewKind>, &SignalState), With<Wire>>,
     mut q_wire_views: Query<&mut Stroke, With<WireView>>,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
