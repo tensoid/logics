@@ -17,7 +17,7 @@ use crate::designer::{
 
 use super::device::{Device, DeviceModelBundle, DeviceViewBundle, DeviceViewKind};
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct Clock {
     timer: Timer,
@@ -41,7 +41,7 @@ impl Clock {
     }
 }
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct ClockBundle {
     clock: Clock,
     model_bundle: DeviceModelBundle,

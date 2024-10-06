@@ -9,7 +9,7 @@ use crate::{
         bounding_box::BoundingBox,
         cursor::Cursor,
         pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
-        position::Position,
+        position::{self, Position},
         render_settings::CircuitBoardRenderingSettings,
         signal_state::SignalState,
     },
@@ -18,7 +18,7 @@ use crate::{
 
 use super::device::{Device, DeviceModelBundle, DeviceViewBundle, DeviceViewKind};
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct BinarySwitch;
 
@@ -32,10 +32,10 @@ impl Device for BinarySwitch {
     }
 }
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct BinarySwitchBundle {
     binary_switch: BinarySwitch,
-    model_bundle: DeviceModelBundle,
+    device_model_bundle: DeviceModelBundle,
     pin_model_collection: PinModelCollection,
 }
 
@@ -43,7 +43,7 @@ impl BinarySwitchBundle {
     fn new(position: Position) -> Self {
         Self {
             binary_switch: BinarySwitch,
-            model_bundle: DeviceModelBundle::new(position),
+            device_model_bundle: DeviceModelBundle::new(position),
             pin_model_collection: PinModelCollection(vec![PinModel::new_output("Q".into())]),
         }
     }
@@ -170,7 +170,7 @@ impl BinarySwitchPinCollectionBundle {
     }
 }
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct BinaryDisplay;
 
@@ -184,7 +184,7 @@ impl Device for BinaryDisplay {
     }
 }
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct BinaryDisplayBundle {
     binary_display: BinaryDisplay,
     device_model_bundle: DeviceModelBundle,

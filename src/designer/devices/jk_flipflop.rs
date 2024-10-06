@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use uuid::Uuid;
 
 use crate::designer::{
     pin::{PinModel, PinModelCollection},
@@ -8,21 +7,24 @@ use crate::designer::{
 
 use super::{device::Device, generic_chip::GenericChipBundle};
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct JKFlipFlop;
 
 impl Device for JKFlipFlop {
     fn create_bundle(position: Position) -> impl Bundle {
-        GenericChipBundle::new(
-            position,
-            PinModelCollection(vec![
-                PinModel::new_input("K".into()),
-                PinModel::new_input("C".into()),
-                PinModel::new_input("J".into()),
-                PinModel::new_output("Q".into()),
-            ]),
-            Self::device_id().into(),
+        (
+            JKFlipFlop,
+            GenericChipBundle::new(
+                position,
+                PinModelCollection(vec![
+                    PinModel::new_input("K".into()),
+                    PinModel::new_input("C".into()),
+                    PinModel::new_input("J".into()),
+                    PinModel::new_output("Q".into()),
+                ]),
+                Self::device_id().into(),
+            ),
         )
     }
 

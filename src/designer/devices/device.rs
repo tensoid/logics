@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use moonshine_core::kind::Kind;
-use moonshine_save::save::Save;
 use moonshine_view::Viewable;
 
 use crate::{
@@ -14,10 +13,11 @@ use crate::{
     get_cursor_mut,
 };
 
-pub trait Device: 'static {
+pub trait Device: 'static + Send + Sync + Component {
+    //TODO: add eval method (tick, simulate)
     fn create_bundle(position: Position) -> impl Bundle;
     fn device_id() -> &'static str;
-} //TODO: add eval method (tick, simulate)
+}
 
 pub trait RegisterDevice {
     fn register_device<T: Device>(&mut self) -> &mut Self;
@@ -102,15 +102,15 @@ impl DeviceViewBundle {
     }
 }
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct DeviceModel;
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct DeviceModelBundle {
     device_model: DeviceModel,
     position: Position,
-    save: Save,
+    //save: Save,
 }
 
 impl DeviceModelBundle {
@@ -118,7 +118,7 @@ impl DeviceModelBundle {
         Self {
             device_model: DeviceModel,
             position,
-            save: Save,
+            //save: Save,
         }
     }
 }

@@ -13,17 +13,13 @@ mod ui;
 
 use camera::CameraPlugin;
 use debug::DebugPlugin;
-use designer::{
-    pin::{PinModel, PinModelCollection},
-    DesignerPlugins,
-};
+use designer::DesignerPlugins;
 
 use events::EventsPlugin;
 use input::InputPlugin;
 use moonshine_save::{load::LoadPlugin, save::SavePlugin};
 use simulation::SimulationPlugin;
 use ui::UIPlugin;
-use uuid::Uuid;
 
 fn main() {
     let mut app = App::new();

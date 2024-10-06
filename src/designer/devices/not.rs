@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use uuid::Uuid;
 
 use crate::designer::{
     pin::{PinModel, PinModelCollection},
@@ -8,19 +7,22 @@ use crate::designer::{
 
 use super::{device::Device, generic_chip::GenericChipBundle};
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct Not;
 
 impl Device for Not {
     fn create_bundle(position: Position) -> impl Bundle {
-        GenericChipBundle::new(
-            position,
-            PinModelCollection(vec![
-                PinModel::new_input("A".into()),
-                PinModel::new_output("Q".into()),
-            ]),
-            Self::device_id().into(),
+        (
+            Not,
+            GenericChipBundle::new(
+                position,
+                PinModelCollection(vec![
+                    PinModel::new_input("A".into()),
+                    PinModel::new_output("Q".into()),
+                ]),
+                Self::device_id().into(),
+            ),
         )
     }
 

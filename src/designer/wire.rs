@@ -30,10 +30,10 @@ pub struct Wire {
 
 #[derive(Bundle)]
 pub struct WireBundle {
-    wire: Wire,
-    save: Save,
-    signal_state: SignalState,
-    device_model: DeviceModel,
+    pub wire: Wire,
+    pub save: Save,
+    pub signal_state: SignalState,
+    pub device_model: DeviceModel,
 }
 
 impl WireBundle {
@@ -41,6 +41,15 @@ impl WireBundle {
         Self {
             wire,
             signal_state: SignalState::Low,
+            save: Save,
+            device_model: DeviceModel,
+        }
+    }
+
+    pub fn new_with_signal(wire: Wire, signal_state: SignalState) -> Self {
+        Self {
+            wire,
+            signal_state,
             save: Save,
             device_model: DeviceModel,
         }

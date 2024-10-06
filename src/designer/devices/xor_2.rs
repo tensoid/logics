@@ -7,20 +7,23 @@ use crate::designer::{
 
 use super::{device::Device, generic_chip::GenericChipBundle};
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct Xor2;
 
 impl Device for Xor2 {
     fn create_bundle(position: Position) -> impl Bundle {
-        GenericChipBundle::new(
-            position,
-            PinModelCollection(vec![
-                PinModel::new_input("B".into()),
-                PinModel::new_input("A".into()),
-                PinModel::new_output("Q".into()),
-            ]),
-            Self::device_id().into(),
+        (
+            Xor2,
+            GenericChipBundle::new(
+                position,
+                PinModelCollection(vec![
+                    PinModel::new_input("B".into()),
+                    PinModel::new_input("A".into()),
+                    PinModel::new_output("Q".into()),
+                ]),
+                Self::device_id().into(),
+            ),
         )
     }
 

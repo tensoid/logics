@@ -18,7 +18,7 @@ pub struct GenericChip {
     pub name: String,
 }
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct GenericChipBundle {
     chip: GenericChip,
     pin_model_collection: PinModelCollection,
