@@ -14,16 +14,19 @@ pub mod wire;
 use bevy::app::PluginGroupBuilder;
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
-use copy_paste::{copy_devices, copy_wires, paste_devices, paste_wires, DeviceClipboard, WireClipboard};
+use copy_paste::{
+    copy_devices, copy_wires, paste_devices, paste_wires, DeviceClipboard, WireClipboard,
+};
 use devices::binary_io::{toggle_binary_switch, update_board_binary_displays};
 use devices::device::update_device_positions;
 use devices::DevicePlugin;
+use moonshine_core::prelude::has_event;
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use pin::commit_signal_updates;
-use selection::{release_drag, update_dragged_entities_position};
+use selection::{release_drag, select_all, update_dragged_entities_position};
 
-use crate::events::events::{CopyEvent, LoadEvent, PasteEvent, SaveEvent};
+use crate::events::events::{CopyEvent, LoadEvent, PasteEvent, SaveEvent, SelectAllEvent};
 use crate::simulation::simulation::update_signals;
 use crate::ui::cursor_captured::IsCursorCaptured;
 
@@ -76,11 +79,12 @@ impl Plugin for DesignerPlugin {
                 (
                     spawn_selection_box,
                     (select_single, start_drag).chain().after(drag_wire),
-                    delete_selected,
+                    delete_selected, //TODO: remove cursor captured condition for delete
                 )
                     .after(drag_wire)
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
+            .add_systems(Update, select_all.run_if(has_event::<SelectAllEvent>))
             .add_systems(Update, release_drag)
             .add_systems(Update, update_selection_box)
             .add_systems(Update, highlight_hovered_pin)
@@ -107,12 +111,11 @@ impl Plugin for DesignerPlugin {
         app.init_resource::<WireClipboard>();
         app.add_systems(
             Update,
-            (
-                copy_devices.run_if(on_event::<CopyEvent>()),
-                copy_wires.run_if(on_event::<CopyEvent>()),
-                paste_devices.run_if(on_event::<PasteEvent>()),
-                paste_wires.run_if(on_event::<PasteEvent>()),
-            ),
+            (copy_devices, copy_wires).run_if(on_event::<CopyEvent>()),
+        )
+        .add_systems(
+            Update,
+            (paste_devices.pipe(paste_wires)).run_if(on_event::<PasteEvent>()),
         );
 
         init_render_settings(app);

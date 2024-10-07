@@ -21,7 +21,7 @@ use super::{
     signal_state::SignalState,
 };
 
-#[derive(Component, Reflect, Clone)]
+#[derive(Component, Reflect, Clone, Debug)]
 #[reflect(Component)]
 pub struct Wire {
     pub src_pin_uuid: Option<Uuid>,
@@ -103,7 +103,7 @@ impl BuildView<DeviceViewKind> for Wire {
 //TODO: clean up the indents and ugly stuff
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
-    mut q_wires: Query<(&mut Wire, &Viewable<DeviceViewKind>, Entity)>,
+    q_wires: Query<(&mut Wire, &Viewable<DeviceViewKind>, Entity)>,
     q_dest_pins: Query<
         (&GlobalTransform, &PinView),
         Or<(With<GenericChipInputPin>, With<BinaryDisplayPin>)>,
@@ -122,7 +122,7 @@ pub fn update_wires(
 ) {
     let (cursor, cursor_transform) = get_cursor!(q_cursor);
 
-    for (wire, mut wire_viewable, wire_entity) in q_wires.iter_mut() {
+    for (wire, wire_viewable, wire_entity) in q_wires.iter() {
         let Some(wire_src_pin_uuid) = wire.src_pin_uuid else {
             commands.entity(wire_entity).despawn();
             continue;

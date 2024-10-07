@@ -86,7 +86,6 @@ impl PinModelCollection {
         self.iter_outputs().count()
     }
 
-    /// Creates new uuids for all pins to avoid spawning two builtin chips with equal pin uuids.
     pub fn randomize_pin_uuids(&mut self) {
         self.iter_mut().for_each(|m| m.uuid = Uuid::new_v4());
     }

@@ -135,7 +135,7 @@ pub fn evaluate_builtin_chips(
     }
 }
 
-/// Syncronizes the destination pin with the source pin for every [`Wire`].
+/// Synchronizes the destination pin with the source pin for every [`Wire`].
 pub fn update_signals(
     mut q_wires: Query<(&Wire, &mut SignalState)>,
     q_pin_views: Query<(&PinView, Entity)>,
@@ -148,10 +148,13 @@ pub fn update_signals(
             continue;
         };
 
-        let (src_pin_view, src_pin_entity) = q_pin_views
-            .iter()
-            .find(|(p, _)| p.uuid.eq(&wire_src_uuid))
-            .unwrap(); //TODO: crashes
+        let Some((src_pin_view, src_pin_entity)) =
+            q_pin_views.iter().find(|(p, _)| p.uuid.eq(&wire_src_uuid))
+        else {
+            // this happens when the wire already spawned,
+            // but the view for the device has not yet
+            continue;
+        };
         let Some(src_pin_model_collection) =
             get_model!(q_parents, q_board_entities, q_chip_models, src_pin_entity)
         else {

@@ -12,9 +12,10 @@ impl Plugin for InputPlugin {
             (vec![KeyCode::KeyD], Action::ToggleDebugMode),
             (vec![KeyCode::Delete], Action::Delete),
             (vec![KeyCode::ControlLeft, KeyCode::KeyC], Action::Copy),
-            (vec![KeyCode::ControlLeft, KeyCode::KeyV], Action::Paste), 
+            (vec![KeyCode::ControlLeft, KeyCode::KeyV], Action::Paste),
             (vec![KeyCode::ControlLeft, KeyCode::KeyS], Action::Save),
             (vec![KeyCode::ControlLeft, KeyCode::KeyL], Action::Load),
+            (vec![KeyCode::ControlLeft, KeyCode::KeyA], Action::SelectAll),
         ]))
         .add_systems(Update, handle_keybindings);
     }

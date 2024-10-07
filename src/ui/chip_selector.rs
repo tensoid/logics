@@ -7,13 +7,6 @@ use crate::{
 
 use super::styles::*;
 
-#[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
-pub enum ChipSelectorState {
-    #[default]
-    Open,
-    Closed,
-}
-
 #[derive(Component)]
 pub struct ChipSelector;
 
@@ -53,15 +46,6 @@ pub fn spawn_chip_selector(
                 });
             }
         });
-}
-
-pub fn despawn_chip_selector(
-    mut commands: Commands,
-    q_chip_selector: Query<Entity, With<ChipSelector>>,
-) {
-    for chip_selector_entity in q_chip_selector.iter() {
-        commands.entity(chip_selector_entity).despawn_recursive();
-    }
 }
 
 #[allow(clippy::type_complexity)]

@@ -1,20 +1,16 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use bevy::prelude::*;
 use uuid::Uuid;
 
 use super::{
-    devices::device::{DeviceModel, DeviceModelBundle},
-    pin::{self, PinModelCollection},
+    devices::device::DeviceModel,
+    pin::PinModelCollection,
     position::Position,
     selection::Selected,
     signal_state::SignalState,
     wire::{Wire, WireBundle},
 };
-
-//TODO: randomize pin uuids
-//TODO: figure out how to find new pin uuids
-//TODO: comments
 
 /// Stores all components from all devices after copying using reflect.
 #[derive(Resource, Default)]
@@ -67,7 +63,8 @@ pub fn copy_devices(world: &mut World) {
 }
 
 /// Spawns all devices stored in the [`DeviceClipboard`]
-pub fn paste_devices(world: &mut World) {
+/// and selects them while deselecting all other currently selected devices.
+pub fn paste_devices(world: &mut World) -> HashMap<Uuid, Uuid> {
     let mut q_selected = world.query_filtered::<Entity, With<Selected>>();
     let selected_entities: Vec<Entity> = q_selected.iter(world).collect();
     for entity in selected_entities {
@@ -105,6 +102,31 @@ pub fn paste_devices(world: &mut World) {
 
         position.0 += Vec2::new(50.0, -50.0);
     }
+
+    // Randomize pin uuids and map old uuids to new uuids
+    let mut pin_uuid_mapping: HashMap<Uuid, Uuid> = HashMap::new();
+
+    for &entity in spawned_entities.iter() {
+        let mut pin_model_collection = world
+            .query::<&mut PinModelCollection>()
+            .get_mut(world, entity)
+            .unwrap();
+
+        let device_pin_uuids: Vec<Uuid> = pin_model_collection
+            .iter()
+            .map(|pin_model| pin_model.uuid)
+            .collect();
+
+        pin_model_collection.randomize_pin_uuids();
+
+        pin_model_collection.iter().zip(device_pin_uuids).for_each(
+            |(new_pin_model, old_device_pin_uuid)| {
+                pin_uuid_mapping.insert(old_device_pin_uuid, new_pin_model.uuid);
+            },
+        );
+    }
+
+    pin_uuid_mapping
 }
 
 /// Stores all wires after copying.
@@ -113,6 +135,7 @@ pub struct WireClipboard {
     pub items: Vec<(Wire, SignalState)>,
 }
 
+/// Copies all wires and stores them in the [`WireClipboard`].
 pub fn copy_wires(
     q_wires: Query<(&Wire, &SignalState)>,
     q_selected_devices: Query<&PinModelCollection, (With<Selected>, With<DeviceModel>)>,
@@ -142,11 +165,28 @@ pub fn copy_wires(
         // copy connected wires
         wire_clipboard.items.push((wire.clone(), *signal_state));
     }
-    info!("{}", wire_clipboard.items.len());
 }
 
-pub fn paste_wires(mut commands: Commands, wire_clipboard: Res<WireClipboard>) {
-    for wire in wire_clipboard.items.iter() {
-        commands.spawn(WireBundle::new_with_signal(wire.0.clone(), wire.1));
+/// Spawns all wires stored in the [`WireClipboard`]
+/// and updates the pin uuids to match the pasted devices.
+pub fn paste_wires(
+    In(pin_uuid_mapping): In<HashMap<Uuid, Uuid>>,
+    mut commands: Commands,
+    wire_clipboard: Res<WireClipboard>,
+) {
+    for (wire, signal_state) in wire_clipboard.items.iter() {
+        let mut new_wire = wire.clone();
+        new_wire.src_pin_uuid = Some(
+            *pin_uuid_mapping
+                .get(&new_wire.src_pin_uuid.unwrap())
+                .unwrap(),
+        );
+        new_wire.dest_pin_uuid = Some(
+            *pin_uuid_mapping
+                .get(&new_wire.dest_pin_uuid.unwrap())
+                .unwrap(),
+        );
+
+        commands.spawn(WireBundle::new_with_signal(new_wire, *signal_state));
     }
 }

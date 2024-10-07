@@ -41,3 +41,6 @@ impl FilePath for LoadEvent {
         Path::new("saves/save.ron")
     }
 }
+
+#[derive(Event)]
+pub struct SelectAllEvent;

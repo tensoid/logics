@@ -64,7 +64,3 @@ fn main() {
 
     app.run();
 }
-
-fn limit_fps(mut settings: ResMut<FramepaceSettings>) {
-    settings.limiter = Limiter::from_framerate(30.0);
-}

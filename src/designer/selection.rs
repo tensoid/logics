@@ -31,6 +31,9 @@ pub struct Dragged {
 pub struct Selected;
 
 #[derive(Component)]
+pub struct SelectionBox;
+
+#[derive(Component)]
 pub struct SelectionOutline;
 
 #[derive(Bundle)]
@@ -63,8 +66,11 @@ impl SelectionOutlineBundle {
     }
 }
 
-#[derive(Component)]
-pub struct SelectionBox;
+pub fn select_all(mut commands: Commands, q_devices: Query<Entity, With<DeviceModel>>) {
+    for device in q_devices.iter() {
+        commands.entity(device).insert(Selected);
+    }
+}
 
 pub fn spawn_selection_box(
     input: Res<ButtonInput<MouseButton>>,
@@ -204,8 +210,7 @@ pub fn select_single(
     }
 
     let hovered_device_model_entity = hovered_device.unwrap().0.viewable().entity();
-    let is_hovered_device_selected =
-        q_selected.get(hovered_device_model_entity).is_ok();
+    let is_hovered_device_selected = q_selected.get(hovered_device_model_entity).is_ok();
 
     if !is_hovered_device_selected {
         q_selected.iter().for_each(|(e, _)| {
@@ -342,7 +347,7 @@ pub fn highlight_selected(
             let selection_outline_entity = q_selection_outlines
                 .iter()
                 .find(|so| so.1.get() == view_entity)
-                .unwrap()
+                .unwrap() //TODO: crashed
                 .0;
 
             commands.entity(selection_outline_entity).remove_parent();

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::events::events::{
-    CopyEvent, DeleteEvent, LoadEvent, PasteEvent, SaveEvent, ToggleDebugModeEvent,
+    CopyEvent, DeleteEvent, LoadEvent, PasteEvent, SaveEvent, SelectAllEvent, ToggleDebugModeEvent
 };
 
 macro_rules! match_and_send_event {
@@ -23,6 +23,7 @@ pub enum Action {
     Paste,
     Save,
     Load,
+    SelectAll,
 }
 
 #[derive(Resource)]
@@ -51,6 +52,7 @@ pub fn handle_keybindings(
             Action::Paste => PasteEvent,
             Action::Save => SaveEvent,
             Action::Load => LoadEvent,
+            Action::SelectAll => SelectAllEvent,
         );
     }
 }
