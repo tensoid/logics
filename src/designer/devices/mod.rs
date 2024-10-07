@@ -26,7 +26,6 @@ use or_2::Or2;
 use t_flipflop::TFlipFlop;
 use xor_2::Xor2;
 
-use crate::events::events::{CopyEvent, PasteEvent};
 
 use super::{pin::PinModelCollection, position::Position, signal_state::SignalState, wire::Wire};
 

@@ -1,22 +1,62 @@
 use bevy::prelude::*;
 
-use self::keybindings::{handle_keybindings, Action, KeyBindings};
-
-pub mod keybindings;
+use crate::events::events::{
+    CopyEvent, DeleteEvent, LoadEvent, PasteEvent, SaveEvent, SelectAllEvent, ToggleDebugModeEvent,
+};
 
 pub struct InputPlugin;
 
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(KeyBindings(vec![
-            (vec![KeyCode::KeyD], Action::ToggleDebugMode),
-            (vec![KeyCode::Delete], Action::Delete),
-            (vec![KeyCode::ControlLeft, KeyCode::KeyC], Action::Copy),
-            (vec![KeyCode::ControlLeft, KeyCode::KeyV], Action::Paste),
-            (vec![KeyCode::ControlLeft, KeyCode::KeyS], Action::Save),
-            (vec![KeyCode::ControlLeft, KeyCode::KeyL], Action::Load),
-            (vec![KeyCode::ControlLeft, KeyCode::KeyA], Action::SelectAll),
-        ]))
-        .add_systems(Update, handle_keybindings);
+        app.register_keybinding(vec![KeyCode::KeyD], ToggleDebugModeEvent)
+            .register_keybinding(vec![KeyCode::Delete], DeleteEvent)
+            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyC], CopyEvent)
+            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyV], PasteEvent)
+            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyS], SaveEvent)
+            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyL], LoadEvent)
+            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyA], SelectAllEvent);
     }
+}
+
+pub trait RegisterKeybinding {
+    fn register_keybinding<E: Event + Clone>(
+        &mut self,
+        keybinding: Vec<KeyCode>,
+        event: E,
+    ) -> &mut Self;
+}
+
+impl RegisterKeybinding for App {
+    fn register_keybinding<E: Event + Clone>(
+        &mut self,
+        keybinding: Vec<KeyCode>,
+        event: E,
+    ) -> &mut Self {
+        // register spawn func
+        self.add_systems(
+            Update,
+            move |input: Res<ButtonInput<KeyCode>>, event_writer: EventWriter<E>| {
+                handle_keybinding(keybinding.clone(), event_writer, input, event.clone());
+            },
+        );
+
+        self
+    }
+}
+
+fn handle_keybinding<E: Event>(
+    keybinding: Vec<KeyCode>,
+    mut event_writer: EventWriter<E>,
+    input: Res<ButtonInput<KeyCode>>,
+    event: E,
+) {
+    if !keybinding.iter().all(|key| input.pressed(*key)) {
+        return;
+    }
+
+    if !keybinding.iter().any(|key| input.just_pressed(*key)) {
+        return;
+    }
+
+    event_writer.send(event);
 }

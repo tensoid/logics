@@ -12,19 +12,19 @@ pub struct SpawnDeviceEvent {
     pub init_drag: bool,
 }
 
-#[derive(Event)]
+#[derive(Event, Clone)]
 pub struct ToggleDebugModeEvent;
 
-#[derive(Event)]
+#[derive(Event, Clone)]
 pub struct DeleteEvent;
 
-#[derive(Event)]
+#[derive(Event, Clone)]
 pub struct CopyEvent;
 
-#[derive(Event)]
+#[derive(Event, Clone)]
 pub struct PasteEvent;
 
-#[derive(Event)]
+#[derive(Event, Clone)]
 pub struct SaveEvent;
 
 impl FilePath for SaveEvent {
@@ -33,7 +33,7 @@ impl FilePath for SaveEvent {
     }
 }
 
-#[derive(Event)]
+#[derive(Event, Clone)]
 pub struct LoadEvent;
 
 impl FilePath for LoadEvent {
@@ -42,5 +42,5 @@ impl FilePath for LoadEvent {
     }
 }
 
-#[derive(Event)]
+#[derive(Event, Clone)]
 pub struct SelectAllEvent;
