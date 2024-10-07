@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use bevy::prelude::*;
+use moonshine_save::save::Save;
 use uuid::Uuid;
 
 use super::{
@@ -77,7 +78,7 @@ pub fn paste_devices(world: &mut World) -> HashMap<Uuid, Uuid> {
 
     world.resource_scope(|world, clipboard: Mut<DeviceClipboard>| {
         for clipboard_item in clipboard.items.iter() {
-            let entity_mut = &mut world.spawn(Selected);
+            let entity_mut = &mut world.spawn((Selected, Save)); // FIXME: manually insert save because it does not implement the reflect trait and is not copied
             spawned_entities.push(entity_mut.id());
             for component in clipboard_item.iter() {
                 let type_info = component.get_represented_type_info().unwrap();

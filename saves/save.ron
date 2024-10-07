@@ -1,14 +1,90 @@
 (
   resources: {},
   entities: {
-    8589934620: (
+    4294967339: (
       components: {
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::wire::Wire": (
-          src_pin_uuid: Some("ee46571a-3b97-47b7-9acd-f101d969f507"),
-          dest_pin_uuid: Some("86ab970c-c06c-4091-a991-34ac1f4f4521"),
+          src_pin_uuid: Some("419d4f46-60e5-4707-afa5-5f1dd8820d49"),
+          dest_pin_uuid: Some("ebd3526c-fc67-425b-8d23-aa4305f9ab53"),
         ),
         "logics::designer::signal_state::SignalState": Low,
+      },
+    ),
+    8589934618: (
+      components: {
+        "logics::designer::devices::device::DeviceModel": (),
+        "logics::designer::devices::generic_chip::GenericChip": (
+          name: "AND-2",
+        ),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "B",
+            uuid: "ebd3526c-fc67-425b-8d23-aa4305f9ab53",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "A",
+            uuid: "73492f3e-9429-4bdc-8464-d19b64021f32",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Output,
+            label: "Q",
+            uuid: "bac8b157-509a-4190-902f-75b4ad15dad6",
+          ),
+        ]),
+        "logics::designer::position::Position": ((
+          x: -127.00001,
+          y: 94.99997,
+        )),
+      },
+    ),
+    12884901922: (
+      components: {
+        "logics::designer::devices::device::DeviceModel": (),
+        "logics::designer::devices::generic_chip::GenericChip": (
+          name: "AND-2",
+        ),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "B",
+            uuid: "786f6915-fd71-4496-8245-029c6aa240ab",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "A",
+            uuid: "fa4588be-b325-4a3a-b88f-7d07f81fdf3e",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Output,
+            label: "Q",
+            uuid: "419d4f46-60e5-4707-afa5-5f1dd8820d49",
+          ),
+        ]),
+        "logics::designer::position::Position": ((
+          x: -256.0,
+          y: -19.000021,
+        )),
       },
     ),
   },

@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use moonshine_core::kind::Kind;
+use moonshine_save::save::Save;
 use moonshine_view::Viewable;
 
 use crate::{
@@ -110,7 +111,7 @@ pub struct DeviceModel;
 pub struct DeviceModelBundle {
     device_model: DeviceModel,
     position: Position,
-    //save: Save,
+    save: Save,
 }
 
 impl DeviceModelBundle {
@@ -118,7 +119,7 @@ impl DeviceModelBundle {
         Self {
             device_model: DeviceModel,
             position,
-            //save: Save,
+            save: Save,
         }
     }
 }
