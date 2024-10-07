@@ -223,8 +223,7 @@ pub fn drag_wire(
                     }
                 }
 
-                // delete wire if dragged on nothing
-                commands.entity(wire_entity).despawn();
+                // dragged on nothing
                 cursor.state = CursorState::Idle;
             }
         }

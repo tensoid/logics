@@ -185,12 +185,13 @@ pub fn update_selection_box(
 #[allow(clippy::type_complexity)]
 pub fn select_single(
     q_cursor: Query<(&Cursor, &Transform)>,
-    input: Res<ButtonInput<MouseButton>>,
+    mouse_input: Res<ButtonInput<MouseButton>>,
+    key_input: Res<ButtonInput<KeyCode>>,
     mut commands: Commands,
     q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox), With<DeviceView>>,
     q_selected: Query<(Entity, &Position), (With<Selected>, Without<Dragged>)>,
 ) {
-    if !input.just_pressed(MouseButton::Left) {
+    if !mouse_input.just_pressed(MouseButton::Left) {
         return;
     }
 
@@ -211,7 +212,24 @@ pub fn select_single(
 
     let hovered_device_model_entity = hovered_device.unwrap().0.viewable().entity();
     let is_hovered_device_selected = q_selected.get(hovered_device_model_entity).is_ok();
+    let ctrl_clicked = key_input.pressed(KeyCode::ControlLeft);
 
+    // toggle selection with ctrl left-click
+    if ctrl_clicked {
+        if is_hovered_device_selected {
+            commands
+                .entity(hovered_device_model_entity)
+                .remove::<Selected>();
+        } else {
+            commands
+                .entity(hovered_device_model_entity)
+                .insert(Selected);
+        }
+
+        return;
+    }
+
+    // normal left-click
     if !is_hovered_device_selected {
         q_selected.iter().for_each(|(e, _)| {
             commands.entity(e).remove::<Selected>();
