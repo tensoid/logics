@@ -8,18 +8,20 @@ use uuid::Uuid;
 use crate::{get_cursor, get_cursor_mut};
 
 use super::{
-    board_binary_io::{BoardBinaryInputPin, BoardBinaryOutputPin},
-    board_entity::{BoardEntityModel, BoardEntityViewKind},
     bounding_box::BoundingBox,
-    chip::{ChipInputPin, ChipOutputPin},
-    clock::ClockPin,
     cursor::{Cursor, CursorState},
+    devices::{
+        binary_io::{BinaryDisplayPin, BinarySwitchPin},
+        clock::ClockPin,
+        device::{DeviceModel, DeviceViewKind},
+        generic_chip::{GenericChipInputPin, GenericChipOutputPin},
+    },
     pin::PinView,
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
 
-#[derive(Component, Reflect, Clone)]
+#[derive(Component, Reflect, Clone, Debug)]
 #[reflect(Component)]
 pub struct Wire {
     pub src_pin_uuid: Option<Uuid>,
@@ -28,10 +30,10 @@ pub struct Wire {
 
 #[derive(Bundle)]
 pub struct WireBundle {
-    wire: Wire,
-    save: Save,
-    signal_state: SignalState,
-    board_entity_model: BoardEntityModel,
+    pub wire: Wire,
+    pub save: Save,
+    pub signal_state: SignalState,
+    pub device_model: DeviceModel,
 }
 
 impl WireBundle {
@@ -40,7 +42,16 @@ impl WireBundle {
             wire,
             signal_state: SignalState::Low,
             save: Save,
-            board_entity_model: BoardEntityModel,
+            device_model: DeviceModel,
+        }
+    }
+
+    pub fn new_with_signal(wire: Wire, signal_state: SignalState) -> Self {
+        Self {
+            wire,
+            signal_state,
+            save: Save,
+            device_model: DeviceModel,
         }
     }
 }
@@ -75,12 +86,8 @@ impl WireViewBundle {
     }
 }
 
-impl BuildView<BoardEntityViewKind> for Wire {
-    fn build(
-        world: &World,
-        _: Object<BoardEntityViewKind>,
-        view: &mut ViewCommands<BoardEntityViewKind>,
-    ) {
+impl BuildView<DeviceViewKind> for Wire {
+    fn build(world: &World, _: Object<DeviceViewKind>, view: &mut ViewCommands<DeviceViewKind>) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         view.insert(WireViewBundle::new(render_settings));
@@ -96,16 +103,16 @@ impl BuildView<BoardEntityViewKind> for Wire {
 //TODO: clean up the indents and ugly stuff
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
-    mut q_wires: Query<(&mut Wire, &Viewable<BoardEntityViewKind>, Entity)>,
+    q_wires: Query<(&mut Wire, &Viewable<DeviceViewKind>, Entity)>,
     q_dest_pins: Query<
         (&GlobalTransform, &PinView),
-        Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>,
+        Or<(With<GenericChipInputPin>, With<BinaryDisplayPin>)>,
     >,
     q_src_pins: Query<
         (&GlobalTransform, &PinView),
         Or<(
-            With<ChipOutputPin>,
-            With<BoardBinaryInputPin>,
+            With<GenericChipOutputPin>,
+            With<BinarySwitchPin>,
             With<ClockPin>,
         )>,
     >,
@@ -115,7 +122,7 @@ pub fn update_wires(
 ) {
     let (cursor, cursor_transform) = get_cursor!(q_cursor);
 
-    for (wire, mut wire_viewable, wire_entity) in q_wires.iter_mut() {
+    for (wire, wire_viewable, wire_entity) in q_wires.iter() {
         let Some(wire_src_pin_uuid) = wire.src_pin_uuid else {
             commands.entity(wire_entity).despawn();
             continue;
@@ -171,14 +178,14 @@ pub fn drag_wire(
     q_wire_src_pins: Query<
         (&BoundingBox, &PinView),
         Or<(
-            With<ChipOutputPin>,
-            With<BoardBinaryInputPin>,
+            With<GenericChipOutputPin>,
+            With<BinarySwitchPin>,
             With<ClockPin>,
         )>,
     >,
     q_wire_dest_pins: Query<
         (&BoundingBox, &PinView),
-        Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>,
+        Or<(With<GenericChipInputPin>, With<BinaryDisplayPin>)>,
     >,
     mut q_wires: Query<&mut Wire>,
     mut q_cursor: Query<(&mut Cursor, &Transform), With<Cursor>>,

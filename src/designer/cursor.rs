@@ -1,16 +1,13 @@
-use crate::{
-    designer::{
-        chip::Chip,
-        board_binary_io::{BoardBinaryInputPin, BoardBinaryOutputPin},
-    },
-    get_cursor, get_cursor_mut,
-};
+use crate::{get_cursor, get_cursor_mut};
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_prototype_lyon::prelude::*;
 
 use super::{
     bounding_box::BoundingBox,
-    chip::{ChipInputPin, ChipOutputPin},
+    devices::{
+        binary_io::{BinaryDisplayPin, BinarySwitchPin},
+        generic_chip::{GenericChip, GenericChipInputPin, GenericChipOutputPin},
+    },
     render_settings::CircuitBoardRenderingSettings,
 };
 
@@ -51,7 +48,7 @@ pub fn spawn_cursor(mut commands: Commands) {
 
 pub fn update_cursor(
     q_window: Query<&Window, With<PrimaryWindow>>,
-    q_camera: Query<(&Camera, &GlobalTransform), Without<Chip>>,
+    q_camera: Query<(&Camera, &GlobalTransform), Without<GenericChip>>,
     mut q_cursor: Query<&mut Transform, With<Cursor>>,
 ) {
     let mut cursor_transform = get_cursor_mut!(q_cursor);
@@ -75,10 +72,10 @@ pub fn highlight_hovered_pin(
     mut q_pins: Query<
         (&BoundingBox, &mut Fill),
         Or<(
-            With<ChipInputPin>,
-            With<ChipOutputPin>,
-            With<BoardBinaryInputPin>,
-            With<BoardBinaryOutputPin>,
+            With<GenericChipInputPin>,
+            With<GenericChipOutputPin>,
+            With<BinarySwitchPin>,
+            With<BinaryDisplayPin>,
         )>,
     >,
     render_settings: Res<CircuitBoardRenderingSettings>,

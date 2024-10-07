@@ -25,26 +25,26 @@ pub struct PinModel {
 
 impl PinModel {
     /// Creates a new PinModel with [`PinType::Input`].
-    pub fn new_input(label: String, uuid: Uuid) -> Self {
+    pub fn new_input(label: String) -> Self {
         Self {
             label,
             pin_type: PinType::Input,
             previous_signal_state: SignalState::Low,
             signal_state: SignalState::Low,
             next_signal_state: SignalState::Low,
-            uuid,
+            uuid: Uuid::new_v4(),
         }
     }
 
     /// Creates a new PinModel with [`PinType::Output`].
-    pub fn new_output(label: String, uuid: Uuid) -> Self {
+    pub fn new_output(label: String) -> Self {
         Self {
             label,
             pin_type: PinType::Output,
             previous_signal_state: SignalState::Low,
             signal_state: SignalState::Low,
             next_signal_state: SignalState::Low,
-            uuid,
+            uuid: Uuid::new_v4(),
         }
     }
 }
@@ -86,7 +86,6 @@ impl PinModelCollection {
         self.iter_outputs().count()
     }
 
-    /// Creates new uuids for all pins to avoid spawning two builtin chips with equal pin uuids.
     pub fn randomize_pin_uuids(&mut self) {
         self.iter_mut().for_each(|m| m.uuid = Uuid::new_v4());
     }

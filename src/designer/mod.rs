@@ -1,44 +1,36 @@
-pub mod board_binary_io;
-pub mod board_entity;
 pub mod bounding_box;
-pub mod chip;
-pub mod clock;
+pub mod copy_paste;
 pub mod cursor;
 pub mod designer_state;
+pub mod devices;
 pub mod macros;
 pub mod pin;
+pub mod position;
 pub mod render_settings;
 pub mod selection;
 pub mod signal_state;
 pub mod wire;
 
+use bevy::app::PluginGroupBuilder;
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
-use board_binary_io::{BoardBinaryInput, BoardBinaryOutput};
-use board_entity::{
-    manage_additional_spawn_tasks, update_board_entity_position, BoardEntityModel,
-    BoardEntityViewKind, Position,
+use copy_paste::{
+    copy_devices, copy_wires, paste_devices, paste_wires, DeviceClipboard, WireClipboard,
 };
-use chip::{BuiltinChip, Chip};
-use clock::{spawn_clock, tick_clocks, Clock};
+use devices::binary_io::{toggle_binary_switch, update_board_binary_displays};
+use devices::device::update_device_positions;
+use devices::DevicePlugin;
+use moonshine_core::prelude::has_event;
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
-use moonshine_view::RegisterView;
-use pin::{commit_signal_updates, PinModelCollection};
-use selection::{release_drag, update_dragged_entities_position};
-use signal_state::SignalState;
-use wire::Wire;
+use pin::commit_signal_updates;
+use selection::{release_drag, select_all, update_dragged_entities_position};
 
-use crate::events::events::{LoadEvent, SaveEvent};
+use crate::events::events::{CopyEvent, LoadEvent, PasteEvent, SaveEvent, SelectAllEvent};
 use crate::simulation::simulation::update_signals;
 use crate::ui::cursor_captured::IsCursorCaptured;
 
-use self::board_binary_io::spawn_board_binary_input;
-use self::board_binary_io::spawn_board_binary_output;
-use self::board_binary_io::toggle_board_input_switch;
-use self::board_binary_io::update_board_binary_displays;
 use self::bounding_box::update_bounding_boxes;
-use self::chip::spawn_chip;
 use self::cursor::highlight_hovered_pin;
 use self::cursor::spawn_cursor;
 use self::cursor::update_cursor;
@@ -54,27 +46,21 @@ use self::signal_state::update_signal_colors;
 use self::wire::drag_wire;
 use self::wire::update_wires;
 
+pub struct DesignerPlugins;
+
+impl PluginGroup for DesignerPlugins {
+    fn build(self) -> PluginGroupBuilder {
+        PluginGroupBuilder::start::<Self>()
+            .add(DevicePlugin)
+            .add(DesignerPlugin)
+    }
+}
+
 pub struct DesignerPlugin;
 
 impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<DesignerState>()
-            .register_type::<BoardEntityModel>()
-            .register_type::<Position>()
-            .register_type::<BoardBinaryInput>()
-            .register_type::<BoardBinaryOutput>()
-            .register_type::<Chip>()
-            .register_type::<BuiltinChip>()
-            .register_type::<PinModelCollection>()
-            .register_type::<BoardBinaryOutput>()
-            .register_type::<Wire>()
-            .register_type::<SignalState>()
-            .register_type::<Clock>()
-            .register_view::<BoardEntityViewKind, BoardBinaryInput>()
-            .register_view::<BoardEntityViewKind, BoardBinaryOutput>()
-            .register_view::<BoardEntityViewKind, Chip>()
-            .register_view::<BoardEntityViewKind, Wire>()
-            .register_view::<BoardEntityViewKind, Clock>()
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
             .add_systems(
@@ -88,47 +74,49 @@ impl Plugin for DesignerPlugin {
                 Update,
                 drag_wire.run_if(resource_equals(IsCursorCaptured(false))),
             )
-            .add_systems(Update, tick_clocks)
             .add_systems(
                 Update,
                 (
                     spawn_selection_box,
                     (select_single, start_drag).chain().after(drag_wire),
-                    delete_selected,
+                    delete_selected, //TODO: remove cursor captured condition for delete
                 )
                     .after(drag_wire)
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
+            .add_systems(Update, select_all.run_if(has_event::<SelectAllEvent>))
             .add_systems(Update, release_drag)
             .add_systems(Update, update_selection_box)
             .add_systems(Update, highlight_hovered_pin)
-            .add_systems(Update, spawn_chip.pipe(manage_additional_spawn_tasks))
-            .add_systems(
-                Update,
-                spawn_board_binary_input.pipe(manage_additional_spawn_tasks),
-            )
-            .add_systems(
-                Update,
-                spawn_board_binary_output.pipe(manage_additional_spawn_tasks),
-            )
-            .add_systems(Update, spawn_clock.pipe(manage_additional_spawn_tasks))
             .add_systems(Update, update_signal_colors.after(update_signals)) //TODO: observers?
-            .add_systems(Update, toggle_board_input_switch)
+            .add_systems(Update, toggle_binary_switch)
             .add_systems(
                 Update,
                 update_board_binary_displays
-                .after(toggle_board_input_switch) //TODO: observers?
-                .after(update_signals),
+                    .after(toggle_binary_switch) //TODO: observers?
+                    .after(update_signals),
             )
-            .add_systems(Update, update_board_entity_position)
+            .add_systems(Update, update_device_positions)
             .add_systems(Update, update_wires)
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected) //TODO: observers?
-            .add_systems(PostUpdate, commit_signal_updates)//TODO: observers?
+            .add_systems(PostUpdate, commit_signal_updates) //TODO: observers?
             .add_systems(
                 PostUpdate,
                 update_bounding_boxes.after(TransformSystem::TransformPropagate),
             );
+
+        // copy / paste
+        app.init_resource::<DeviceClipboard>();
+        app.init_resource::<WireClipboard>();
+        app.add_systems(
+            Update,
+            (copy_devices, copy_wires).run_if(on_event::<CopyEvent>()),
+        )
+        .add_systems(
+            Update,
+            (paste_devices.pipe(paste_wires)).run_if(on_event::<PasteEvent>()),
+        );
 
         init_render_settings(app);
     }

@@ -3,9 +3,11 @@ use moonshine_view::View;
 
 use crate::{
     designer::{
-        board_binary_io::BoardBinaryOutputPin,
-        board_entity::BoardEntityViewKind,
-        chip::{BuiltinChip, ChipInputPin},
+        devices::{
+            binary_io::BinaryDisplayPin,
+            device::DeviceViewKind,
+            generic_chip::{GenericChip, GenericChipInputPin},
+        },
         pin::{PinModelCollection, PinView},
         signal_state::SignalState,
         wire::Wire,
@@ -16,9 +18,9 @@ use crate::{
 /// Sets the [`SignalState`] of all input pins to [`SignalState::Low`] to prepare for update signals.
 #[allow(clippy::type_complexity)]
 pub fn reset_input_pins(
-    q_dest_pins: Query<(&PinView, Entity), Or<(With<ChipInputPin>, With<BoardBinaryOutputPin>)>>,
+    q_dest_pins: Query<(&PinView, Entity), Or<(With<GenericChipInputPin>, With<BinaryDisplayPin>)>>,
     q_parents: Query<&Parent>,
-    q_board_entities: Query<&View<BoardEntityViewKind>>,
+    q_board_entities: Query<&View<DeviceViewKind>>,
     mut q_chip_models: Query<&mut PinModelCollection>,
 ) {
     for (pin_view, pin_entity) in q_dest_pins.iter() {
@@ -35,7 +37,7 @@ pub fn reset_input_pins(
 
 /// Evaluates all builtin chips and updates their models accordingly.
 pub fn evaluate_builtin_chips(
-    mut q_builtin_chip_models: Query<(&BuiltinChip, &mut PinModelCollection)>,
+    mut q_builtin_chip_models: Query<(&GenericChip, &mut PinModelCollection)>,
 ) {
     for (builtin_chip, mut pin_model_collection) in q_builtin_chip_models.iter_mut() {
         match builtin_chip.name.as_str() {
@@ -133,12 +135,12 @@ pub fn evaluate_builtin_chips(
     }
 }
 
-/// Syncronizes the destination pin with the source pin for every [`Wire`].
+/// Synchronizes the destination pin with the source pin for every [`Wire`].
 pub fn update_signals(
     mut q_wires: Query<(&Wire, &mut SignalState)>,
     q_pin_views: Query<(&PinView, Entity)>,
     q_parents: Query<&Parent>,
-    q_board_entities: Query<&View<BoardEntityViewKind>>,
+    q_board_entities: Query<&View<DeviceViewKind>>,
     mut q_chip_models: Query<&mut PinModelCollection>,
 ) {
     for (wire, mut wire_signal_state) in q_wires.iter_mut() {
@@ -146,10 +148,13 @@ pub fn update_signals(
             continue;
         };
 
-        let (src_pin_view, src_pin_entity) = q_pin_views
-            .iter()
-            .find(|(p, _)| p.uuid.eq(&wire_src_uuid))
-            .unwrap(); //TODO: crashes
+        let Some((src_pin_view, src_pin_entity)) =
+            q_pin_views.iter().find(|(p, _)| p.uuid.eq(&wire_src_uuid))
+        else {
+            // this happens when the wire already spawned,
+            // but the view for the device has not yet
+            continue;
+        };
         let Some(src_pin_model_collection) =
             get_model!(q_parents, q_board_entities, q_chip_models, src_pin_entity)
         else {

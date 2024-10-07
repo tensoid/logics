@@ -11,14 +11,14 @@ use bevy_prototype_lyon::{
 use moonshine_view::{View, Viewable};
 
 use crate::{
-    events::events::DeleteSelectedEvent, get_cursor, get_cursor_mut,
-    ui::cursor_captured::IsCursorCaptured,
+    events::events::DeleteEvent, get_cursor, get_cursor_mut, ui::cursor_captured::IsCursorCaptured,
 };
 
 use super::{
-    board_entity::{BoardEntityModel, BoardEntityView, BoardEntityViewKind, Position},
     bounding_box::{BoundingBox, BoundingShape},
     cursor::{Cursor, CursorState},
+    devices::device::{DeviceModel, DeviceView, DeviceViewKind},
+    position::Position,
     render_settings::CircuitBoardRenderingSettings,
 };
 
@@ -29,6 +29,9 @@ pub struct Dragged {
 
 #[derive(Component)]
 pub struct Selected;
+
+#[derive(Component)]
+pub struct SelectionBox;
 
 #[derive(Component)]
 pub struct SelectionOutline;
@@ -45,8 +48,8 @@ impl SelectionOutlineBundle {
         Self {
             selection_outline: SelectionOutline,
             stroke: Stroke::new(
-                render_settings.board_entity_stroke_color_selected,
-                render_settings.board_entity_stroke_width,
+                render_settings.device_stroke_color_selected,
+                render_settings.device_stroke_width,
             ),
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Rectangle {
@@ -63,8 +66,11 @@ impl SelectionOutlineBundle {
     }
 }
 
-#[derive(Component)]
-pub struct SelectionBox;
+pub fn select_all(mut commands: Commands, q_devices: Query<Entity, With<DeviceModel>>) {
+    for device in q_devices.iter() {
+        commands.entity(device).insert(Selected);
+    }
+}
 
 pub fn spawn_selection_box(
     input: Res<ButtonInput<MouseButton>>,
@@ -119,7 +125,7 @@ pub fn update_selection_box(
     mut q_cursor: Query<(&mut Cursor, &Transform)>,
     input: Res<ButtonInput<MouseButton>>,
     mut commands: Commands,
-    q_board_entity_views: Query<(&View<BoardEntityViewKind>, &BoundingBox), With<BoardEntityView>>,
+    q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox), With<DeviceView>>,
     q_selected: Query<(), With<Selected>>,
 ) {
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
@@ -153,7 +159,7 @@ pub fn update_selection_box(
     };
 
     // update selected entities
-    for (view, bbox) in q_board_entity_views.iter() {
+    for (view, bbox) in q_device_views.iter() {
         if !bbox.selectable {
             continue;
         }
@@ -181,7 +187,7 @@ pub fn select_single(
     q_cursor: Query<(&Cursor, &Transform)>,
     input: Res<ButtonInput<MouseButton>>,
     mut commands: Commands,
-    q_board_entity_views: Query<(&View<BoardEntityViewKind>, &BoundingBox), With<BoardEntityView>>,
+    q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox), With<DeviceView>>,
     q_selected: Query<(Entity, &Position), (With<Selected>, Without<Dragged>)>,
 ) {
     if !input.just_pressed(MouseButton::Left) {
@@ -195,25 +201,24 @@ pub fn select_single(
         return;
     }
 
-    let hovered_board_entity = q_board_entity_views
+    let hovered_device = q_device_views
         .iter()
         .find(|(_, bbox)| bbox.selectable && bbox.point_in_bbox(cursor_position));
 
-    if hovered_board_entity.is_none() {
+    if hovered_device.is_none() {
         return;
     }
 
-    let hovered_board_entity_model_entity = hovered_board_entity.unwrap().0.viewable().entity();
-    let is_hovered_board_entity_selected =
-        q_selected.get(hovered_board_entity_model_entity).is_ok();
+    let hovered_device_model_entity = hovered_device.unwrap().0.viewable().entity();
+    let is_hovered_device_selected = q_selected.get(hovered_device_model_entity).is_ok();
 
-    if !is_hovered_board_entity_selected {
+    if !is_hovered_device_selected {
         q_selected.iter().for_each(|(e, _)| {
             commands.entity(e).remove::<Selected>();
         });
 
         commands
-            .entity(hovered_board_entity_model_entity)
+            .entity(hovered_device_model_entity)
             .insert(Selected);
     }
 }
@@ -223,7 +228,7 @@ pub fn start_drag(
     mut q_cursor: Query<(&mut Cursor, Entity, &Transform)>,
     input: Res<ButtonInput<MouseButton>>,
     mut commands: Commands,
-    q_board_entity_views: Query<(&View<BoardEntityViewKind>, &BoundingBox), With<BoardEntityView>>,
+    q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox), With<DeviceView>>,
     q_selected: Query<(Entity, &Position), (With<Selected>, Without<Dragged>)>,
 ) {
     let (mut cursor, _, cursor_transform) = get_cursor_mut!(q_cursor);
@@ -238,7 +243,7 @@ pub fn start_drag(
         return;
     }
 
-    if !q_board_entity_views
+    if !q_device_views
         .iter()
         .any(|(_, bbox)| bbox.selectable && bbox.point_in_bbox(cursor_position))
     {
@@ -261,7 +266,7 @@ pub fn release_drag(
     mut commands: Commands,
     input: Res<ButtonInput<MouseButton>>,
     mut q_cursor: Query<(&mut Cursor, Entity, &Transform)>,
-    q_dragged_board_entities: Query<(Entity, &Position, &Dragged), With<BoardEntityModel>>,
+    q_dragged_board_entities: Query<(Entity, &Position, &Dragged), With<DeviceModel>>,
 ) {
     let (mut cursor, _, _) = get_cursor_mut!(q_cursor);
 
@@ -285,7 +290,7 @@ pub fn release_drag(
 #[allow(clippy::type_complexity)]
 pub fn update_dragged_entities_position(
     mut q_cursor: Query<&Transform, With<Cursor>>,
-    mut q_dragged_board_entities: Query<(Entity, &mut Position, &Dragged), With<BoardEntityModel>>,
+    mut q_dragged_board_entities: Query<(Entity, &mut Position, &Dragged), With<DeviceModel>>,
 ) {
     let cursor_transform = get_cursor_mut!(q_cursor);
 
@@ -298,7 +303,7 @@ pub fn update_dragged_entities_position(
 pub fn delete_selected(
     mut commands: Commands,
     q_selected_entities: Query<Entity, With<Selected>>,
-    mut delete_ev: EventReader<DeleteSelectedEvent>,
+    mut delete_ev: EventReader<DeleteEvent>,
 ) {
     for _ in delete_ev.read() {
         for selected_entity in q_selected_entities.iter() {
@@ -310,13 +315,13 @@ pub fn delete_selected(
 #[allow(clippy::type_complexity)]
 pub fn highlight_selected(
     q_selected_entities: Query<
-        &Viewable<BoardEntityViewKind>,
+        &Viewable<DeviceViewKind>,
         (
             With<Selected>,
-            Or<(Added<Selected>, Added<Viewable<BoardEntityViewKind>>)>,
+            Or<(Added<Selected>, Added<Viewable<DeviceViewKind>>)>,
         ),
     >,
-    q_entities: Query<&Viewable<BoardEntityViewKind>>,
+    q_entities: Query<&Viewable<DeviceViewKind>>,
     mut q_deselected: RemovedComponents<Selected>,
     q_bounding_boxes: Query<&BoundingBox>,
     q_selection_outlines: Query<(Entity, &Parent), With<SelectionOutline>>,
@@ -342,7 +347,7 @@ pub fn highlight_selected(
             let selection_outline_entity = q_selection_outlines
                 .iter()
                 .find(|so| so.1.get() == view_entity)
-                .unwrap()
+                .unwrap() //TODO: crashed
                 .0;
 
             commands.entity(selection_outline_entity).remove_parent();

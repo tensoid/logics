@@ -4,73 +4,50 @@ use moonshine_core::object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
-use crate::events::events::SpawnBoardEntityEvent;
-
-use crate::designer::render_settings::CircuitBoardRenderingSettings;
-
-use super::board_entity::{
-    BoardEntityModelBundle, BoardEntityViewBundle, BoardEntityViewKind, Position,
+use crate::designer::{
+    pin::{PinCollectionBundle, PinModelCollection, PinViewBundle},
+    position::Position,
+    render_settings::CircuitBoardRenderingSettings,
 };
-use super::pin::{PinCollectionBundle, PinModelCollection, PinViewBundle};
+
+use super::device::{DeviceModelBundle, DeviceViewBundle, DeviceViewKind};
 
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
-pub struct BuiltinChip {
+pub struct GenericChip {
     pub name: String,
 }
 
 #[derive(Bundle, Clone)]
-pub struct BuiltinChipBundle {
-    pub builtin_chip: BuiltinChip,
-    pub pin_model_collection: PinModelCollection,
+pub struct GenericChipBundle {
+    chip: GenericChip,
+    pin_model_collection: PinModelCollection,
+    model_bundle: DeviceModelBundle,
 }
 
-impl BuiltinChipBundle {
-    pub fn new(name: String, pin_model_collection: PinModelCollection) -> Self {
+impl GenericChipBundle {
+    pub fn new(position: Position, pin_model_collection: PinModelCollection, name: String) -> Self {
         Self {
-            builtin_chip: BuiltinChip { name },
+            chip: GenericChip { name },
             pin_model_collection,
-        }
-    }
-}
-
-#[derive(Resource)]
-pub struct BuiltinChips(pub Vec<BuiltinChipBundle>);
-
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct Chip;
-
-#[derive(Bundle)]
-pub struct ChipBundle {
-    chip: Chip,
-    builtin_chip_bundle: BuiltinChipBundle,
-    model_bundle: BoardEntityModelBundle,
-}
-
-impl ChipBundle {
-    fn new(position: Position, builtin_chip_bundle: BuiltinChipBundle) -> Self {
-        Self {
-            chip: Chip,
-            builtin_chip_bundle,
-            model_bundle: BoardEntityModelBundle::new(position),
+            model_bundle: DeviceModelBundle::new(position),
         }
     }
 }
 
 #[derive(Component)]
-pub struct ChipLabel;
+pub struct GenericChipLabel;
 
 #[derive(Bundle)]
-pub struct ChipLabelBundle {
-    chip_label: ChipLabel,
+pub struct GenericChipLabelBundle {
+    chip_label: GenericChipLabel,
     text_bundle: Text2dBundle,
 }
 
-impl ChipLabelBundle {
+impl GenericChipLabelBundle {
     fn new(label: String, text_style: TextStyle) -> Self {
         Self {
-            chip_label: ChipLabel,
+            chip_label: GenericChipLabel,
             text_bundle: Text2dBundle {
                 text: Text::from_section(label, text_style).with_justify(JustifyText::Center),
                 transform: Transform::from_xyz(0.0, 0.0, 0.01),
@@ -81,17 +58,17 @@ impl ChipLabelBundle {
 }
 
 #[derive(Component)]
-pub struct ChipBody;
+pub struct GenericChipBody;
 
 #[derive(Bundle)]
-pub struct ChipBodyBundle {
-    chip_body: ChipBody,
+pub struct GenericChipBodyBundle {
+    chip_body: GenericChipBody,
     fill: Fill,
     stroke: Stroke,
     shape_bundle: ShapeBundle,
 }
 
-impl ChipBodyBundle {
+impl GenericChipBodyBundle {
     fn new(
         render_settings: &CircuitBoardRenderingSettings,
         pin_model_collection: &PinModelCollection,
@@ -113,16 +90,16 @@ impl ChipBodyBundle {
         .collect();
 
         Self {
-            chip_body: ChipBody,
+            chip_body: GenericChipBody,
             fill: Fill::color(render_settings.chip_color),
             stroke: Stroke::new(
-                render_settings.board_entity_stroke_color,
-                render_settings.board_entity_stroke_width,
+                render_settings.device_stroke_color,
+                render_settings.device_stroke_width,
             ),
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
                     points,
-                    radius: render_settings.board_entity_edge_radius,
+                    radius: render_settings.device_edge_radius,
                     closed: false,
                 }),
                 spatial: SpatialBundle::default(),
@@ -134,18 +111,18 @@ impl ChipBodyBundle {
 
 //TODO: somehow merge these, they are too similar
 #[derive(Component)]
-pub struct ChipInputPin;
+pub struct GenericChipInputPin;
 
 #[derive(Bundle)]
-pub struct ChipInputPinBundle {
-    chip_input_pin: ChipInputPin,
+pub struct GenericChipInputPinBundle {
+    chip_input_pin: GenericChipInputPin,
     pin_view_bundle: PinViewBundle,
 }
 
-impl ChipInputPinBundle {
+impl GenericChipInputPinBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings, uuid: Uuid, translation: Vec3) -> Self {
         Self {
-            chip_input_pin: ChipInputPin,
+            chip_input_pin: GenericChipInputPin,
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
                 uuid,
@@ -157,18 +134,18 @@ impl ChipInputPinBundle {
 }
 
 #[derive(Component)]
-pub struct ChipOutputPin;
+pub struct GenericChipOutputPin;
 
 #[derive(Bundle)]
-pub struct ChipOutputPinBundle {
-    chip_output_pin: ChipOutputPin,
+pub struct GenericChipOutputPinBundle {
+    chip_output_pin: GenericChipOutputPin,
     pin_view_bundle: PinViewBundle,
 }
 
-impl ChipOutputPinBundle {
+impl GenericChipOutputPinBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings, uuid: Uuid, translation: Vec3) -> Self {
         Self {
-            chip_output_pin: ChipOutputPin,
+            chip_output_pin: GenericChipOutputPin,
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
                 uuid,
@@ -180,18 +157,18 @@ impl ChipOutputPinBundle {
 }
 
 #[derive(Component)]
-struct ChipPinCollection;
+struct GenericChipPinCollection;
 
 #[derive(Bundle)]
-struct ChipPinCollectionBundle {
-    chip_pin_collection: ChipPinCollection,
+struct GenericChipPinCollectionBundle {
+    chip_pin_collection: GenericChipPinCollection,
     pin_collection_bundle: PinCollectionBundle,
 }
 
-impl ChipPinCollectionBundle {
+impl GenericChipPinCollectionBundle {
     fn new() -> Self {
         Self {
-            chip_pin_collection: ChipPinCollection,
+            chip_pin_collection: GenericChipPinCollection,
             pin_collection_bundle: PinCollectionBundle::new(),
         }
     }
@@ -204,7 +181,7 @@ impl ChipPinCollectionBundle {
     ) {
         //Input pins
         for (i, pin_model) in pin_model_collection.iter_inputs().enumerate() {
-            pin_collection.spawn(ChipInputPinBundle::new(
+            pin_collection.spawn(GenericChipInputPinBundle::new(
                 render_settings,
                 pin_model.uuid,
                 Vec3::new(
@@ -216,7 +193,7 @@ impl ChipPinCollectionBundle {
         }
 
         // Output pins
-        pin_collection.spawn(ChipOutputPinBundle::new(
+        pin_collection.spawn(GenericChipOutputPinBundle::new(
             render_settings,
             pin_model_collection.iter_outputs().next().unwrap().uuid, //TODO: only works with one output chips
             Vec3::new(chip_extents.x / 2.0, 0.0, 0.01),
@@ -224,40 +201,11 @@ impl ChipPinCollectionBundle {
     }
 }
 
-pub fn spawn_chip(
-    mut commands: Commands,
-    mut spawn_ev: EventReader<SpawnBoardEntityEvent>,
-    builtin_chips: Res<BuiltinChips>,
-) -> Option<(Entity, SpawnBoardEntityEvent)> {
-    for ev in spawn_ev.read() {
-        let Some(builtin_chip_blueprint) = builtin_chips
-            .0
-            .iter()
-            .find(|chip| chip.builtin_chip.name == ev.name)
-        else {
-            continue;
-        };
-
-        let mut builtin_chip_bundle = builtin_chip_blueprint.clone();
-        builtin_chip_bundle
-            .pin_model_collection
-            .randomize_pin_uuids();
-
-        let entity = commands
-            .spawn(ChipBundle::new(ev.position.clone(), builtin_chip_bundle))
-            .id();
-
-        return Some((entity, ev.clone()));
-    }
-
-    None
-}
-
-impl BuildView<BoardEntityViewKind> for Chip {
+impl BuildView<DeviceViewKind> for GenericChip {
     fn build(
         world: &World,
-        object: Object<BoardEntityViewKind>,
-        view: &mut ViewCommands<BoardEntityViewKind>,
+        object: Object<DeviceViewKind>,
+        view: &mut ViewCommands<DeviceViewKind>,
     ) {
         let asset_server = world.resource::<AssetServer>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
@@ -272,7 +220,7 @@ impl BuildView<BoardEntityViewKind> for Chip {
 
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
-        let builtin_chip = world.get::<BuiltinChip>(object.entity()).unwrap();
+        let generic_chip = world.get::<GenericChip>(object.entity()).unwrap();
 
         let chip_extents = calculate_chip_extents(
             render_settings,
@@ -280,15 +228,21 @@ impl BuildView<BoardEntityViewKind> for Chip {
             pin_model_collection.num_outputs(),
         );
 
-        view.insert(BoardEntityViewBundle::new(position.clone(), chip_extents))
-            .with_children(|board_entity| {
-                board_entity.spawn(ChipLabelBundle::new(builtin_chip.name.clone(), text_style));
-                board_entity.spawn(ChipBodyBundle::new(render_settings, pin_model_collection));
+        view.insert(DeviceViewBundle::new(position.clone(), chip_extents))
+            .with_children(|device| {
+                device.spawn(GenericChipLabelBundle::new(
+                    generic_chip.name.clone(),
+                    text_style,
+                ));
+                device.spawn(GenericChipBodyBundle::new(
+                    render_settings,
+                    pin_model_collection,
+                ));
 
-                board_entity
-                    .spawn(ChipPinCollectionBundle::new())
+                device
+                    .spawn(GenericChipPinCollectionBundle::new())
                     .with_children(|pc| {
-                        ChipPinCollectionBundle::spawn_pins(
+                        GenericChipPinCollectionBundle::spawn_pins(
                             pc,
                             render_settings,
                             chip_extents,

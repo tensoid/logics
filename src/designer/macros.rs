@@ -44,12 +44,12 @@ macro_rules! find_descendant {
 #[macro_export]
 macro_rules! get_model {
     ($q_parents:expr, $q_board_entities:expr, $q_models:expr, $wire_src_entity:expr) => {{
-        let src_board_entity = $q_parents
+        let src_device = $q_parents
             .iter_ancestors($wire_src_entity)
             .last()
             .expect("Entity does not have any Parents.");
         let src_model_entity = $q_board_entities
-            .get(src_board_entity)
+            .get(src_device)
             .expect("Entity does not have a BoardEntityView Parent.")
             .viewable()
             .entity();
@@ -61,12 +61,12 @@ macro_rules! get_model {
 #[macro_export]
 macro_rules! get_model_mut {
     ($q_parents:expr, $q_board_entities:expr, $q_models:expr, $wire_src_entity:expr) => {{
-        let src_board_entity = $q_parents
+        let src_device = $q_parents
             .iter_ancestors($wire_src_entity)
             .last()
             .expect("Entity does not have any Parents.");
         let src_model_entity = $q_board_entities
-            .get(src_board_entity)
+            .get(src_device)
             .expect("Entity does not have a BoardEntityView Parent.")
             .viewable()
             .entity();
