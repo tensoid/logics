@@ -6,6 +6,7 @@ use bevy::{
 
 const WINDOW_TITLE: &str = "Logics";
 
+/// Displays fps in window title.
 pub fn display_fps(
     diagnostics: Res<DiagnosticsStore>,
     mut q_window: Query<&mut Window, With<PrimaryWindow>>,

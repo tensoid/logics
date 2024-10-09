@@ -9,6 +9,8 @@ use crate::designer::bounding_box::{BoundingBox, BoundingShape};
 #[derive(Default, Reflect, GizmoConfigGroup)]
 pub struct BoundingBoxGizmos;
 
+/// Highlights all bounding boxes.
+/// Selectable bounding boxes are colored red and non-selectables are colored green.
 pub fn draw_bounding_boxes(
     mut bbox_gizmos: Gizmos<BoundingBoxGizmos>,
     q_bboxes: Query<&BoundingBox>,
