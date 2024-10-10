@@ -1,7 +1,4 @@
-use std::{
-    env::{current_dir, current_exe},
-    path::PathBuf,
-};
+use std::{env::current_exe, path::PathBuf};
 
 use bevy::prelude::*;
 use rfd::FileDialog;
@@ -13,6 +10,8 @@ pub struct ActiveSaveFile {
     pub path: Option<PathBuf>,
 }
 
+/// Saves the scene into the currently active save file if exists,
+/// otherwise opens a file dialog to save into a new file.
 pub fn handle_save_request(
     mut active_save_file: ResMut<ActiveSaveFile>,
     mut save_ev_writer: EventWriter<SaveEvent>,
@@ -36,12 +35,11 @@ pub fn handle_save_request(
     }
 }
 
+/// Opens a file dialog to select a save file to load.
 pub fn handle_load_request(
     mut load_ev_writer: EventWriter<LoadEvent>,
     mut active_save_file: ResMut<ActiveSaveFile>,
 ) {
-    let cwd = current_dir().unwrap();
-
     let dialog_result = FileDialog::new()
         .add_filter("saves", &["ron"])
         .set_directory(get_saves_folder())
@@ -53,6 +51,7 @@ pub fn handle_load_request(
     }
 }
 
+/// Gets the "saves" folder that is relative to the executable.
 fn get_saves_folder() -> PathBuf {
     let mut exe_path = current_exe().unwrap();
     exe_path.pop();

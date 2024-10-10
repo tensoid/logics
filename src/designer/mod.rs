@@ -70,8 +70,9 @@ impl Plugin for DesignerPlugin {
             .add_systems(
                 PreUpdate,
                 (
-                    // needs additional on_event condition because of the use of has_event in the moonshine_save crate.
+                    // Needs additional on_event condition because of the use of has_event in the moonshine_save crate.
                     // has_event doesnt consume the event and because of that it executes the pipeline multiple times per event which causes a crash.
+                    // This might be fixed in the latest version of moonshine_save which is not yet published on crates io.
                     save_default()
                         .into_file_on_event::<SaveEvent>()
                         .run_if(on_event::<SaveEvent>()),
