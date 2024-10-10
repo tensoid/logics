@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    designer::{devices::device::DeviceIds, position::Position},
+    designer::{assets::DesignerAssets, devices::device::DeviceIds, position::Position},
     events::events::SpawnDeviceEvent,
 };
 
@@ -15,7 +15,7 @@ pub struct ChipButton;
 
 pub fn spawn_chip_selector(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
+    designer_assets: Res<DesignerAssets>,
     q_device_ids: Res<DeviceIds>,
 ) {
     commands
@@ -41,7 +41,7 @@ pub fn spawn_chip_selector(
                 .with_children(|b| {
                     b.spawn(TextBundle::from_section(
                         device_id,
-                        chip_button_text_style(&asset_server),
+                        chip_button_text_style(&designer_assets),
                     ));
                 });
             }

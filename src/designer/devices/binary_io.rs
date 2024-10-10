@@ -6,6 +6,7 @@ use uuid::Uuid;
 
 use crate::{
     designer::{
+        assets::DesignerAssets,
         bounding_box::BoundingBox,
         cursor::Cursor,
         pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
@@ -297,15 +298,13 @@ pub struct BoardBinaryDisplayBundle {
 impl BoardBinaryDisplayBundle {
     fn new(
         render_settings: &CircuitBoardRenderingSettings,
-        asset_server: &AssetServer,
+        designer_assets: &DesignerAssets,
         is_input: bool,
     ) -> Self {
-        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
-
         let text_style = TextStyle {
             font_size: render_settings.binary_display_font_size,
             color: Color::BLACK,
-            font,
+            font: designer_assets.font.clone(),
         };
 
         let x_offset = match is_input {
@@ -330,7 +329,7 @@ impl BuildView<DeviceViewKind> for BinarySwitch {
         object: Object<DeviceViewKind>,
         view: &mut ViewCommands<DeviceViewKind>,
     ) {
-        let asset_server = world.resource::<AssetServer>();
+        let designer_assets = world.resource::<DesignerAssets>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
@@ -343,12 +342,12 @@ impl BuildView<DeviceViewKind> for BinarySwitch {
         .with_children(|device| {
             device.spawn(BinarySwitchButtonBundle::new(
                 render_settings,
-                asset_server.load("images/switch.png"),
+                designer_assets.binary_switch_image.clone(),
             ));
             device.spawn(BinarySwitchBodyBundle::new(render_settings));
             device.spawn(BoardBinaryDisplayBundle::new(
                 render_settings,
-                asset_server,
+                designer_assets,
                 true,
             ));
 
@@ -370,7 +369,7 @@ impl BuildView<DeviceViewKind> for BinaryDisplay {
         object: Object<DeviceViewKind>,
         view: &mut ViewCommands<DeviceViewKind>,
     ) {
-        let asset_server = world.resource::<AssetServer>();
+        let designer_assets = world.resource::<DesignerAssets>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
@@ -384,7 +383,7 @@ impl BuildView<DeviceViewKind> for BinaryDisplay {
             device.spawn(BinaryDisplayBodyBundle::new(render_settings));
             device.spawn(BoardBinaryDisplayBundle::new(
                 render_settings,
-                asset_server,
+                designer_assets,
                 false,
             ));
             device

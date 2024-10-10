@@ -10,9 +10,7 @@ use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
 use crate::designer::{
-    pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
-    position::Position,
-    render_settings::CircuitBoardRenderingSettings,
+    assets::DesignerAssets, pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle}, position::Position, render_settings::CircuitBoardRenderingSettings
 };
 
 use super::device::{Device, DeviceModelBundle, DeviceViewBundle, DeviceViewKind};
@@ -111,13 +109,11 @@ pub struct ClockLabelBundle {
 }
 
 impl ClockLabelBundle {
-    fn new(render_settings: &CircuitBoardRenderingSettings, asset_server: &AssetServer) -> Self {
-        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
-
+    fn new(render_settings: &CircuitBoardRenderingSettings, designer_assets: &DesignerAssets) -> Self {
         let text_style = TextStyle {
             font_size: render_settings.clock_label_font_size, // TODO: settings
             color: Color::BLACK,
-            font,
+            font: designer_assets.font.clone(),
         };
 
         Self {
@@ -183,7 +179,7 @@ impl BuildView<DeviceViewKind> for Clock {
         view: &mut ViewCommands<DeviceViewKind>,
     ) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
-        let asset_server = world.resource::<AssetServer>();
+        let designer_assets = world.resource::<DesignerAssets>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
@@ -194,7 +190,7 @@ impl BuildView<DeviceViewKind> for Clock {
         ))
         .with_children(|device| {
             device.spawn(ClockBodyBundle::new(render_settings));
-            device.spawn(ClockLabelBundle::new(render_settings, asset_server));
+            device.spawn(ClockLabelBundle::new(render_settings, designer_assets));
 
             device
                 .spawn(ClockPinCollectionBundle::new())

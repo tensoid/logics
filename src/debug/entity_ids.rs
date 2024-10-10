@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use moonshine_view::View;
 
-use crate::designer::devices::device::DeviceViewKind;
+use crate::designer::{assets::DesignerAssets, devices::device::DeviceViewKind};
 
 use super::{debug_mode_settings::DebugModeSettings, debug_mode_state::DebugModeState};
 
@@ -14,7 +14,7 @@ pub struct EntityIdDebugText;
 pub fn draw_entity_ids(
     q_entities: Query<Entity, With<View<DeviceViewKind>>>,
     q_entity_id_debug_texts: Query<Entity, With<EntityIdDebugText>>,
-    asset_server: Res<AssetServer>,
+    designer_assets: Res<DesignerAssets>,
     debug_mode_settings: Res<DebugModeSettings>,
     debug_mode_state: Res<State<DebugModeState>>,
     mut commands: Commands,
@@ -24,12 +24,10 @@ pub fn draw_entity_ids(
         debug_mode_state.eq(&DebugModeState::On) && debug_mode_settings.draw_entity_ids;
 
     if should_be_active && !is_currently_active {
-        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
-
         let text_style = TextStyle {
             font_size: 20.0, // TODO: settings
             color: Color::BLACK,
-            font,
+            font: designer_assets.font.clone(),
         };
 
         for entity in q_entities.iter() {

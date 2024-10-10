@@ -5,6 +5,7 @@ use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
 use crate::designer::{
+    assets::DesignerAssets,
     pin::{PinCollectionBundle, PinLabelBundle, PinModelCollection, PinViewBundle},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
@@ -227,21 +228,19 @@ impl BuildView<DeviceViewKind> for GenericChip {
         object: Object<DeviceViewKind>,
         view: &mut ViewCommands<DeviceViewKind>,
     ) {
-        let asset_server = world.resource::<AssetServer>();
+        let designer_assets = world.resource::<DesignerAssets>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
-
-        let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
         let chip_label_text_style = TextStyle {
             font_size: render_settings.chip_label_font_size,
             color: Color::BLACK,
-            font: font.clone(),
+            font: designer_assets.font.clone(),
         };
 
         let pin_label_text_style = TextStyle {
             font_size: render_settings.chip_pin_label_font_size,
             color: Color::BLACK,
-            font,
+            font: designer_assets.font.clone(),
         };
 
         let position = world.get::<Position>(object.entity()).unwrap();

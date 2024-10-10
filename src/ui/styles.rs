@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-pub const DEFAULT_FONT: &str = "fonts/VCR_OSD_MONO.ttf";
+use crate::designer::assets::DesignerAssets;
 
 pub fn chip_selector_style() -> Style {
     Style {
@@ -47,11 +47,9 @@ pub fn chip_button_background_color_pressed() -> BackgroundColor {
     GRAY.into()
 }
 
-pub fn chip_button_text_style(asset_server: &Res<AssetServer>) -> TextStyle {
-    let font: Handle<Font> = asset_server.load(DEFAULT_FONT);
-
+pub fn chip_button_text_style(designer_assets: &Res<DesignerAssets>) -> TextStyle {
     TextStyle {
-        font: font.clone(),
+        font: designer_assets.font.clone(),
         font_size: 20.0,
         color: BLACK.into(),
     }

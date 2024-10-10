@@ -1,3 +1,4 @@
+pub mod assets;
 pub mod bounding_box;
 pub mod copy_paste;
 pub mod cursor;
@@ -12,6 +13,7 @@ pub mod selection;
 pub mod signal_state;
 pub mod wire;
 
+use assets::load_assets;
 use bevy::app::PluginGroupBuilder;
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
@@ -65,6 +67,7 @@ impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<DesignerState>()
             .init_resource::<ActiveSaveFile>()
+            .add_systems(PreStartup, load_assets)
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
             .add_systems(
