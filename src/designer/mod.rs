@@ -3,6 +3,7 @@ pub mod copy_paste;
 pub mod cursor;
 pub mod designer_state;
 pub mod devices;
+pub mod file_dialog;
 pub mod macros;
 pub mod pin;
 pub mod position;
@@ -20,13 +21,15 @@ use copy_paste::{
 use devices::binary_io::{toggle_binary_switch, update_board_binary_displays};
 use devices::device::update_device_positions;
 use devices::DevicePlugin;
-use moonshine_core::prelude::has_event;
+use file_dialog::{handle_load_request, handle_save_request, ActiveSaveFile};
 use moonshine_save::load::load_from_file_on_event;
 use moonshine_save::save::save_default;
 use pin::commit_signal_updates;
 use selection::{release_drag, select_all, update_dragged_entities_position};
 
-use crate::events::events::{CopyEvent, LoadEvent, PasteEvent, SaveEvent, SelectAllEvent};
+use crate::events::events::{
+    CopyEvent, LoadEvent, LoadRequestEvent, PasteEvent, SaveEvent, SaveRequestEvent, SelectAllEvent,
+};
 use crate::simulation::simulation::update_signals;
 use crate::ui::cursor_captured::IsCursorCaptured;
 
@@ -61,13 +64,18 @@ pub struct DesignerPlugin;
 impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<DesignerState>()
+            .init_resource::<ActiveSaveFile>()
             .add_systems(Startup, spawn_cursor)
             .add_systems(PreUpdate, update_cursor)
             .add_systems(
                 PreUpdate,
                 (
-                    save_default().into_file_on_event::<SaveEvent>(),
-                    load_from_file_on_event::<LoadEvent>(),
+                    // needs additional on_event condition because of the use of has_event in the moonshine_save crate.
+                    // has_event doesnt consume the event and because of that it executes the pipeline multiple times per event which causes a crash.
+                    save_default()
+                        .into_file_on_event::<SaveEvent>()
+                        .run_if(on_event::<SaveEvent>()),
+                    load_from_file_on_event::<LoadEvent>().run_if(on_event::<LoadEvent>()),
                 ),
             )
             .add_systems(
@@ -84,7 +92,7 @@ impl Plugin for DesignerPlugin {
                     .after(drag_wire)
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
-            .add_systems(Update, select_all.run_if(has_event::<SelectAllEvent>))
+            .add_systems(Update, select_all.run_if(on_event::<SelectAllEvent>()))
             .add_systems(Update, release_drag)
             .add_systems(Update, update_selection_box)
             .add_systems(Update, highlight_hovered_pin)
@@ -98,6 +106,14 @@ impl Plugin for DesignerPlugin {
             )
             .add_systems(Update, update_device_positions)
             .add_systems(Update, update_wires)
+            .add_systems(
+                Update,
+                handle_save_request.run_if(on_event::<SaveRequestEvent>()),
+            )
+            .add_systems(
+                Update,
+                handle_load_request.run_if(on_event::<LoadRequestEvent>()),
+            )
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected) //TODO: observers?
             .add_systems(PostUpdate, commit_signal_updates) //TODO: observers?

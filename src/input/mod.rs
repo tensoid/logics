@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use crate::events::events::{
-    CopyEvent, DeleteEvent, LoadEvent, PasteEvent, SaveEvent, SelectAllEvent, ToggleDebugModeEvent,
+    CopyEvent, DeleteEvent, LoadEvent, LoadRequestEvent, PasteEvent, SaveEvent, SaveRequestEvent,
+    SelectAllEvent, ToggleDebugModeEvent,
 };
 
 pub struct InputPlugin;
@@ -12,8 +13,8 @@ impl Plugin for InputPlugin {
             .register_keybinding(vec![KeyCode::Delete], DeleteEvent)
             .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyC], CopyEvent)
             .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyV], PasteEvent)
-            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyS], SaveEvent)
-            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyL], LoadEvent)
+            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyS], SaveRequestEvent)
+            .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyL], LoadRequestEvent)
             .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyA], SelectAllEvent);
     }
 }
@@ -32,7 +33,6 @@ impl RegisterKeybinding for App {
         keybinding: Vec<KeyCode>,
         event: E,
     ) -> &mut Self {
-        // register spawn func
         self.add_systems(
             Update,
             move |input: Res<ButtonInput<KeyCode>>, event_writer: EventWriter<E>| {

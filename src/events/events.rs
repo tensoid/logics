@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use bevy::prelude::*;
 use moonshine_save::FilePath;
@@ -25,22 +25,32 @@ pub struct CopyEvent;
 pub struct PasteEvent;
 
 #[derive(Event, Clone)]
-pub struct SaveEvent;
+pub struct SelectAllEvent;
+
+#[derive(Event, Clone)]
+pub struct SaveEvent {
+    pub path: PathBuf,
+}
 
 impl FilePath for SaveEvent {
     fn path(&self) -> &Path {
-        Path::new("saves/save.ron")
+        &self.path
     }
 }
 
 #[derive(Event, Clone)]
-pub struct LoadEvent;
+pub struct LoadEvent {
+    pub path: PathBuf,
+}
 
 impl FilePath for LoadEvent {
     fn path(&self) -> &Path {
-        Path::new("saves/save.ron")
+        &self.path
     }
 }
 
 #[derive(Event, Clone)]
-pub struct SelectAllEvent;
+pub struct SaveRequestEvent;
+
+#[derive(Event, Clone)]
+pub struct LoadRequestEvent;
