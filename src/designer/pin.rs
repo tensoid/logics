@@ -182,6 +182,28 @@ impl PinViewBundle {
     }
 }
 
+#[derive(Component)]
+pub struct PinLabel;
+
+#[derive(Bundle)]
+pub struct PinLabelBundle {
+    pin_label: PinLabel,
+    text_bundle: Text2dBundle,
+}
+
+impl PinLabelBundle {
+    pub fn new(label: String, text_style: TextStyle, translation: Vec3) -> Self {
+        Self {
+            pin_label: PinLabel,
+            text_bundle: Text2dBundle {
+                text: Text::from_section(label, text_style).with_justify(JustifyText::Center),
+                transform: Transform::from_translation(translation),
+                ..default()
+            },
+        }
+    }
+}
+
 pub fn commit_signal_updates(mut q_pin_model_collection: Query<&mut PinModelCollection>) {
     for mut pin_model_collection in q_pin_model_collection.iter_mut() {
         pin_model_collection.iter_mut().for_each(|c| {

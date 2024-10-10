@@ -5,7 +5,7 @@ use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
 use crate::designer::{
-    pin::{PinCollectionBundle, PinModelCollection, PinViewBundle},
+    pin::{PinCollectionBundle, PinLabelBundle, PinModelCollection, PinViewBundle},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
 };
@@ -88,6 +88,8 @@ impl GenericChipBodyBundle {
         .into_iter()
         .map(|x| x * (chip_extents / 2.0))
         .collect();
+
+        info!("{:?}", points);
 
         Self {
             chip_body: GenericChipBody,
@@ -178,26 +180,44 @@ impl GenericChipPinCollectionBundle {
         render_settings: &CircuitBoardRenderingSettings,
         chip_extents: Vec2,
         pin_model_collection: &PinModelCollection,
+        pin_label_text_style: TextStyle,
     ) {
         //Input pins
         for (i, pin_model) in pin_model_collection.iter_inputs().enumerate() {
-            pin_collection.spawn(GenericChipInputPinBundle::new(
-                render_settings,
-                pin_model.uuid,
-                Vec3::new(
-                    -(chip_extents.x / 2.0),
-                    ((i as f32 + 0.75) * render_settings.chip_pin_gap) - (chip_extents.y / 2.0),
-                    0.01,
-                ),
-            ));
+            pin_collection
+                .spawn(GenericChipInputPinBundle::new(
+                    render_settings,
+                    pin_model.uuid,
+                    Vec3::new(
+                        -(chip_extents.x / 2.0),
+                        ((i as f32 + 0.75) * render_settings.chip_pin_gap) - (chip_extents.y / 2.0),
+                        0.01,
+                    ),
+                ))
+                .with_children(|pc| {
+                    pc.spawn(PinLabelBundle::new(
+                        pin_model.label.clone(),
+                        pin_label_text_style.clone(),
+                        Vec3::new(12.0, 0.0, 0.2),
+                    ));
+                });
         }
 
         // Output pins
-        pin_collection.spawn(GenericChipOutputPinBundle::new(
-            render_settings,
-            pin_model_collection.iter_outputs().next().unwrap().uuid, //TODO: only works with one output chips
-            Vec3::new(chip_extents.x / 2.0, 0.0, 0.01),
-        ));
+        let output_pin_model = pin_model_collection.iter_outputs().next().unwrap(); //TODO: only works with one output chips
+        pin_collection
+            .spawn(GenericChipOutputPinBundle::new(
+                render_settings,
+                output_pin_model.uuid,
+                Vec3::new(chip_extents.x / 2.0, 0.0, 0.01),
+            ))
+            .with_children(|pc| {
+                pc.spawn(PinLabelBundle::new(
+                    output_pin_model.label.clone(),
+                    pin_label_text_style,
+                    Vec3::new(-12.0, 0.0, 0.2),
+                ));
+            });
     }
 }
 
@@ -212,8 +232,14 @@ impl BuildView<DeviceViewKind> for GenericChip {
 
         let font: Handle<Font> = asset_server.load("fonts/VCR_OSD_MONO.ttf");
 
-        let text_style = TextStyle {
+        let chip_label_text_style = TextStyle {
             font_size: render_settings.chip_label_font_size,
+            color: Color::BLACK,
+            font: font.clone(),
+        };
+
+        let pin_label_text_style = TextStyle {
+            font_size: render_settings.chip_pin_label_font_size,
             color: Color::BLACK,
             font,
         };
@@ -232,7 +258,7 @@ impl BuildView<DeviceViewKind> for GenericChip {
             .with_children(|device| {
                 device.spawn(GenericChipLabelBundle::new(
                     generic_chip.name.clone(),
-                    text_style,
+                    chip_label_text_style,
                 ));
                 device.spawn(GenericChipBodyBundle::new(
                     render_settings,
@@ -247,6 +273,7 @@ impl BuildView<DeviceViewKind> for GenericChip {
                             render_settings,
                             chip_extents,
                             pin_model_collection,
+                            pin_label_text_style,
                         );
                     });
             });
@@ -262,7 +289,7 @@ fn calculate_chip_extents(
     let max = num_inputs.max(num_outputs);
 
     Vec2::new(
-        render_settings.chip_pin_gap * (max as f32 + 1.0),
+        render_settings.chip_pin_gap * (max as f32 + 1.5),
         render_settings.chip_pin_gap * (max as f32 + 0.5),
     )
 }
