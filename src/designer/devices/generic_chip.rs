@@ -90,8 +90,6 @@ impl GenericChipBodyBundle {
         .map(|x| x * (chip_extents / 2.0))
         .collect();
 
-        info!("{:?}", points);
-
         Self {
             chip_body: GenericChipBody,
             fill: Fill::color(render_settings.chip_color),

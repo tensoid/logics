@@ -26,7 +26,6 @@ use or_2::Or2;
 use t_flipflop::TFlipFlop;
 use xor_2::Xor2;
 
-
 use super::{pin::PinModelCollection, position::Position, signal_state::SignalState, wire::Wire};
 
 pub struct DevicePlugin;
@@ -46,8 +45,8 @@ impl Plugin for DevicePlugin {
             .register_view::<DeviceViewKind, BinarySwitch>()
             .register_view::<DeviceViewKind, BinaryDisplay>()
             .register_view::<DeviceViewKind, GenericChip>()
-            .register_view::<DeviceViewKind, Wire>()
-            .register_view::<DeviceViewKind, Clock>();
+            .register_view::<DeviceViewKind, Clock>()
+            .register_viewable::<Wire>();
 
         app.register_device::<And2>()
             .register_device::<Nand2>()

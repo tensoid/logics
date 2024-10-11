@@ -13,7 +13,6 @@ use super::{
     devices::{
         binary_io::{BinaryDisplayPin, BinarySwitchPin},
         clock::ClockPin,
-        device::{DeviceModel, DeviceViewKind},
         generic_chip::{GenericChipInputPin, GenericChipOutputPin},
     },
     pin::PinView,
@@ -33,7 +32,6 @@ pub struct WireBundle {
     pub wire: Wire,
     pub save: Save,
     pub signal_state: SignalState,
-    pub device_model: DeviceModel,
 }
 
 impl WireBundle {
@@ -42,7 +40,6 @@ impl WireBundle {
             wire,
             signal_state: SignalState::Low,
             save: Save,
-            device_model: DeviceModel,
         }
     }
 
@@ -51,7 +48,6 @@ impl WireBundle {
             wire,
             signal_state,
             save: Save,
-            device_model: DeviceModel,
         }
     }
 }
@@ -86,8 +82,8 @@ impl WireViewBundle {
     }
 }
 
-impl BuildView<DeviceViewKind> for Wire {
-    fn build(world: &World, _: Object<DeviceViewKind>, view: &mut ViewCommands<DeviceViewKind>) {
+impl BuildView for Wire {
+    fn build(world: &World, _: Object<Wire>, view: &mut ViewCommands<Wire>) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         view.insert(WireViewBundle::new(render_settings));
@@ -103,7 +99,7 @@ impl BuildView<DeviceViewKind> for Wire {
 //TODO: clean up the indents and ugly stuff
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
-    q_wires: Query<(&mut Wire, &Viewable<DeviceViewKind>, Entity)>,
+    q_wires: Query<(&mut Wire, &Viewable<Wire>, Entity)>,
     q_dest_pins: Query<
         (&GlobalTransform, &PinView),
         Or<(With<GenericChipInputPin>, With<BinaryDisplayPin>)>,
