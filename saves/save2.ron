@@ -1,4 +1,43 @@
 (
   resources: {},
-  entities: {},
+  entities: {
+    77309411498: (
+      components: {
+        "logics::designer::devices::device::DeviceModel": (),
+        "logics::designer::devices::generic_chip::GenericChip": (
+          name: "NAND-2",
+        ),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "B",
+            uuid: "85c5b9fc-280c-473d-9e38-921c017e9c9c",
+          ),
+          (
+            previous_signal_state: Low,
+            signal_state: Low,
+            next_signal_state: Low,
+            pin_type: Input,
+            label: "A",
+            uuid: "679b09e1-806a-4733-959b-61606152e641",
+          ),
+          (
+            previous_signal_state: High,
+            signal_state: High,
+            next_signal_state: High,
+            pin_type: Output,
+            label: "Q",
+            uuid: "8d2d8e4d-cb78-4958-bbcf-62c0b8a3fbaf",
+          ),
+        ]),
+        "logics::designer::position::Position": ((
+          x: -199.00002,
+          y: 40.999985,
+        )),
+      },
+    ),
+  },
 )

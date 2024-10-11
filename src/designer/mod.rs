@@ -17,9 +17,7 @@ use assets::load_assets;
 use bevy::app::PluginGroupBuilder;
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
-use copy_paste::{
-    copy_devices, copy_wires, paste_devices, paste_wires, DeviceClipboard, WireClipboard,
-};
+use copy_paste::CopyPastePlugin;
 use devices::binary_io::{toggle_binary_switch, update_board_binary_displays};
 use devices::device::update_device_positions;
 use devices::DevicePlugin;
@@ -30,7 +28,7 @@ use pin::commit_signal_updates;
 use selection::{release_drag, select_all, update_dragged_entities_position};
 
 use crate::events::events::{
-    CopyEvent, LoadEvent, LoadRequestEvent, PasteEvent, SaveEvent, SaveRequestEvent, SelectAllEvent,
+    LoadEvent, LoadRequestEvent, SaveEvent, SaveRequestEvent, SelectAllEvent,
 };
 use crate::simulation::simulation::update_signals;
 use crate::ui::cursor_captured::IsCursorCaptured;
@@ -57,6 +55,7 @@ impl PluginGroup for DesignerPlugins {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
             .add(DevicePlugin)
+            .add(CopyPastePlugin)
             .add(DesignerPlugin)
     }
 }
@@ -125,18 +124,6 @@ impl Plugin for DesignerPlugin {
                 PostUpdate,
                 update_bounding_boxes.after(TransformSystem::TransformPropagate),
             );
-
-        // copy / paste
-        app.init_resource::<DeviceClipboard>();
-        app.init_resource::<WireClipboard>();
-        app.add_systems(
-            Update,
-            (copy_devices, copy_wires).run_if(on_event::<CopyEvent>()),
-        )
-        .add_systems(
-            Update,
-            (paste_devices.pipe(paste_wires)).run_if(on_event::<PasteEvent>()),
-        );
 
         init_render_settings(app);
     }
