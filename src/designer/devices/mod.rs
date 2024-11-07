@@ -13,10 +13,10 @@ pub mod xor_2;
 
 use and_2::And2;
 use bevy::prelude::*;
-use binary_io::{BinaryDisplay, BinarySwitch};
+use binary_io::{toggle_binary_switch, update_board_binary_displays, BinaryDisplay, BinarySwitch};
 use clock::{tick_clocks, Clock};
 use d_flipflop::DFlipFlop;
-use device::{DeviceModel, DeviceViewKind, RegisterDevice};
+use device::{update_device_positions, DeviceModel, DeviceViewKind, RegisterDevice};
 use generic_chip::GenericChip;
 use jk_flipflop::JKFlipFlop;
 use moonshine_view::RegisterView;
@@ -25,6 +25,8 @@ use not::Not;
 use or_2::Or2;
 use t_flipflop::TFlipFlop;
 use xor_2::Xor2;
+
+use crate::simulation::simulation::update_signals;
 
 use super::{pin::PinModelCollection, position::Position, signal_state::SignalState, wire::Wire};
 
@@ -60,6 +62,14 @@ impl Plugin for DevicePlugin {
             .register_device::<BinaryDisplay>()
             .register_device::<BinarySwitch>();
 
-        app.add_systems(Update, tick_clocks);
+        app.add_systems(Update, tick_clocks)
+            .add_systems(Update, toggle_binary_switch)
+            .add_systems(
+                Update,
+                update_board_binary_displays
+                    .after(toggle_binary_switch) //TODO: observers?
+                    .after(update_signals),
+            )
+            .add_systems(Update, update_device_positions);
     }
 }

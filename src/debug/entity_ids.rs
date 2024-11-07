@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use moonshine_view::View;
 
-use crate::designer::{assets::DesignerAssets, devices::device::DeviceViewKind};
+use crate::designer::{designer_assets::DesignerAssets, devices::device::DeviceViewKind};
 
 use super::{debug_mode_settings::DebugModeSettings, debug_mode_state::DebugModeState};
 

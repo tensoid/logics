@@ -6,11 +6,11 @@ use uuid::Uuid;
 
 use crate::{
     designer::{
-        assets::DesignerAssets,
+        designer_assets::DesignerAssets,
         bounding_box::BoundingBox,
         cursor::Cursor,
         pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
-        position::{self, Position},
+        position::Position,
         render_settings::CircuitBoardRenderingSettings,
         signal_state::SignalState,
     },

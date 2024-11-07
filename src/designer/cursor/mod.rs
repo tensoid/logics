@@ -11,6 +11,16 @@ use super::{
     render_settings::CircuitBoardRenderingSettings,
 };
 
+pub struct CursorPlugin;
+
+impl Plugin for CursorPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Startup, spawn_cursor)
+            .add_systems(PreUpdate, update_cursor)
+            .add_systems(Update, highlight_hovered_pin);
+    }
+}
+
 #[derive(PartialEq, Default)]
 pub enum CursorState {
     #[default]

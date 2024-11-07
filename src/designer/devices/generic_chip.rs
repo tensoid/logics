@@ -5,7 +5,7 @@ use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
 use crate::designer::{
-    assets::DesignerAssets,
+    designer_assets::DesignerAssets,
     pin::{PinCollectionBundle, PinLabelBundle, PinModelCollection, PinViewBundle},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
