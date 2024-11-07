@@ -16,6 +16,7 @@ pub struct BoundingBox {
     pub selectable: bool,
 }
 
+#[allow(dead_code)]
 impl BoundingBox {
     pub fn rect_new(half_size: Vec2, selectable: bool) -> BoundingBox {
         BoundingBox {

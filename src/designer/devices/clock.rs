@@ -10,7 +10,7 @@ use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
 use crate::designer::{
-    assets::DesignerAssets, pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle}, position::Position, render_settings::CircuitBoardRenderingSettings
+    designer_assets::DesignerAssets, pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle}, position::Position, render_settings::CircuitBoardRenderingSettings
 };
 
 use super::device::{Device, DeviceModelBundle, DeviceViewBundle, DeviceViewKind};

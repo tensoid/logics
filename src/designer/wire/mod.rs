@@ -5,7 +5,7 @@ use moonshine_save::save::Save;
 use moonshine_view::{BuildView, ViewCommands, Viewable};
 use uuid::Uuid;
 
-use crate::{get_cursor, get_cursor_mut};
+use crate::{get_cursor, get_cursor_mut, ui::cursor_captured::IsCursorCaptured};
 
 use super::{
     bounding_box::BoundingBox,
@@ -19,6 +19,18 @@ use super::{
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
+
+pub struct WirePlugin;
+
+impl Plugin for WirePlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            drag_wire.run_if(resource_equals(IsCursorCaptured(false))),
+        )
+        .add_systems(Update, update_wires);
+    }
+}
 
 #[derive(Component, Reflect, Clone, Debug)]
 #[reflect(Component)]

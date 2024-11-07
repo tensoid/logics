@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    designer::{assets::DesignerAssets, devices::device::DeviceIds, position::Position},
+    designer::{designer_assets::DesignerAssets, devices::device::DeviceIds, position::Position},
     events::events::SpawnDeviceEvent,
 };
 

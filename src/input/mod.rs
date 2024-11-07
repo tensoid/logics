@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
 use crate::events::events::{
-    CopyEvent, DeleteEvent, LoadEvent, LoadRequestEvent, PasteEvent, SaveEvent, SaveRequestEvent,
-    SelectAllEvent, ToggleDebugModeEvent,
+    CopyEvent, DeleteEvent, LoadRequestEvent, PasteEvent, SaveRequestEvent, SelectAllEvent,
+    ToggleDebugModeEvent,
 };
 
 pub struct InputPlugin;

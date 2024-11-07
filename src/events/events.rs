@@ -12,6 +12,8 @@ pub struct SpawnDeviceEvent {
     pub init_drag: bool,
 }
 
+//TODO: prefix designer events
+
 #[derive(Event, Clone)]
 pub struct ToggleDebugModeEvent;
 

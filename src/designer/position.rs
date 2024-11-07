@@ -6,6 +6,7 @@ use std::ops::{Deref, DerefMut};
 #[reflect(Component)]
 pub struct Position(pub Vec2);
 
+#[allow(dead_code)]
 impl Position {
     pub const ZERO: Self = Position(Vec2::ZERO);
 

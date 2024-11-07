@@ -5,7 +5,6 @@ use bevy_prototype_lyon::prelude::*;
 use moonshine_view::Viewable;
 
 use super::{
-    devices::device::DeviceViewKind,
     render_settings::CircuitBoardRenderingSettings,
     wire::{Wire, WireView},
 };
@@ -28,6 +27,7 @@ impl Not for SignalState {
     }
 }
 
+#[allow(dead_code)]
 impl SignalState {
     pub fn as_bool(&self) -> bool {
         match &self {

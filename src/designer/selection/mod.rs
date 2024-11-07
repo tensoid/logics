@@ -11,7 +11,9 @@ use bevy_prototype_lyon::{
 use moonshine_view::{View, Viewable};
 
 use crate::{
-    events::events::DeleteEvent, get_cursor, get_cursor_mut, ui::cursor_captured::IsCursorCaptured,
+    events::events::{DeleteEvent, SelectAllEvent},
+    get_cursor, get_cursor_mut,
+    ui::cursor_captured::IsCursorCaptured,
 };
 
 use super::{
@@ -20,7 +22,30 @@ use super::{
     devices::device::{DeviceModel, DeviceView, DeviceViewKind},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
+    wire::drag_wire,
 };
+
+pub struct SelectionPlugin;
+
+impl Plugin for SelectionPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, select_all.run_if(on_event::<SelectAllEvent>()))
+            .add_systems(Update, release_drag)
+            .add_systems(Update, update_selection_box)
+            .add_systems(
+                Update,
+                (
+                    spawn_selection_box,
+                    (select_single, start_drag).chain().after(drag_wire),
+                    delete_selected, //TODO: remove cursor captured condition for delete
+                )
+                    .after(drag_wire)
+                    .run_if(resource_equals(IsCursorCaptured(false))),
+            )
+            .add_systems(PostUpdate, update_dragged_entities_position)
+            .add_systems(PostUpdate, highlight_selected); //TODO: observers?
+    }
+}
 
 #[derive(Component)]
 pub struct Dragged {

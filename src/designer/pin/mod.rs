@@ -7,6 +7,14 @@ use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuil
 use std::ops::{Deref, DerefMut, Index, IndexMut};
 use uuid::Uuid;
 
+pub struct PinPlugin;
+
+impl Plugin for PinPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(PostUpdate, commit_signal_updates); //TODO: observers?
+    }
+}
+
 #[derive(Reflect, PartialEq, Clone)]
 pub enum PinType {
     Input,
@@ -53,6 +61,7 @@ impl PinModel {
 #[reflect(Component)]
 pub struct PinModelCollection(pub Vec<PinModel>);
 
+#[allow(dead_code)]
 impl PinModelCollection {
     pub fn get_model(&self, uuid: Uuid) -> Option<&PinModel> {
         self.iter().find(|m| m.uuid.eq(&uuid))

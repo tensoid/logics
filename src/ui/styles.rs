@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::designer::assets::DesignerAssets;
+use crate::designer::designer_assets::DesignerAssets;
 
 pub fn chip_selector_style() -> Style {
     Style {

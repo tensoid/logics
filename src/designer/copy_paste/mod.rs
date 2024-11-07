@@ -4,6 +4,8 @@ use bevy::prelude::*;
 use moonshine_save::save::Save;
 use uuid::Uuid;
 
+use crate::events::events::{CopyEvent, PasteEvent};
+
 use super::{
     devices::device::DeviceModel,
     pin::PinModelCollection,
@@ -12,6 +14,23 @@ use super::{
     signal_state::SignalState,
     wire::{Wire, WireBundle},
 };
+
+pub struct CopyPastePlugin;
+
+impl Plugin for CopyPastePlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<DeviceClipboard>()
+            .init_resource::<WireClipboard>()
+            .add_systems(
+                Update,
+                (copy_devices, copy_wires).run_if(on_event::<CopyEvent>()),
+            )
+            .add_systems(
+                Update,
+                (paste_devices.pipe(paste_wires)).run_if(on_event::<PasteEvent>()),
+            );
+    }
+}
 
 /// Stores all components from all devices after copying using reflect.
 #[derive(Resource, Default)]
