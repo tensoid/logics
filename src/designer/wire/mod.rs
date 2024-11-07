@@ -5,7 +5,10 @@ use moonshine_save::save::Save;
 use moonshine_view::{BuildView, ViewCommands, Viewable};
 use uuid::Uuid;
 
-use crate::{get_cursor, get_cursor_mut, ui::cursor_captured::IsCursorCaptured};
+use crate::{
+    get_cursor, get_cursor_mut, simulation::simulation::update_signals,
+    ui::cursor_captured::IsCursorCaptured,
+};
 
 use super::{
     bounding_box::BoundingBox,
@@ -28,7 +31,8 @@ impl Plugin for WirePlugin {
             Update,
             drag_wire.run_if(resource_equals(IsCursorCaptured(false))),
         )
-        .add_systems(Update, update_wires);
+        .add_systems(Update, update_wires)
+        .add_systems(Update, update_wire_signal_colors.after(update_signals)); //TODO: observers?
     }
 }
 
@@ -235,5 +239,32 @@ pub fn drag_wire(
                 cursor.state = CursorState::Idle;
             }
         }
+    }
+}
+
+//TODO: make faster by not updating colors that havent changed.
+//TODO: maybe move to wire.rs
+/**
+ * Updates all colors that are bound to a signal, e.g. pins or wires.
+ */
+#[allow(clippy::type_complexity)]
+pub fn update_wire_signal_colors(
+    q_wires: Query<(&Viewable<Wire>, &SignalState)>,
+    mut q_wire_views: Query<&mut Stroke, With<WireView>>,
+    render_settings: Res<CircuitBoardRenderingSettings>,
+) {
+    // Color Wires
+    for (wire_viewable, signal_state) in q_wires.iter() {
+        let mut wire_stroke = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
+
+        let signal_wire_stroke = Stroke::new(
+            match signal_state {
+                SignalState::Low => render_settings.signal_low_color,
+                SignalState::High => render_settings.signal_high_color,
+            },
+            render_settings.wire_line_width,
+        );
+
+        *wire_stroke = signal_wire_stroke;
     }
 }

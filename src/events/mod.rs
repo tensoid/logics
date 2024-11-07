@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use events::{
-    CopyEvent, LoadEvent, LoadRequestEvent, PasteEvent, SaveEvent, SaveRequestEvent, SelectAllEvent,
+    CopyEvent, LoadEvent, LoadRequestEvent, NewFileEvent, PasteEvent, SaveEvent, SaveRequestEvent,
+    SelectAllEvent,
 };
 
 use self::events::{DeleteEvent, SpawnDeviceEvent, ToggleDebugModeEvent};
@@ -20,6 +21,7 @@ impl Plugin for EventsPlugin {
             .add_event::<SaveEvent>()
             .add_event::<LoadEvent>()
             .add_event::<SaveRequestEvent>()
-            .add_event::<LoadRequestEvent>();
+            .add_event::<LoadRequestEvent>()
+            .add_event::<NewFileEvent>();
     }
 }

@@ -56,3 +56,6 @@ pub struct SaveRequestEvent;
 
 #[derive(Event, Clone)]
 pub struct LoadRequestEvent;
+
+#[derive(Event, Clone)]
+pub struct NewFileEvent;
