@@ -161,30 +161,30 @@ pub fn copy_wires(
     q_selected_devices: Query<&PinModelCollection, (With<Selected>, With<DeviceModel>)>,
     mut wire_clipboard: ResMut<WireClipboard>,
 ) {
-    wire_clipboard.items.clear();
+    // wire_clipboard.items.clear();
 
-    for (wire, signal_state) in q_wires.iter() {
-        // find wires connected to copied devices
-        let (Some(wire_src_pin_uuid), Some(wire_dest_pin_uuid)) =
-            (wire.src_pin_uuid, wire.dest_pin_uuid)
-        else {
-            continue;
-        };
+    // for (wire, signal_state) in q_wires.iter() {
+    //     // find wires connected to copied devices
+    //     let (Some(wire_src_pin_uuid), Some(wire_dest_pin_uuid)) =
+    //         (wire.src_pin_uuid, wire.dest_pin_uuid)
+    //     else {
+    //         continue;
+    //     };
 
-        let pin_uuids: HashSet<Uuid> = HashSet::from_iter(
-            q_selected_devices
-                .iter()
-                .flat_map(|pin_model_collection| pin_model_collection.0.clone())
-                .map(|pin_model| pin_model.uuid),
-        );
+    //     let pin_uuids: HashSet<Uuid> = HashSet::from_iter(
+    //         q_selected_devices
+    //             .iter()
+    //             .flat_map(|pin_model_collection| pin_model_collection.0.clone())
+    //             .map(|pin_model| pin_model.uuid),
+    //     );
 
-        if !pin_uuids.contains(&wire_src_pin_uuid) || !pin_uuids.contains(&wire_dest_pin_uuid) {
-            continue;
-        }
+    //     if !pin_uuids.contains(&wire_src_pin_uuid) || !pin_uuids.contains(&wire_dest_pin_uuid) {
+    //         continue;
+    //     }
 
-        // copy connected wires
-        wire_clipboard.items.push((wire.clone(), *signal_state));
-    }
+    //     // copy connected wires
+    //     wire_clipboard.items.push((wire.clone(), *signal_state));
+    // }
 }
 
 /// Spawns all wires stored in the [`WireClipboard`]
@@ -194,19 +194,19 @@ pub fn paste_wires(
     mut commands: Commands,
     wire_clipboard: Res<WireClipboard>,
 ) {
-    for (wire, signal_state) in wire_clipboard.items.iter() {
-        let mut new_wire = wire.clone();
-        new_wire.src_pin_uuid = Some(
-            *pin_uuid_mapping
-                .get(&new_wire.src_pin_uuid.unwrap())
-                .unwrap(),
-        );
-        new_wire.dest_pin_uuid = Some(
-            *pin_uuid_mapping
-                .get(&new_wire.dest_pin_uuid.unwrap())
-                .unwrap(),
-        );
+    // for (wire, signal_state) in wire_clipboard.items.iter() {
+    //     let mut new_wire = wire.clone();
+    //     new_wire.src_pin_uuid = Some(
+    //         *pin_uuid_mapping
+    //             .get(&new_wire.src_pin_uuid.unwrap())
+    //             .unwrap(),
+    //     );
+    //     new_wire.dest_pin_uuid = Some(
+    //         *pin_uuid_mapping
+    //             .get(&new_wire.dest_pin_uuid.unwrap())
+    //             .unwrap(),
+    //     );
 
-        commands.spawn(WireBundle::new_with_signal(new_wire, *signal_state));
-    }
+    //     commands.spawn(WireBundle::new_with_signal(new_wire, *signal_state));
+    // }
 }

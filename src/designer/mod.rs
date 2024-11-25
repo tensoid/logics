@@ -15,6 +15,7 @@ pub mod wire;
 
 use bevy::app::PluginGroupBuilder;
 use bevy::prelude::*;
+use bevy::render::mesh::PrimitiveTopology;
 use bevy::transform::TransformSystem;
 use copy_paste::CopyPastePlugin;
 use cursor::CursorPlugin;

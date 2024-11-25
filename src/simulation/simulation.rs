@@ -143,52 +143,52 @@ pub fn update_signals(
     q_board_entities: Query<&View<DeviceViewKind>>,
     mut q_chip_models: Query<&mut PinModelCollection>,
 ) {
-    for (wire, mut wire_signal_state) in q_wires.iter_mut() {
-        let Some(wire_src_uuid) = wire.src_pin_uuid else {
-            continue;
-        };
+    // for (wire, mut wire_signal_state) in q_wires.iter_mut() {
+    //     let Some(wire_src_uuid) = wire.src_pin_uuid else {
+    //         continue;
+    //     };
 
-        let Some((src_pin_view, src_pin_entity)) =
-            q_pin_views.iter().find(|(p, _)| p.uuid.eq(&wire_src_uuid))
-        else {
-            // this happens when the wire already spawned,
-            // but the view for the device has not yet
-            continue;
-        };
-        let Some(src_pin_model_collection) =
-            get_model!(q_parents, q_board_entities, q_chip_models, src_pin_entity)
-        else {
-            continue;
-        };
+    //     let Some((src_pin_view, src_pin_entity)) =
+    //         q_pin_views.iter().find(|(p, _)| p.uuid.eq(&wire_src_uuid))
+    //     else {
+    //         // this happens when the wire already spawned,
+    //         // but the view for the device has not yet
+    //         continue;
+    //     };
+    //     let Some(src_pin_model_collection) =
+    //         get_model!(q_parents, q_board_entities, q_chip_models, src_pin_entity)
+    //     else {
+    //         continue;
+    //     };
 
-        let src_pin_signal_state = src_pin_model_collection
-            .get_model(src_pin_view.uuid)
-            .unwrap()
-            .signal_state;
+    //     let src_pin_signal_state = src_pin_model_collection
+    //         .get_model(src_pin_view.uuid)
+    //         .unwrap()
+    //         .signal_state;
 
-        *wire_signal_state = src_pin_signal_state;
+    //     *wire_signal_state = src_pin_signal_state;
 
-        if src_pin_signal_state == SignalState::Low {
-            continue;
-        }
+    //     if src_pin_signal_state == SignalState::Low {
+    //         continue;
+    //     }
 
-        let Some(wire_dest_uuid) = wire.dest_pin_uuid else {
-            continue;
-        };
+    //     let Some(wire_dest_uuid) = wire.dest_pin_uuid else {
+    //         continue;
+    //     };
 
-        let (dest_pin_view, dest_pin_entity) = q_pin_views
-            .iter()
-            .find(|(p, _)| p.uuid.eq(&wire_dest_uuid))
-            .unwrap();
-        let Some(mut dest_pin_model_collection) =
-            get_model_mut!(q_parents, q_board_entities, q_chip_models, dest_pin_entity)
-        else {
-            continue;
-        };
+    //     let (dest_pin_view, dest_pin_entity) = q_pin_views
+    //         .iter()
+    //         .find(|(p, _)| p.uuid.eq(&wire_dest_uuid))
+    //         .unwrap();
+    //     let Some(mut dest_pin_model_collection) =
+    //         get_model_mut!(q_parents, q_board_entities, q_chip_models, dest_pin_entity)
+    //     else {
+    //         continue;
+    //     };
 
-        dest_pin_model_collection
-            .get_model_mut(dest_pin_view.uuid)
-            .unwrap()
-            .next_signal_state = SignalState::High;
-    }
+    //     dest_pin_model_collection
+    //         .get_model_mut(dest_pin_view.uuid)
+    //         .unwrap()
+    //         .next_signal_state = SignalState::High;
+    // }
 }

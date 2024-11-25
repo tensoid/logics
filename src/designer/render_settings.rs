@@ -58,7 +58,7 @@ pub fn init_render_settings(app: &mut App) {
         clock_color: WHITE.into(),
         clock_label_font_size: 15.0,
         clock_pin_radius: 7.0,
-        wire_line_width: 2.0,
+        wire_line_width: 4.0,
         pin_color: BLACK.into(),
         hovered_pin_color: Color::srgb(0.4, 0.4, 0.4),
         selection_box_fill_color: Color::srgba(1.0, 1.0, 1.0, 0.1),

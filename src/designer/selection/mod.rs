@@ -22,7 +22,7 @@ use super::{
     devices::device::{DeviceModel, DeviceView, DeviceViewKind},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
-    wire::drag_wire,
+    wire::create_wire,
 };
 
 pub struct SelectionPlugin;
@@ -35,7 +35,7 @@ impl Plugin for SelectionPlugin {
             .add_systems(
                 Update,
                 (spawn_selection_box, (select_single, start_drag).chain())
-                    .after(drag_wire)
+                    .after(create_wire)
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
             .add_systems(PostUpdate, delete_selected)
