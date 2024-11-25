@@ -34,14 +34,11 @@ impl Plugin for SelectionPlugin {
             .add_systems(Update, update_selection_box)
             .add_systems(
                 Update,
-                (
-                    spawn_selection_box,
-                    (select_single, start_drag).chain().after(drag_wire),
-                    delete_selected, //TODO: remove cursor captured condition for delete
-                )
+                (spawn_selection_box, (select_single, start_drag).chain())
                     .after(drag_wire)
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
+            .add_systems(PostUpdate, delete_selected)
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected); //TODO: observers?
     }
@@ -295,7 +292,7 @@ pub fn start_drag(
 
     // add Dragged component to selected entities
     for (selected_entity, position) in q_selected.iter() {
-        let cursor_offset = position.xy() - cursor_transform.translation.truncate();
+        let cursor_offset = position.0 - cursor_transform.translation.truncate();
         commands.entity(selected_entity).insert(Dragged {
             cursor_offset: Position(cursor_offset),
         });
@@ -339,7 +336,7 @@ pub fn update_dragged_entities_position(
 
     // update positions
     for (_, mut position, dragged) in q_dragged_board_entities.iter_mut() {
-        *position = Position(cursor_transform.translation.truncate() + dragged.cursor_offset.xy());
+        *position = Position(cursor_transform.translation.truncate() + dragged.cursor_offset.0);
     }
 }
 

@@ -96,7 +96,7 @@ impl DeviceViewBundle {
                 true,
             ),
             spatial_bundle: SpatialBundle {
-                transform: Transform::from_xyz(position.x, position.y, 0.0),
+                transform: Transform::from_xyz(position.0.x, position.0.y, 0.0),
                 ..default()
             },
         }
@@ -137,6 +137,6 @@ pub fn update_device_positions(
     for (viewable, position) in devices.iter() {
         let view = viewable.view();
         let mut transform = transform.get_mut(view.entity()).unwrap();
-        *transform = Transform::from_translation(position.extend(transform.translation.z))
+        *transform = Transform::from_translation(position.0.extend(transform.translation.z))
     }
 }

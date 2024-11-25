@@ -19,6 +19,7 @@ use super::{
         generic_chip::{GenericChipInputPin, GenericChipOutputPin},
     },
     pin::PinView,
+    position::Position,
     render_settings::CircuitBoardRenderingSettings,
     signal_state::SignalState,
 };
@@ -29,10 +30,15 @@ impl Plugin for WirePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            drag_wire.run_if(resource_equals(IsCursorCaptured(false))),
+            (drag_wire, create_wire_point)
+                .chain()
+                .run_if(resource_equals(IsCursorCaptured(false))),
         )
-        .add_systems(Update, update_wires)
-        .add_systems(Update, update_wire_signal_colors.after(update_signals)); //TODO: observers?
+        .add_systems(
+            Update,
+            (cancel_drag, despawn_dangling_wires, update_wires).chain(),
+        )
+        .add_systems(Update, update_wire_signal_colors.after(update_signals)); //TODO: observers or Changed<> Filter
     }
 }
 
@@ -41,6 +47,8 @@ impl Plugin for WirePlugin {
 pub struct Wire {
     pub src_pin_uuid: Option<Uuid>,
     pub dest_pin_uuid: Option<Uuid>,
+    //TODO: maybe make children instead? on model or on view?
+    pub wire_points: Vec<Entity>,
 }
 
 #[derive(Bundle)]
@@ -106,16 +114,47 @@ impl BuildView for Wire {
     }
 }
 
-/**
- * Updates the wires location to always stay connected to its source and destination pins.
- * If the source or destination pin was deleted or the wire is just not connected this also deletes the wire entirely.
- */
+pub fn despawn_dangling_wires(
+    mut commands: Commands,
+    q_cursor: Query<&Cursor>,
+    q_wires: Query<(&Wire, Entity)>,
+    q_pins: Query<&PinView>,
+) {
+    let cursor = get_cursor!(q_cursor);
+
+    for (wire, wire_entity) in q_wires.iter() {
+        let is_dangling = wire.src_pin_uuid.is_none() || wire.dest_pin_uuid.is_none();
+        let is_currently_dragged =
+            matches!(cursor.state, CursorState::DraggingWire(w) if w == wire_entity);
+
+        if is_dangling && !is_currently_dragged {
+            commands.entity(wire_entity).despawn_recursive();
+            continue;
+        }
+
+        let src_pin_exists = wire
+            .src_pin_uuid
+            .map(|uuid| q_pins.iter().any(|pin| pin.uuid == uuid))
+            .unwrap_or(false);
+
+        let dest_pin_exists = wire
+            .dest_pin_uuid
+            .map(|uuid| q_pins.iter().any(|pin| pin.uuid == uuid))
+            .unwrap_or(false);
+
+        if !src_pin_exists || !dest_pin_exists {
+            commands.entity(wire_entity).despawn_recursive();
+        }
+    }
+}
+
+/// Updates the wires location to always stay connected to its source and destination pins.
+/// Assumes that each wire has a src and dest connection or has a src and is being dragged.
 //TODO: Optimisation potential with only updating necessary wires.
-//TODO: maybe split into delete_dangling_wires and update_wires
 //TODO: clean up the indents and ugly stuff
 #[allow(clippy::type_complexity)]
 pub fn update_wires(
-    q_wires: Query<(&mut Wire, &Viewable<Wire>, Entity)>,
+    q_wires: Query<(&mut Wire, &Viewable<Wire>)>,
     q_dest_pins: Query<
         (&GlobalTransform, &PinView),
         Or<(With<GenericChipInputPin>, With<BinaryDisplayPin>)>,
@@ -128,59 +167,38 @@ pub fn update_wires(
             With<ClockPin>,
         )>,
     >,
-    q_cursor: Query<(&Cursor, &Transform)>,
+    q_cursor: Query<&Transform, With<Cursor>>,
     mut q_wire_views: Query<&mut Path, With<WireView>>,
-    mut commands: Commands,
 ) {
-    let (cursor, cursor_transform) = get_cursor!(q_cursor);
+    let cursor_transform = get_cursor!(q_cursor);
 
-    for (wire, wire_viewable, wire_entity) in q_wires.iter() {
-        let Some(wire_src_pin_uuid) = wire.src_pin_uuid else {
-            commands.entity(wire_entity).despawn();
-            continue;
-        };
-
+    for (wire, wire_viewable) in q_wires.iter() {
         let mut wire_path = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
 
-        if let Some(wire_dest_pin_uuid) = wire.dest_pin_uuid {
-            if let (Some((wire_src_pin_transform, _)), Some((wire_dest_pin_transform, _))) = (
-                q_src_pins
-                    .iter()
-                    .find(|(_, p)| p.uuid.eq(&wire_src_pin_uuid)),
-                q_dest_pins
-                    .iter()
-                    .find(|(_, p)| p.uuid.eq(&wire_dest_pin_uuid)),
-            ) {
-                let new_wire = shapes::Line(
-                    wire_src_pin_transform.translation().truncate(),
-                    wire_dest_pin_transform.translation().truncate(),
-                );
+        let wire_src_pin_uuid = wire.src_pin_uuid.unwrap();
 
-                *wire_path = ShapePath::build_as(&new_wire);
-            } else {
-                commands.entity(wire_entity).despawn();
-                continue;
-            }
-        } else if let CursorState::DraggingWire(dragged_wire) = cursor.state {
-            //TODO: move this to drag_wire
-            if dragged_wire.eq(&wire_entity) {
-                if let Some((wire_src_pin_transform, _)) = q_src_pins
-                    .iter()
-                    .find(|(_, p)| p.uuid.eq(&wire_src_pin_uuid))
-                {
-                    let new_wire = shapes::Line(
-                        wire_src_pin_transform.translation().truncate(),
-                        cursor_transform.translation.truncate(),
-                    );
+        let wire_src_position = q_src_pins
+            .iter()
+            .find(|(_, p)| p.uuid.eq(&wire_src_pin_uuid))
+            .unwrap_or_else(|| panic!("No pin found with uuid: {}", wire_src_pin_uuid))
+            .0
+            .translation()
+            .truncate();
 
-                    *wire_path = ShapePath::build_as(&new_wire);
-                }
-            } else {
-                commands.entity(wire_entity).despawn();
-            }
+        let wire_dest_position = if let Some(wire_dest_pin_uuid) = wire.dest_pin_uuid {
+            q_dest_pins
+                .iter()
+                .find(|(_, p)| p.uuid.eq(&wire_dest_pin_uuid))
+                .unwrap_or_else(|| panic!("No pin found with uuid: {}", wire_dest_pin_uuid))
+                .0
+                .translation()
+                .truncate()
         } else {
-            commands.entity(wire_entity).despawn();
-        }
+            cursor_transform.translation.truncate()
+        };
+
+        let new_wire = shapes::Line(wire_src_position, wire_dest_position);
+        *wire_path = ShapePath::build_as(&new_wire);
     }
 }
 
@@ -205,7 +223,11 @@ pub fn drag_wire(
 ) {
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
 
-    if input.just_pressed(MouseButton::Left) && cursor.state == CursorState::Idle {
+    if !input.just_pressed(MouseButton::Left) {
+        return;
+    }
+
+    if cursor.state == CursorState::Idle {
         for (bbox, pin_view) in q_wire_src_pins.iter() {
             if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
                 continue;
@@ -216,34 +238,46 @@ pub fn drag_wire(
                 .spawn(WireBundle::new(Wire {
                     src_pin_uuid: Some(pin_view.uuid),
                     dest_pin_uuid: None,
+                    wire_points: Vec::new(),
                 }))
                 .id();
             cursor.state = CursorState::DraggingWire(wire);
             return;
         }
-    }
+    } else if let CursorState::DraggingWire(wire_entity) = cursor.state {
+        let Ok(mut wire) = q_wires.get_mut(wire_entity) else {
+            return;
+        };
 
-    if let CursorState::DraggingWire(wire_entity) = cursor.state {
-        if let Ok(mut wire) = q_wires.get_mut(wire_entity) {
-            if input.just_released(MouseButton::Left) {
-                for (bbox, pin_view) in q_wire_dest_pins.iter() {
-                    if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
-                        // connect wire to pin
-                        wire.dest_pin_uuid = Some(pin_view.uuid);
-                        cursor.state = CursorState::Idle;
-                        return;
-                    }
-                }
-
-                // dragged on nothing
+        for (bbox, pin_view) in q_wire_dest_pins.iter() {
+            if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
+                // connect wire to pin
+                wire.dest_pin_uuid = Some(pin_view.uuid);
                 cursor.state = CursorState::Idle;
+                return;
             }
         }
     }
 }
 
+pub fn cancel_drag(
+    input: Res<ButtonInput<KeyCode>>,
+    mut q_cursor: Query<&mut Cursor>,
+    mut commands: Commands,
+) {
+    let mut cursor = get_cursor_mut!(q_cursor);
+
+    if !input.just_pressed(KeyCode::Escape) {
+        return;
+    }
+
+    if let CursorState::DraggingWire(wire_entity) = cursor.state {
+        cursor.state = CursorState::Idle;
+        commands.entity(wire_entity).despawn_recursive();
+    }
+}
+
 //TODO: make faster by not updating colors that havent changed.
-//TODO: maybe move to wire.rs
 /**
  * Updates all colors that are bound to a signal, e.g. pins or wires.
  */
@@ -266,5 +300,48 @@ pub fn update_wire_signal_colors(
         );
 
         *wire_stroke = signal_wire_stroke;
+    }
+}
+
+//TODO: rename maybe (e.g. WireCorner)
+#[derive(Component)]
+pub struct WirePoint;
+
+#[derive(Bundle)]
+pub struct WirePointBundle {
+    wire_point: WirePoint,
+    spatial_bundle: SpatialBundle,
+}
+
+impl WirePointBundle {
+    pub fn new(position: Position) -> Self {
+        Self {
+            wire_point: WirePoint,
+            spatial_bundle: SpatialBundle {
+                transform: Transform::from_translation(position.to_translation(0.0)),
+                ..default()
+            },
+        }
+    }
+}
+
+pub fn create_wire_point(
+    input: Res<ButtonInput<MouseButton>>,
+    q_cursor: Query<(&Cursor, &Transform)>,
+    mut q_wires: Query<&mut Wire>,
+    mut commands: Commands,
+) {
+    let (cursor, cursor_transform) = get_cursor!(q_cursor);
+
+    if !input.just_pressed(MouseButton::Left) {
+        return;
+    }
+
+    if let CursorState::DraggingWire(wire_entity) = cursor.state {
+        if let Ok(mut wire) = q_wires.get_mut(wire_entity) {
+            let position = Position::from_translation(cursor_transform.translation);
+            let wire_point_entity = commands.spawn(WirePointBundle::new(position)).id();
+            wire.wire_points.push(wire_point_entity);
+        }
     }
 }
