@@ -289,6 +289,7 @@ pub struct WireJoint;
 #[derive(Bundle)]
 pub struct WireJointBundle {
     wire_joint: WireJoint,
+    signal_state: SignalState,
     spatial_bundle: SpatialBundle,
 }
 
@@ -296,6 +297,7 @@ impl WireJointBundle {
     pub fn new(position: Position) -> Self {
         Self {
             wire_joint: WireJoint,
+            signal_state: SignalState::Low,
             spatial_bundle: SpatialBundle {
                 transform: Transform::from_translation(position.to_translation(0.0)),
                 ..default()

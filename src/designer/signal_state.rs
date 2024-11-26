@@ -9,6 +9,8 @@ use super::{
     wire::{Wire, WireView},
 };
 
+//TODO: maybe move prev, next signal state to here
+
 #[derive(PartialEq, Clone, Copy, Debug, Component, Reflect)]
 #[reflect(Component)]
 pub enum SignalState {

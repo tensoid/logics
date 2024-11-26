@@ -63,6 +63,36 @@ pub struct PinModelCollection(pub Vec<PinModel>);
 
 #[allow(dead_code)]
 impl PinModelCollection {
+    pub fn find_in_collections<'a>(
+        uuid: Uuid,
+        collections: impl Iterator<Item = &'a PinModelCollection>,
+    ) -> Option<&'a PinModel> {
+        for collection in collections {
+            if let Some(pin_model) = collection.get_model(uuid) {
+                return Some(pin_model);
+            }
+        }
+        None
+    }
+
+    // TODO: fix this jank, maybe panic if not found i dunno
+    pub fn pin_model_scope<'a, F, R>(
+        collections: impl Iterator<Item = Mut<'a, PinModelCollection>>,
+        uuid: Uuid,
+        f: F,
+    ) -> Option<R>
+    where
+        F: FnOnce(&mut PinModel) -> R,
+    {
+        for mut collection in collections {
+            if let Some(pin_model) = collection.get_model_mut(uuid) {
+                // Apply the closure to mutate the PinModel
+                return Some(f(pin_model));
+            }
+        }
+        None
+    }
+
     pub fn get_model(&self, uuid: Uuid) -> Option<&PinModel> {
         self.iter().find(|m| m.uuid.eq(&uuid))
     }

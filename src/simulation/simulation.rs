@@ -8,7 +8,7 @@ use crate::designer::{
     devices::{device::DeviceViewKind, generic_chip::GenericChip},
     pin::{PinModelCollection, PinView},
     signal_state::SignalState,
-    wire::{Wire, WireNode},
+    wire::{Wire, WireJoint, WireNode},
 };
 
 /// Sets the [`SignalState`] of all input pins to [`SignalState::Low`] to prepare for update signals.
@@ -123,24 +123,27 @@ pub fn evaluate_builtin_chips(
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 enum SignalNode {
-    Wire(Wire),
+    Wire(Entity),
     Pin(Uuid),
     WireJoint(Entity),
 }
 
 //TODO: split into fns (process_a, process_b) maybe
+/// Propagates signals starting from all output pins using BFS.
 pub fn propagate_signals(
-    mut q_wires: Query<(&Wire, &mut SignalState)>,
+    mut q_wires: Query<(&Wire, &mut SignalState, Entity)>,
     q_pin_views: Query<(&PinView, Entity)>,
     q_parents: Query<&Parent>,
     q_board_entities: Query<&View<DeviceViewKind>>,
-    mut q_chip_models: Query<&mut PinModelCollection>,
+    mut q_pin_model_collections: Query<&mut PinModelCollection>,
+    mut q_wire_joints: Query<&mut SignalState, With<WireJoint>>,
 ) {
     let mut visited: HashSet<SignalNode> = HashSet::new();
-    let mut queue: VecDeque<SignalNode> = VecDeque::new();
-
-    let mut pin_map: HashMap<Uuid, Vec<Wire>> = HashMap::new();
-    let mut joint_map: HashMap<Entity, Vec<Wire>> = HashMap::new();
+    let mut queue: VecDeque<SignalNode> = q_pin_model_collections
+        .iter()
+        .flat_map(|pin_model_collection| &pin_model_collection.0)
+        .map(|pin_model| SignalNode::Pin(pin_model.uuid))
+        .collect();
 
     while let Some(node) = queue.pop_front() {
         if visited.contains(&node) {
@@ -148,9 +151,58 @@ pub fn propagate_signals(
         }
 
         match &node {
-            SignalNode::Pin(pin_uuid) => {}
-            SignalNode::Wire(wire) => {}
-            SignalNode::WireJoint(joint_entity) => {}
+            SignalNode::Pin(pin_uuid) => {
+                let pin_model = PinModelCollection::find_in_collections(
+                    *pin_uuid,
+                    q_pin_model_collections.iter(),
+                )
+                .unwrap();
+
+                for (wire, mut wire_signal_state, wire_entity) in q_wires.iter_mut() {
+                    if !wire.nodes.iter().any(|node| matches!(node, WireNode::Pin(wire_node_pin_uuid) if wire_node_pin_uuid == pin_uuid)) {
+                        continue;
+                    }
+
+                    *wire_signal_state = pin_model.signal_state;
+                    queue.push_back(SignalNode::Wire(wire_entity));
+                }
+            }
+            SignalNode::WireJoint(joint_entity) => {
+                let wire_joint_signal_state = q_wire_joints.get(*joint_entity).unwrap();
+
+                for (wire, mut wire_signal_state, wire_entity) in q_wires.iter_mut() {
+                    if !wire.nodes.iter().any(|node| matches!(node, WireNode::Joint(wire_node_joint_entity) if wire_node_joint_entity == joint_entity)) {
+                        continue;
+                    }
+
+                    *wire_signal_state = *wire_joint_signal_state;
+                    queue.push_back(SignalNode::Wire(wire_entity));
+                }
+            }
+            SignalNode::Wire(wire_entity) => {
+                let (wire, wire_signal_state, _) = q_wires.get(*wire_entity).unwrap();
+
+                for node in wire.nodes.iter() {
+                    match node {
+                        WireNode::Joint(joint_entity) => {
+                            let mut wire_joint_signal_state =
+                                q_wire_joints.get_mut(*joint_entity).unwrap();
+                            *wire_joint_signal_state = *wire_signal_state;
+                            queue.push_back(SignalNode::WireJoint(*joint_entity));
+                        }
+                        WireNode::Pin(pin_uuid) => {
+                            PinModelCollection::pin_model_scope(
+                                q_pin_model_collections.iter_mut(),
+                                *pin_uuid,
+                                |pin_model| {
+                                    pin_model.next_signal_state = *wire_signal_state;
+                                    queue.push_back(SignalNode::Pin(*pin_uuid));
+                                },
+                            );
+                        }
+                    }
+                }
+            }
         }
 
         visited.insert(node);
