@@ -1,36 +1,22 @@
+use std::collections::{HashMap, HashSet, VecDeque};
+
 use bevy::prelude::*;
 use moonshine_view::View;
+use uuid::Uuid;
 
-use crate::{
-    designer::{
-        devices::{
-            binary_io::BinaryDisplayPin,
-            device::DeviceViewKind,
-            generic_chip::{GenericChip, GenericChipInputPin},
-        },
-        pin::{PinModelCollection, PinView},
-        signal_state::SignalState,
-        wire::Wire,
-    },
-    get_model, get_model_mut,
+use crate::designer::{
+    devices::{device::DeviceViewKind, generic_chip::GenericChip},
+    pin::{PinModelCollection, PinView},
+    signal_state::SignalState,
+    wire::{Wire, WireNode},
 };
 
 /// Sets the [`SignalState`] of all input pins to [`SignalState::Low`] to prepare for update signals.
 #[allow(clippy::type_complexity)]
-pub fn reset_input_pins(
-    q_dest_pins: Query<(&PinView, Entity), Or<(With<GenericChipInputPin>, With<BinaryDisplayPin>)>>,
-    q_parents: Query<&Parent>,
-    q_board_entities: Query<&View<DeviceViewKind>>,
-    mut q_chip_models: Query<&mut PinModelCollection>,
-) {
-    for (pin_view, pin_entity) in q_dest_pins.iter() {
-        if let Some(mut pin_model_collection) =
-            get_model_mut!(q_parents, q_board_entities, q_chip_models, pin_entity)
-        {
-            pin_model_collection
-                .get_model_mut(pin_view.uuid)
-                .unwrap()
-                .next_signal_state = SignalState::Low;
+pub fn reset_input_pins(mut q_chip_models: Query<&mut PinModelCollection>) {
+    for mut pin_model_collection in q_chip_models.iter_mut() {
+        for pin_model in pin_model_collection.iter_inputs_mut() {
+            pin_model.next_signal_state = SignalState::Low
         }
     }
 }
@@ -135,14 +121,70 @@ pub fn evaluate_builtin_chips(
     }
 }
 
-/// Synchronizes the destination pin with the source pin for every [`Wire`].
-pub fn update_signals(
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+enum SignalNode {
+    Wire(Wire),
+    Pin(Uuid),
+    WireJoint(Entity),
+}
+
+//TODO: split into fns (process_a, process_b) maybe
+pub fn propagate_signals(
     mut q_wires: Query<(&Wire, &mut SignalState)>,
     q_pin_views: Query<(&PinView, Entity)>,
     q_parents: Query<&Parent>,
     q_board_entities: Query<&View<DeviceViewKind>>,
     mut q_chip_models: Query<&mut PinModelCollection>,
 ) {
+    let mut visited: HashSet<SignalNode> = HashSet::new();
+    let mut queue: VecDeque<SignalNode> = VecDeque::new();
+
+    let mut pin_map: HashMap<Uuid, Vec<Wire>> = HashMap::new();
+    let mut joint_map: HashMap<Entity, Vec<Wire>> = HashMap::new();
+
+    while let Some(node) = queue.pop_front() {
+        if visited.contains(&node) {
+            continue;
+        }
+
+        match &node {
+            SignalNode::Pin(pin_uuid) => {}
+            SignalNode::Wire(wire) => {}
+            SignalNode::WireJoint(joint_entity) => {}
+        }
+
+        visited.insert(node);
+    }
+
+    // // Update wires from output pins (might not need to clear pins?)
+    // for (wire, mut wire_signal_state) in q_wires.iter_mut() {
+    //     let pin_wire_nodes: Vec<Uuid> = wire
+    //         .nodes
+    //         .iter()
+    //         .filter_map(|n| match n {
+    //             WireNode::Pin(uuid) => Some(*uuid),
+    //             WireNode::Joint(_) => None,
+    //         })
+    //         .collect();
+
+    //     let new_wire_state = q_chip_models
+    //         .iter()
+    //         .flat_map(|pin_model_collection| pin_model_collection.0.clone())
+    //         .filter(|pin_model| pin_wire_nodes.contains(&pin_model.uuid))
+    //         .map(|pin_model| pin_model.signal_state)
+    //         .any(|signal_state| signal_state == SignalState::High);
+
+    //     *wire_signal_state = match new_wire_state {
+    //         true => SignalState::High,
+    //         false => SignalState::Low,
+    //     };
+    // }
+
+    // update wire points by gathering all connected wires
+
+    // Update wires from points
+    // Update pins from wires
+
     // for (wire, mut wire_signal_state) in q_wires.iter_mut() {
     //     let Some(wire_src_uuid) = wire.src_pin_uuid else {
     //         continue;

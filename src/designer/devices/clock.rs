@@ -10,7 +10,10 @@ use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
 use crate::designer::{
-    designer_assets::DesignerAssets, pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle}, position::Position, render_settings::CircuitBoardRenderingSettings
+    designer_assets::DesignerAssets,
+    pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
+    position::Position,
+    render_settings::CircuitBoardRenderingSettings,
 };
 
 use super::device::{Device, DeviceModelBundle, DeviceViewBundle, DeviceViewKind};
@@ -109,7 +112,10 @@ pub struct ClockLabelBundle {
 }
 
 impl ClockLabelBundle {
-    fn new(render_settings: &CircuitBoardRenderingSettings, designer_assets: &DesignerAssets) -> Self {
+    fn new(
+        render_settings: &CircuitBoardRenderingSettings,
+        designer_assets: &DesignerAssets,
+    ) -> Self {
         let text_style = TextStyle {
             font_size: render_settings.clock_label_font_size, // TODO: settings
             color: Color::BLACK,

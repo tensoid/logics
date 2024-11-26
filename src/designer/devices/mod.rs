@@ -26,7 +26,7 @@ use or_2::Or2;
 use t_flipflop::TFlipFlop;
 use xor_2::Xor2;
 
-use crate::simulation::simulation::update_signals;
+use crate::simulation::simulation::propagate_signals;
 
 use super::{pin::PinModelCollection, position::Position, signal_state::SignalState, wire::Wire};
 
@@ -68,7 +68,7 @@ impl Plugin for DevicePlugin {
                 Update,
                 update_board_binary_displays
                     .after(toggle_binary_switch) //TODO: observers?
-                    .after(update_signals),
+                    .after(propagate_signals),
             )
             .add_systems(Update, update_device_positions);
     }

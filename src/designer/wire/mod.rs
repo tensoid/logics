@@ -6,18 +6,13 @@ use moonshine_view::{BuildView, ViewCommands, Viewable};
 use uuid::Uuid;
 
 use crate::{
-    get_cursor, get_cursor_mut, simulation::simulation::update_signals,
+    get_cursor, get_cursor_mut, simulation::simulation::propagate_signals,
     ui::cursor_captured::IsCursorCaptured,
 };
 
 use super::{
     bounding_box::BoundingBox,
     cursor::{Cursor, CursorState},
-    devices::{
-        binary_io::{BinaryDisplayPin, BinarySwitchPin},
-        clock::ClockPin,
-        generic_chip::{GenericChipInputPin, GenericChipOutputPin},
-    },
     pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
@@ -26,7 +21,7 @@ use super::{
 
 //TODO: reimplement simulation
 //TODO: reimplement copy paste
-//TODO: implement wire delete
+//TODO: implement wire delete (wire bbox)
 //TODO: fix line jank (LineList)
 //TODO: split into files
 pub struct WirePlugin;
@@ -47,18 +42,19 @@ impl Plugin for WirePlugin {
             )
                 .chain(),
         )
-        .add_systems(Update, update_wire_signal_colors.after(update_signals)); //TODO: observers or Changed<> Filter
+        .add_systems(Update, update_wire_signal_colors.after(propagate_signals));
+        //TODO: observers or Changed<> Filter
     }
 }
 
 //TODO: rename
-#[derive(Clone, Reflect, Debug)]
+#[derive(Clone, Reflect, Debug, PartialEq, Eq, Hash)]
 pub enum WireNode {
     Pin(Uuid),
     Joint(Entity),
 }
 
-#[derive(Component, Reflect, Clone, Debug, Default)]
+#[derive(Component, Reflect, Clone, Debug, Default, PartialEq, Eq, Hash)]
 #[reflect(Component, Default)]
 pub struct Wire {
     pub nodes: Vec<WireNode>,
