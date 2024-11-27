@@ -215,7 +215,10 @@ pub fn tick_clocks(mut q_clocks: Query<(&mut Clock, &mut PinModelCollection)>, t
         clock.timer.tick(time.delta());
 
         if clock.timer.finished() {
-            pin_model_collection["Q"].next_signal_state = !pin_model_collection["Q"].signal_state;
+            let current_signal = pin_model_collection["Q"].signal_state.get_signal().clone();
+            pin_model_collection["Q"]
+                .signal_state
+                .set_signal(current_signal.negate());
         }
     }
 }

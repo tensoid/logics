@@ -63,12 +63,14 @@ impl Plugin for DevicePlugin {
             .register_device::<BinarySwitch>();
 
         app.add_systems(Update, tick_clocks)
-            .add_systems(Update, toggle_binary_switch)
             .add_systems(
                 Update,
-                update_board_binary_displays
-                    .after(toggle_binary_switch) //TODO: observers?
-                    .after(propagate_signals),
+                (
+                    toggle_binary_switch,
+                    update_board_binary_displays
+                        .chain()
+                        .after(propagate_signals),
+                ), //TODO: observers?
             )
             .add_systems(Update, update_device_positions);
     }

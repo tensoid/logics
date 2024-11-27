@@ -1,6 +1,7 @@
 use super::{
-    bounding_box::BoundingBox, render_settings::CircuitBoardRenderingSettings,
-    signal_state::SignalState,
+    bounding_box::BoundingBox,
+    render_settings::CircuitBoardRenderingSettings,
+    signal_state::{Signal, SignalState},
 };
 use bevy::prelude::*;
 use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};
@@ -10,9 +11,7 @@ use uuid::Uuid;
 pub struct PinPlugin;
 
 impl Plugin for PinPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(PostUpdate, commit_signal_updates); //TODO: observers?
-    }
+    fn build(&self, _: &mut App) {}
 }
 
 #[derive(Reflect, PartialEq, Clone)]
@@ -23,9 +22,7 @@ pub enum PinType {
 
 #[derive(Reflect, Clone)]
 pub struct PinModel {
-    pub previous_signal_state: SignalState,
     pub signal_state: SignalState,
-    pub next_signal_state: SignalState,
     pub pin_type: PinType,
     pub label: String,
     pub uuid: Uuid,
@@ -37,9 +34,7 @@ impl PinModel {
         Self {
             label,
             pin_type: PinType::Input,
-            previous_signal_state: SignalState::Low,
-            signal_state: SignalState::Low,
-            next_signal_state: SignalState::Low,
+            signal_state: SignalState::new(Signal::Low),
             uuid: Uuid::new_v4(),
         }
     }
@@ -49,9 +44,7 @@ impl PinModel {
         Self {
             label,
             pin_type: PinType::Output,
-            previous_signal_state: SignalState::Low,
-            signal_state: SignalState::Low,
-            next_signal_state: SignalState::Low,
+            signal_state: SignalState::new(Signal::Low),
             uuid: Uuid::new_v4(),
         }
     }
@@ -240,14 +233,5 @@ impl PinLabelBundle {
                 ..default()
             },
         }
-    }
-}
-
-pub fn commit_signal_updates(mut q_pin_model_collection: Query<&mut PinModelCollection>) {
-    for mut pin_model_collection in q_pin_model_collection.iter_mut() {
-        pin_model_collection.iter_mut().for_each(|c| {
-            c.previous_signal_state = c.signal_state;
-            c.signal_state = c.next_signal_state;
-        });
     }
 }

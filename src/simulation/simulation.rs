@@ -1,25 +1,14 @@
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashSet, VecDeque};
 
 use bevy::prelude::*;
-use moonshine_view::View;
 use uuid::Uuid;
 
 use crate::designer::{
-    devices::{device::DeviceViewKind, generic_chip::GenericChip},
-    pin::{PinModelCollection, PinView},
-    signal_state::SignalState,
+    devices::generic_chip::GenericChip,
+    pin::PinModelCollection,
+    signal_state::{Signal, SignalState},
     wire::{Wire, WireJoint, WireNode},
 };
-
-/// Sets the [`SignalState`] of all input pins to [`SignalState::Low`] to prepare for update signals.
-#[allow(clippy::type_complexity)]
-pub fn reset_input_pins(mut q_chip_models: Query<&mut PinModelCollection>) {
-    for mut pin_model_collection in q_chip_models.iter_mut() {
-        for pin_model in pin_model_collection.iter_inputs_mut() {
-            pin_model.next_signal_state = SignalState::Low
-        }
-    }
-}
 
 /// Evaluates all builtin chips and updates their models accordingly.
 pub fn evaluate_builtin_chips(
@@ -28,90 +17,128 @@ pub fn evaluate_builtin_chips(
     for (builtin_chip, mut pin_model_collection) in q_builtin_chip_models.iter_mut() {
         match builtin_chip.name.as_str() {
             "AND-2" => {
-                pin_model_collection["Q"].next_signal_state = match (
-                    pin_model_collection["A"].signal_state,
-                    pin_model_collection["B"].signal_state,
+                let next_signal = match (
+                    pin_model_collection["A"].signal_state.get_signal(),
+                    pin_model_collection["B"].signal_state.get_signal(),
                 ) {
-                    (SignalState::High, SignalState::High) => SignalState::High,
-                    _ => SignalState::Low,
+                    (Signal::Conflict, _) | (_, Signal::Conflict) => Signal::Conflict,
+                    (Signal::High, Signal::High) => Signal::High,
+                    _ => Signal::Low,
                 };
+
+                pin_model_collection["Q"]
+                    .signal_state
+                    .set_signal(next_signal);
             }
             "NAND-2" => {
-                pin_model_collection["Q"].next_signal_state = match (
-                    pin_model_collection["A"].signal_state,
-                    pin_model_collection["B"].signal_state,
+                let next_signal = match (
+                    pin_model_collection["A"].signal_state.get_signal(),
+                    pin_model_collection["B"].signal_state.get_signal(),
                 ) {
-                    (SignalState::High, SignalState::High) => SignalState::Low,
-                    _ => SignalState::High,
+                    (Signal::Conflict, _) | (_, Signal::Conflict) => Signal::Conflict,
+                    (Signal::High, Signal::High) => Signal::Low,
+                    _ => Signal::High,
                 };
+
+                pin_model_collection["Q"]
+                    .signal_state
+                    .set_signal(next_signal);
             }
             "OR-2" => {
-                pin_model_collection["Q"].next_signal_state = match (
-                    pin_model_collection["A"].signal_state,
-                    pin_model_collection["B"].signal_state,
+                let next_signal = match (
+                    pin_model_collection["A"].signal_state.get_signal(),
+                    pin_model_collection["B"].signal_state.get_signal(),
                 ) {
-                    (SignalState::Low, SignalState::Low) => SignalState::Low,
-                    _ => SignalState::High,
+                    (Signal::Conflict, _) | (_, Signal::Conflict) => Signal::Conflict,
+                    (Signal::Low, Signal::Low) => Signal::Low,
+                    _ => Signal::High,
                 };
+
+                pin_model_collection["Q"]
+                    .signal_state
+                    .set_signal(next_signal);
             }
             "NOT" => {
-                pin_model_collection["Q"].next_signal_state =
-                    !pin_model_collection["A"].signal_state;
+                let current_signal = pin_model_collection["A"].signal_state.get_signal().clone();
+                pin_model_collection["Q"]
+                    .signal_state
+                    .set_signal(current_signal.negate());
             }
             "XOR-2" => {
-                pin_model_collection["Q"].next_signal_state = match (
-                    pin_model_collection["A"].signal_state,
-                    pin_model_collection["B"].signal_state,
+                let next_signal = match (
+                    pin_model_collection["A"].signal_state.get_signal(),
+                    pin_model_collection["B"].signal_state.get_signal(),
                 ) {
-                    (SignalState::Low, SignalState::High) => SignalState::High,
-                    (SignalState::High, SignalState::Low) => SignalState::High,
-                    _ => SignalState::Low,
+                    (Signal::Conflict, _) | (_, Signal::Conflict) => Signal::Conflict,
+                    (Signal::Low, Signal::High) => Signal::High,
+                    (Signal::High, Signal::Low) => Signal::High,
+                    _ => Signal::Low,
                 };
+
+                pin_model_collection["Q"]
+                    .signal_state
+                    .set_signal(next_signal);
             }
             "JK-FF" => {
                 // High-Edge triggered
-                if pin_model_collection["C"].previous_signal_state != SignalState::Low
-                    || pin_model_collection["C"].signal_state != SignalState::High
+                if *pin_model_collection["C"].signal_state.get_previous_signal() != Signal::Low
+                    || *pin_model_collection["C"].signal_state.get_signal() != Signal::High
                 {
                     continue;
                 }
 
-                pin_model_collection["Q"].next_signal_state = match (
-                    pin_model_collection["J"].signal_state,
-                    pin_model_collection["K"].signal_state,
+                let current_output_signal =
+                    pin_model_collection["Q"].signal_state.get_signal().clone();
+
+                let next_signal = match (
+                    pin_model_collection["J"].signal_state.get_signal(),
+                    pin_model_collection["K"].signal_state.get_signal(),
                 ) {
-                    (SignalState::Low, SignalState::Low) => pin_model_collection["Q"].signal_state,
-                    (SignalState::Low, SignalState::High) => SignalState::Low,
-                    (SignalState::High, SignalState::Low) => SignalState::High,
-                    (SignalState::High, SignalState::High) => {
-                        !pin_model_collection["Q"].signal_state
-                    }
-                }
+                    (Signal::Conflict, _) | (_, Signal::Conflict) => Signal::Conflict,
+                    (Signal::Low, Signal::Low) => current_output_signal,
+                    (Signal::Low, Signal::High) => Signal::Low,
+                    (Signal::High, Signal::Low) => Signal::High,
+                    (Signal::High, Signal::High) => current_output_signal.negate(),
+                };
+
+                pin_model_collection["Q"]
+                    .signal_state
+                    .set_signal(next_signal);
             }
             "D-FF" => {
                 // High-Edge triggered
-                if pin_model_collection["C"].previous_signal_state != SignalState::Low
-                    || pin_model_collection["C"].signal_state != SignalState::High
+                if *pin_model_collection["C"].signal_state.get_previous_signal() != Signal::Low
+                    || *pin_model_collection["C"].signal_state.get_signal() != Signal::High
                 {
                     continue;
                 }
 
-                pin_model_collection["Q"].next_signal_state =
-                    pin_model_collection["D"].signal_state;
+                let next_signal = pin_model_collection["D"].signal_state.get_signal().clone();
+
+                pin_model_collection["Q"]
+                    .signal_state
+                    .set_signal(next_signal);
             }
             "T-FF" => {
                 // High-Edge triggered
-                if pin_model_collection["C"].previous_signal_state != SignalState::Low
-                    || pin_model_collection["C"].signal_state != SignalState::High
+                if *pin_model_collection["C"].signal_state.get_previous_signal() != Signal::Low
+                    || *pin_model_collection["C"].signal_state.get_signal() != Signal::High
                 {
                     continue;
                 }
 
-                pin_model_collection["Q"].next_signal_state =
-                    match pin_model_collection["T"].signal_state {
-                        SignalState::Low => pin_model_collection["Q"].signal_state,
-                        SignalState::High => !pin_model_collection["Q"].signal_state,
-                    }
+                let current_output_signal =
+                    pin_model_collection["Q"].signal_state.get_signal().clone();
+
+                let next_signal = match pin_model_collection["T"].signal_state.get_signal() {
+                    Signal::Conflict => Signal::Conflict,
+                    Signal::Low => current_output_signal,
+                    Signal::High => current_output_signal.negate(),
+                };
+
+                pin_model_collection["Q"]
+                    .signal_state
+                    .set_signal(next_signal);
             }
             _ => panic!(
                 "Tried to evaluate unknown BuiltinChip: {}",
@@ -128,28 +155,23 @@ enum SignalNode {
     WireJoint(Entity),
 }
 
-//TODO: split into fns (process_a, process_b) maybe
 /// Propagates signals starting from all output pins using BFS.
+/// TODO: If different signals stack on a node, high will always be preferred.
+/// This should probably result in a conflict signal state.
+/// TODO: Optimize by only queueing changed output pins.
 pub fn propagate_signals(
     mut q_wires: Query<(&Wire, &mut SignalState, Entity)>,
-    q_pin_views: Query<(&PinView, Entity)>,
-    q_parents: Query<&Parent>,
-    q_board_entities: Query<&View<DeviceViewKind>>,
     mut q_pin_model_collections: Query<&mut PinModelCollection>,
-    mut q_wire_joints: Query<&mut SignalState, With<WireJoint>>,
+    mut q_wire_joints: Query<&mut SignalState, (With<WireJoint>, Without<Wire>)>,
 ) {
     let mut visited: HashSet<SignalNode> = HashSet::new();
     let mut queue: VecDeque<SignalNode> = q_pin_model_collections
         .iter()
-        .flat_map(|pin_model_collection| &pin_model_collection.0)
+        .flat_map(|pin_model_collection| pin_model_collection.iter_outputs())
         .map(|pin_model| SignalNode::Pin(pin_model.uuid))
         .collect();
 
     while let Some(node) = queue.pop_front() {
-        if visited.contains(&node) {
-            continue;
-        }
-
         match &node {
             SignalNode::Pin(pin_uuid) => {
                 let pin_model = PinModelCollection::find_in_collections(
@@ -163,8 +185,10 @@ pub fn propagate_signals(
                         continue;
                     }
 
-                    *wire_signal_state = pin_model.signal_state;
-                    queue.push_back(SignalNode::Wire(wire_entity));
+                    wire_signal_state
+                        .push_signal(pin_model.signal_state.get_latest_signal().clone());
+
+                    enqueue_if_new(&mut queue, &visited, SignalNode::Wire(wire_entity));
                 }
             }
             SignalNode::WireJoint(joint_entity) => {
@@ -175,8 +199,10 @@ pub fn propagate_signals(
                         continue;
                     }
 
-                    *wire_signal_state = *wire_joint_signal_state;
-                    queue.push_back(SignalNode::Wire(wire_entity));
+                    wire_signal_state
+                        .push_signal(wire_joint_signal_state.get_latest_signal().clone());
+
+                    enqueue_if_new(&mut queue, &visited, SignalNode::Wire(wire_entity));
                 }
             }
             SignalNode::Wire(wire_entity) => {
@@ -187,7 +213,9 @@ pub fn propagate_signals(
                         WireNode::Joint(joint_entity) => {
                             let mut wire_joint_signal_state =
                                 q_wire_joints.get_mut(*joint_entity).unwrap();
-                            *wire_joint_signal_state = *wire_signal_state;
+                            wire_joint_signal_state
+                                .push_signal(wire_signal_state.get_latest_signal().clone());
+
                             queue.push_back(SignalNode::WireJoint(*joint_entity));
                         }
                         WireNode::Pin(pin_uuid) => {
@@ -195,8 +223,15 @@ pub fn propagate_signals(
                                 q_pin_model_collections.iter_mut(),
                                 *pin_uuid,
                                 |pin_model| {
-                                    pin_model.next_signal_state = *wire_signal_state;
-                                    queue.push_back(SignalNode::Pin(*pin_uuid));
+                                    pin_model
+                                        .signal_state
+                                        .push_signal(wire_signal_state.get_latest_signal().clone());
+
+                                    enqueue_if_new(
+                                        &mut queue,
+                                        &visited,
+                                        SignalNode::Pin(*pin_uuid),
+                                    );
                                 },
                             );
                         }
@@ -207,82 +242,36 @@ pub fn propagate_signals(
 
         visited.insert(node);
     }
+}
 
-    // // Update wires from output pins (might not need to clear pins?)
-    // for (wire, mut wire_signal_state) in q_wires.iter_mut() {
-    //     let pin_wire_nodes: Vec<Uuid> = wire
-    //         .nodes
-    //         .iter()
-    //         .filter_map(|n| match n {
-    //             WireNode::Pin(uuid) => Some(*uuid),
-    //             WireNode::Joint(_) => None,
-    //         })
-    //         .collect();
+/// Resolves the final signal state after propagation, by checking the collected signal states on every [`SignalNode`].
+pub fn apply_signals(
+    mut q_wires: Query<&mut SignalState, With<Wire>>,
+    mut q_pin_model_collections: Query<&mut PinModelCollection>,
+    mut q_wire_joints: Query<&mut SignalState, (With<WireJoint>, Without<Wire>)>,
+) {
+    for mut wire_signal_state in q_wires.iter_mut() {
+        wire_signal_state.apply_signals();
+    }
 
-    //     let new_wire_state = q_chip_models
-    //         .iter()
-    //         .flat_map(|pin_model_collection| pin_model_collection.0.clone())
-    //         .filter(|pin_model| pin_wire_nodes.contains(&pin_model.uuid))
-    //         .map(|pin_model| pin_model.signal_state)
-    //         .any(|signal_state| signal_state == SignalState::High);
+    for mut pin_model_collection in q_pin_model_collections.iter_mut() {
+        for pin_model in pin_model_collection.iter_mut() {
+            pin_model.signal_state.apply_signals();
+        }
+    }
 
-    //     *wire_signal_state = match new_wire_state {
-    //         true => SignalState::High,
-    //         false => SignalState::Low,
-    //     };
-    // }
+    for mut wire_joint_signal_state in q_wire_joints.iter_mut() {
+        wire_joint_signal_state.apply_signals();
+    }
+}
 
-    // update wire points by gathering all connected wires
-
-    // Update wires from points
-    // Update pins from wires
-
-    // for (wire, mut wire_signal_state) in q_wires.iter_mut() {
-    //     let Some(wire_src_uuid) = wire.src_pin_uuid else {
-    //         continue;
-    //     };
-
-    //     let Some((src_pin_view, src_pin_entity)) =
-    //         q_pin_views.iter().find(|(p, _)| p.uuid.eq(&wire_src_uuid))
-    //     else {
-    //         // this happens when the wire already spawned,
-    //         // but the view for the device has not yet
-    //         continue;
-    //     };
-    //     let Some(src_pin_model_collection) =
-    //         get_model!(q_parents, q_board_entities, q_chip_models, src_pin_entity)
-    //     else {
-    //         continue;
-    //     };
-
-    //     let src_pin_signal_state = src_pin_model_collection
-    //         .get_model(src_pin_view.uuid)
-    //         .unwrap()
-    //         .signal_state;
-
-    //     *wire_signal_state = src_pin_signal_state;
-
-    //     if src_pin_signal_state == SignalState::Low {
-    //         continue;
-    //     }
-
-    //     let Some(wire_dest_uuid) = wire.dest_pin_uuid else {
-    //         continue;
-    //     };
-
-    //     let (dest_pin_view, dest_pin_entity) = q_pin_views
-    //         .iter()
-    //         .find(|(p, _)| p.uuid.eq(&wire_dest_uuid))
-    //         .unwrap();
-    //     let Some(mut dest_pin_model_collection) =
-    //         get_model_mut!(q_parents, q_board_entities, q_chip_models, dest_pin_entity)
-    //     else {
-    //         continue;
-    //     };
-
-    //     dest_pin_model_collection
-    //         .get_model_mut(dest_pin_view.uuid)
-    //         .unwrap()
-    //         .next_signal_state = SignalState::High;
-    // }
+//TODO: improve or comment
+fn enqueue_if_new(
+    queue: &mut VecDeque<SignalNode>,
+    visited: &HashSet<SignalNode>,
+    node: SignalNode,
+) {
+    if !visited.contains(&node) {
+        queue.push_back(node);
+    }
 }

@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use uuid::Uuid;
 
 use crate::designer::{
     pin::{PinModel, PinModelCollection},

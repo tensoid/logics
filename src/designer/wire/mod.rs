@@ -16,10 +16,9 @@ use super::{
     pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
-    signal_state::SignalState,
+    signal_state::{Signal, SignalState},
 };
 
-//TODO: reimplement simulation
 //TODO: reimplement copy paste
 //TODO: implement wire delete (wire bbox)
 //TODO: fix line jank (LineList)
@@ -30,18 +29,15 @@ impl Plugin for WirePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (finish_wire_placement, create_wire_joint, create_wire)
+            (
+                finish_wire_placement,
+                create_wire_joint.before(propagate_signals),
+                create_wire,
+            )
                 .chain()
                 .run_if(resource_equals(IsCursorCaptured(false))),
         )
-        .add_systems(
-            Update,
-            (
-                cancel_wire_placement,
-                /*despawn_dangling_wires,*/ update_wires,
-            )
-                .chain(),
-        )
+        .add_systems(Update, (cancel_wire_placement, update_wires).chain())
         .add_systems(Update, update_wire_signal_colors.after(propagate_signals));
         //TODO: observers or Changed<> Filter
     }
@@ -71,15 +67,7 @@ impl WireBundle {
     pub fn new(wire_nodes: Vec<WireNode>) -> Self {
         Self {
             wire: Wire { nodes: wire_nodes },
-            signal_state: SignalState::Low,
-            save: Save,
-        }
-    }
-
-    pub fn new_with_signal(wire: Wire, signal_state: SignalState) -> Self {
-        Self {
-            wire,
-            signal_state,
+            signal_state: SignalState::new(Signal::Low),
             save: Save,
         }
     }
@@ -120,47 +108,6 @@ impl BuildView for Wire {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         view.insert(WireViewBundle::new(render_settings));
-    }
-}
-
-pub fn despawn_dangling_wires(
-    mut commands: Commands,
-    q_cursor: Query<&Cursor>,
-    q_wires: Query<(&Wire, Entity)>,
-    q_pins: Query<&PinView>,
-) {
-    let cursor = get_cursor!(q_cursor);
-
-    for (wire, wire_entity) in q_wires.iter() {
-        for joint in wire.nodes.iter() {
-            match joint {
-                WireNode::Joint(joint_entity) => {}
-                WireNode::Pin(pin_uuid) => {}
-            }
-        }
-
-        // let is_dangling = wire.src_pin_uuid.is_none() || wire.dest_pin_uuid.is_none();
-        // let is_currently_dragged =
-        //     matches!(cursor.state, CursorState::DraggingWire(w) if w == wire_entity);
-
-        // if is_dangling && !is_currently_dragged {
-        //     commands.entity(wire_entity).despawn_recursive();
-        //     continue;
-        // }
-
-        // let src_pin_exists = wire
-        //     .src_pin_uuid
-        //     .map(|uuid| q_pins.iter().any(|pin| pin.uuid == uuid))
-        //     .unwrap_or(false);
-
-        // let dest_pin_exists = wire
-        //     .dest_pin_uuid
-        //     .map(|uuid| q_pins.iter().any(|pin| pin.uuid == uuid))
-        //     .unwrap_or(false);
-
-        // if !src_pin_exists || !dest_pin_exists {
-        //     commands.entity(wire_entity).despawn_recursive();
-        // }
     }
 }
 
@@ -272,9 +219,10 @@ pub fn update_wire_signal_colors(
         let mut wire_stroke = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
 
         let signal_wire_stroke = Stroke::new(
-            match signal_state {
-                SignalState::Low => render_settings.signal_low_color,
-                SignalState::High => render_settings.signal_high_color,
+            match signal_state.get_signal() {
+                Signal::Low => render_settings.signal_low_color,
+                Signal::High => render_settings.signal_high_color,
+                Signal::Conflict => render_settings.signal_conflict_color,
             },
             render_settings.wire_line_width,
         );
@@ -297,7 +245,7 @@ impl WireJointBundle {
     pub fn new(position: Position) -> Self {
         Self {
             wire_joint: WireJoint,
-            signal_state: SignalState::Low,
+            signal_state: SignalState::new(Signal::Low),
             spatial_bundle: SpatialBundle {
                 transform: Transform::from_translation(position.to_translation(0.0)),
                 ..default()

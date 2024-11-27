@@ -15,7 +15,6 @@ pub mod wire;
 
 use bevy::app::PluginGroupBuilder;
 use bevy::prelude::*;
-use bevy::render::mesh::PrimitiveTopology;
 use bevy::transform::TransformSystem;
 use copy_paste::CopyPastePlugin;
 use cursor::CursorPlugin;
@@ -25,8 +24,6 @@ use pin::PinPlugin;
 use save_management::SaveManagementPlugin;
 use selection::SelectionPlugin;
 use wire::WirePlugin;
-
-use crate::simulation::simulation::propagate_signals;
 
 use self::bounding_box::update_bounding_boxes;
 use self::designer_state::DesignerState;

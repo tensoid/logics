@@ -1,5 +1,5 @@
 use bevy::{
-    color::palettes::css::{BLACK, BLUE, LIME, WHITE},
+    color::palettes::css::{BLACK, BLUE, LIME, RED, WHITE},
     prelude::*,
 };
 
@@ -8,6 +8,7 @@ pub struct CircuitBoardRenderingSettings {
     pub background_color: Color,
     pub signal_high_color: Color,
     pub signal_low_color: Color,
+    pub signal_conflict_color: Color,
     pub chip_pin_gap: f32,
     pub chip_pin_radius: f32,
     pub chip_pin_label_font_size: f32,
@@ -40,6 +41,7 @@ pub fn init_render_settings(app: &mut App) {
         background_color: Color::srgb(0.42, 0.45, 0.63),
         signal_low_color: BLACK.into(),
         signal_high_color: LIME.into(),
+        signal_conflict_color: RED.into(),
         chip_pin_gap: 25.0,
         chip_pin_radius: 7.0,
         chip_pin_label_font_size: 10.0,

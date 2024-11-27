@@ -22,7 +22,7 @@ use super::{
     devices::device::{DeviceModel, DeviceView, DeviceViewKind},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
-    wire::create_wire,
+    wire::{create_wire, Wire},
 };
 
 pub struct SelectionPlugin;
@@ -40,7 +40,7 @@ impl Plugin for SelectionPlugin {
             )
             .add_systems(PostUpdate, delete_selected)
             .add_systems(PostUpdate, update_dragged_entities_position)
-            .add_systems(PostUpdate, highlight_selected); //TODO: observers?
+            .add_systems(PostUpdate, highlight_selected_devices); //TODO: observers?
     }
 }
 
@@ -142,6 +142,7 @@ pub fn spawn_selection_box(
     cursor.state = CursorState::Selecting;
 }
 
+//TODO: split into smaller functions
 pub fn update_selection_box(
     mut q_selection_box: Query<(&mut Path, &Transform, Entity), With<SelectionBox>>,
     mut q_cursor: Query<(&mut Cursor, &Transform)>,
@@ -149,6 +150,9 @@ pub fn update_selection_box(
     mut commands: Commands,
     q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox), With<DeviceView>>,
     q_selected: Query<(), With<Selected>>,
+    q_wires: Query<&BoundingBox, With<Wire>> 
+    //TODO: LEFT OFF: add bbox component to wire
+    // check for collision
 ) {
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
     let cursor_position = cursor_transform.translation.truncate();
@@ -353,7 +357,7 @@ pub fn delete_selected(
 }
 
 #[allow(clippy::type_complexity)]
-pub fn highlight_selected(
+pub fn highlight_selected_devices(
     q_selected_entities: Query<
         &Viewable<DeviceViewKind>,
         (
@@ -374,7 +378,7 @@ pub fn highlight_selected(
         commands.entity(view_entity).with_children(|cb| {
             let extents = match bbox.bounding_shape {
                 BoundingShape::Aabb(aabb) => aabb.half_size() * Vec2::splat(2.0),
-                BoundingShape::Circle(_) => panic!("tried to highlight non aabb bounding box"),
+                _ => panic!("invalid bounding shape on device"),
             };
 
             cb.spawn(SelectionOutlineBundle::new(&render_settings, extents));

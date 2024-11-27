@@ -6,13 +6,13 @@ use uuid::Uuid;
 
 use crate::{
     designer::{
-        designer_assets::DesignerAssets,
         bounding_box::BoundingBox,
         cursor::Cursor,
+        designer_assets::DesignerAssets,
         pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
         position::Position,
         render_settings::CircuitBoardRenderingSettings,
-        signal_state::SignalState,
+        signal_state::Signal,
     },
     find_descendant, get_cursor, get_model_mut,
 };
@@ -414,9 +414,10 @@ pub fn update_board_binary_displays(
         let view_entity = viewable.view().entity();
 
         find_descendant!(q_children, view_entity, q_displays, |target: &mut Text| {
-            target.sections[0].value = match pin_model_collection["Q"].signal_state {
-                SignalState::High => "1".into(),
-                SignalState::Low => "0".into(),
+            target.sections[0].value = match pin_model_collection["Q"].signal_state.get_signal() {
+                Signal::High => "1".into(),
+                Signal::Low => "0".into(),
+                Signal::Conflict => "C".into(),
             };
         });
     }
@@ -447,7 +448,10 @@ pub fn toggle_binary_switch(
                 return;
             };
 
-            pin_collection["Q"].next_signal_state = !pin_collection["Q"].signal_state;
+            let current_signal = pin_collection["Q"].signal_state.get_signal().clone();
+            pin_collection["Q"]
+                .signal_state
+                .set_signal(current_signal.negate());
 
             break;
         }
