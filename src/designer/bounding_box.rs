@@ -1,38 +1,18 @@
 use bevy::{
-    math::{
-        bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
-        VectorSpace,
-    },
+    math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
 };
 
 #[derive(Clone)]
 pub struct WireShape {
-    points: Vec<Vec2>,
-    wire_width: f32,
+    pub points: Vec<Vec2>,
+    pub wire_width: f32,
 }
 
 impl IntersectsVolume<Aabb2d> for WireShape {
     fn intersects(&self, aabb: &Aabb2d) -> bool {
-        // Step 1: Expand the AABB to account for the wire's width (radius).
-        let expanded_aabb = Aabb2d {
-            min: aabb.min - Vec2::new(self.wire_width / 2.0, self.wire_width / 2.0),
-            max: aabb.max + Vec2::new(self.wire_width / 2.0, self.wire_width / 2.0),
-        };
-
-        // Step 2: Check each segment of the wire against the expanded AABB.
         for window in self.points.windows(2) {
-            let start = window[0];
-            let end = window[1];
-
-            if line_segment_intersects_aabb(start, end, &expanded_aabb) {
-                return true;
-            }
-        }
-
-        // Step 3: Check if any rounded corner (point on the wire) intersects the original AABB.
-        for point in &self.points {
-            if point_inside_aabb(*point, aabb) {
+            if line_intersects_rect(window[0], window[1], aabb.min, aabb.max) {
                 return true;
             }
         }
@@ -41,83 +21,46 @@ impl IntersectsVolume<Aabb2d> for WireShape {
     }
 }
 
-// Helper: Check if a point is inside an AABB.
-fn point_inside_aabb(point: Vec2, aabb: &Aabb2d) -> bool {
-    point.x >= aabb.min.x && point.x <= aabb.max.x && point.y >= aabb.min.y && point.y <= aabb.max.y
-}
-
-// Helper: Check if a line segment intersects an AABB.
-fn line_segment_intersects_aabb(start: Vec2, end: Vec2, aabb: &Aabb2d) -> bool {
-    // Step 1: Check if either endpoint is inside the AABB.
-    if point_inside_aabb(start, aabb) || point_inside_aabb(end, aabb) {
-        return true;
-    }
-
-    // Step 2: Check if the line intersects any of the AABB's edges.
-    let edges = [
-        (
-            Vec2::new(aabb.min.x, aabb.min.y),
-            Vec2::new(aabb.max.x, aabb.min.y),
-        ), // Bottom edge
-        (
-            Vec2::new(aabb.max.x, aabb.min.y),
-            Vec2::new(aabb.max.x, aabb.max.y),
-        ), // Right edge
-        (
-            Vec2::new(aabb.max.x, aabb.max.y),
-            Vec2::new(aabb.min.x, aabb.max.y),
-        ), // Top edge
-        (
-            Vec2::new(aabb.min.x, aabb.max.y),
-            Vec2::new(aabb.min.x, aabb.min.y),
-        ), // Left edge
+fn line_intersects_rect(line_start: Vec2, line_end: Vec2, rect_min: Vec2, rect_max: Vec2) -> bool {
+    // Define the rectangle edges as line segments
+    let rect_edges = [
+        (rect_min, Vec2::new(rect_max.x, rect_min.y)), // Bottom edge
+        (Vec2::new(rect_max.x, rect_min.y), rect_max), // Right edge
+        (rect_max, Vec2::new(rect_min.x, rect_max.y)), // Top edge
+        (Vec2::new(rect_min.x, rect_max.y), rect_min), // Left edge
     ];
 
-    for (edge_start, edge_end) in edges {
-        if line_segments_intersect(start, end, edge_start, edge_end) {
+    // Check if the line intersects any of the rectangle's edges
+    for &(edge_start, edge_end) in &rect_edges {
+        if line_segment_intersection(line_start, line_end, edge_start, edge_end) {
             return true;
         }
     }
 
-    false
+    // Check if the line segment is completely inside the rectangle
+    is_point_in_rect(line_start, rect_min, rect_max)
+        || is_point_in_rect(line_end, rect_min, rect_max)
 }
 
-// Helper: Check if two line segments intersect.
-fn line_segments_intersect(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2) -> bool {
-    let d1 = (b2 - b1).perp_dot(a1 - b1);
-    let d2 = (b2 - b1).perp_dot(a2 - b1);
-    let d3 = (a2 - a1).perp_dot(b1 - a1);
-    let d4 = (a2 - a1).perp_dot(b2 - a1);
-
-    // Check if the segments straddle each other.
-    if (d1 * d2 < 0.0) && (d3 * d4 < 0.0) {
-        return true;
+fn line_segment_intersection(p1: Vec2, p2: Vec2, q1: Vec2, q2: Vec2) -> bool {
+    fn cross(v1: Vec2, v2: Vec2) -> f32 {
+        v1.x * v2.y - v1.y * v2.x
     }
 
-    // Check for collinear overlap (special case).
-    if d1 == 0.0 && point_on_segment(a1, b1, b2) {
-        return true;
-    }
-    if d2 == 0.0 && point_on_segment(a2, b1, b2) {
-        return true;
-    }
-    if d3 == 0.0 && point_on_segment(b1, a1, a2) {
-        return true;
-    }
-    if d4 == 0.0 && point_on_segment(b2, a1, a2) {
-        return true;
-    }
+    let r = p2 - p1;
+    let s = q2 - q1;
+    let r_cross_s = cross(r, s);
+    let q_minus_p = q1 - p1;
+    let t = cross(q_minus_p, s) / r_cross_s;
+    let u = cross(q_minus_p, r) / r_cross_s;
 
-    false
+    // Check if r × s is not zero (lines are not parallel or collinear)
+    // and t and u are between 0 and 1 (intersects within the segments)
+    r_cross_s != 0.0 && t >= 0.0 && t <= 1.0 && u >= 0.0 && u <= 1.0
 }
 
-// Helper: Check if a point is on a line segment.
-fn point_on_segment(point: Vec2, seg_start: Vec2, seg_end: Vec2) -> bool {
-    let cross = (point - seg_start).perp_dot(seg_end - seg_start).abs();
-    let dot = (point - seg_start).dot(seg_end - seg_start);
-    let seg_len2 = (seg_end - seg_start).length_squared();
-
-    cross < f32::EPSILON && dot >= 0.0 && dot <= seg_len2
+fn is_point_in_rect(point: Vec2, rect_min: Vec2, rect_max: Vec2) -> bool {
+    point.x >= rect_min.x && point.x <= rect_max.x && point.y >= rect_min.y && point.y <= rect_max.y
 }
 
 #[derive(Clone)]
@@ -127,6 +70,7 @@ pub enum BoundingShape {
     Wire(WireShape),
 }
 
+//TODO: rework, maybe add onto model?
 #[derive(Component, Clone)]
 pub struct BoundingBox {
     pub bounding_shape: BoundingShape,
@@ -180,7 +124,7 @@ impl BoundingBox {
         match self.bounding_shape {
             BoundingShape::Aabb(aabb) => aabb.closest_point(point) == point,
             BoundingShape::Circle(circle) => circle.closest_point(point) == point,
-            BoundingShape::Wire(_) => todo!(),
+            BoundingShape::Wire(_) => false,
         }
     }
 
@@ -189,7 +133,7 @@ impl BoundingBox {
             BoundingShape::Aabb(aabb) => match &other.bounding_shape {
                 BoundingShape::Aabb(other_aabb) => aabb.intersects(other_aabb),
                 BoundingShape::Circle(other_circle) => aabb.intersects(other_circle),
-                BoundingShape::Wire(other_wire_shape) => other_wire_shape.intersects(&aabb),
+                BoundingShape::Wire(other_wire_shape) => other_wire_shape.intersects(aabb),
             },
             BoundingShape::Circle(circle) => match &other.bounding_shape {
                 BoundingShape::Aabb(other_aabb) => circle.intersects(other_aabb),
@@ -197,7 +141,7 @@ impl BoundingBox {
                 BoundingShape::Wire(_) => todo!(),
             },
             BoundingShape::Wire(wire_shape) => match &other.bounding_shape {
-                BoundingShape::Aabb(other_aabb) => wire_shape.intersects(&other_aabb),
+                BoundingShape::Aabb(other_aabb) => wire_shape.intersects(other_aabb),
                 _ => todo!(),
             },
         }

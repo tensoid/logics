@@ -10,6 +10,7 @@ use crate::designer::{
     wire::{Wire, WireJoint, WireNode},
 };
 
+//TODO: cleanup maybe?
 /// Evaluates all builtin chips and updates their models accordingly.
 pub fn evaluate_builtin_chips(
     mut q_builtin_chip_models: Query<(&GenericChip, &mut PinModelCollection)>,

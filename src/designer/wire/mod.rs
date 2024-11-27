@@ -11,14 +11,15 @@ use crate::{
 };
 
 use super::{
-    bounding_box::BoundingBox,
+    bounding_box::{BoundingBox, BoundingShape},
     cursor::{Cursor, CursorState},
-    pin::PinView,
+    pin::{PinModelCollection, PinView},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
     signal_state::{Signal, SignalState},
 };
 
+//TODO: quadradic/cubic curves wires
 //TODO: reimplement copy paste
 //TODO: implement wire delete (wire bbox)
 //TODO: fix line jank (LineList)
@@ -38,7 +39,8 @@ impl Plugin for WirePlugin {
                 .run_if(resource_equals(IsCursorCaptured(false))),
         )
         .add_systems(Update, (cancel_wire_placement, update_wires).chain())
-        .add_systems(Update, update_wire_signal_colors.after(propagate_signals));
+        .add_systems(Update, update_wire_signal_colors.after(propagate_signals))
+        .add_systems(Update, update_wire_bbox);
         //TODO: observers or Changed<> Filter
     }
 }
@@ -81,6 +83,7 @@ pub struct WireViewBundle {
     wire_view: WireView,
     shape_bundle: ShapeBundle,
     stroke: Stroke,
+    bounding_box: BoundingBox,
 }
 
 impl WireViewBundle {
@@ -99,6 +102,7 @@ impl WireViewBundle {
                 render_settings.wire_line_width,
             ),
             wire_view: WireView,
+            bounding_box: BoundingBox::wire_new(Vec::new(), render_settings.wire_line_width, true),
         }
     }
 }
@@ -152,6 +156,52 @@ pub fn update_wires(
         };
 
         *wire_path = ShapePath::build_as(&new_wire);
+    }
+}
+
+//TODO: performance
+pub fn update_wire_bbox(
+    q_wires: Query<(&Wire, &Viewable<Wire>)>,
+    mut q_wire_views: Query<&mut BoundingBox, With<WireView>>,
+    q_wire_joints: Query<&Transform, With<WireJoint>>,
+    q_pins: Query<(&GlobalTransform, &PinView)>,
+) {
+    for (wire, wire_viewable) in q_wires.iter() {
+        let mut wire_points: Vec<Vec2> = Vec::new();
+
+        for wire_node in wire.nodes.iter() {
+            match wire_node {
+                WireNode::Pin(pin_uuid) => {
+                    wire_points.push(
+                        q_pins
+                            .iter()
+                            .find(|(_, pin_view)| *pin_uuid == pin_view.uuid)
+                            .unwrap()
+                            .0
+                            .translation()
+                            .truncate(),
+                    );
+                }
+                WireNode::Joint(joint_entity) => {
+                    wire_points.push(
+                        q_wire_joints
+                            .get(*joint_entity)
+                            .unwrap()
+                            .translation
+                            .truncate(),
+                    );
+                }
+            }
+        }
+
+        let mut wire_bbox = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
+
+        match &mut wire_bbox.bounding_shape {
+            BoundingShape::Wire(wire_shape) => {
+                wire_shape.points = wire_points;
+            }
+            _ => panic!("invalid bounding shape for wire"),
+        }
     }
 }
 

@@ -22,7 +22,7 @@ use super::{
     devices::device::{DeviceModel, DeviceView, DeviceViewKind},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
-    wire::{create_wire, Wire},
+    wire::{create_wire, Wire, WireView},
 };
 
 pub struct SelectionPlugin;
@@ -150,9 +150,7 @@ pub fn update_selection_box(
     mut commands: Commands,
     q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox), With<DeviceView>>,
     q_selected: Query<(), With<Selected>>,
-    q_wires: Query<&BoundingBox, With<Wire>> 
-    //TODO: LEFT OFF: add bbox component to wire
-    // check for collision
+    q_wires: Query<(&View<Wire>, &BoundingBox), With<WireView>>,
 ) {
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
     let cursor_position = cursor_transform.translation.truncate();
@@ -186,6 +184,23 @@ pub fn update_selection_box(
 
     // update selected entities
     for (view, bbox) in q_device_views.iter() {
+        if !bbox.selectable {
+            continue;
+        }
+
+        let model_entity = view.viewable().entity();
+        let intersects = bbox.intersects(selection_box_bbox);
+        let is_selected = q_selected.get(model_entity).is_ok();
+
+        if intersects && !is_selected {
+            commands.entity(model_entity).insert(Selected);
+        } else if !intersects && is_selected {
+            commands.entity(model_entity).remove::<Selected>();
+        }
+    }
+
+    //TODO: fix this jank ^
+    for (view, bbox) in q_wires.iter() {
         if !bbox.selectable {
             continue;
         }

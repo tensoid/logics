@@ -28,6 +28,7 @@ pub fn draw_bounding_boxes(
             BoundingShape::Circle(circle) => {
                 bbox_gizmos.circle_2d(circle.center(), circle.radius(), color);
             }
+            BoundingShape::Wire(_) => todo!(),
         }
     }
 }
