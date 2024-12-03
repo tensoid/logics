@@ -7,6 +7,7 @@ use crate::{
     designer::{
         bounding_box::BoundingBox,
         cursor::{Cursor, CursorState},
+        model::Model,
         position::Position,
         selection::{Dragged, Selected},
     },
@@ -103,6 +104,7 @@ impl DeviceViewBundle {
     }
 }
 
+/// Marker component for device models
 #[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct DeviceModel;
@@ -110,16 +112,14 @@ pub struct DeviceModel;
 #[derive(Bundle, Clone)]
 pub struct DeviceModelBundle {
     device_model: DeviceModel,
-    position: Position,
-    save: Save,
+    model: Model,
 }
 
 impl DeviceModelBundle {
     pub fn new(position: Position) -> Self {
         Self {
             device_model: DeviceModel,
-            position,
-            save: Save,
+            model: Model::from_position(position),
         }
     }
 }

@@ -3,11 +3,15 @@ use std::collections::{HashSet, VecDeque};
 use bevy::prelude::*;
 use uuid::Uuid;
 
-use crate::designer::{
-    devices::generic_chip::GenericChip,
-    pin::PinModelCollection,
-    signal_state::{Signal, SignalState},
-    wire::{Wire, WireJoint, WireNode},
+use crate::{
+    designer::{
+        devices::generic_chip::GenericChip,
+        model::ModelId,
+        pin::PinModelCollection,
+        signal_state::{Signal, SignalState},
+        wire::{wire_joint::WireJointModel, WireModel, WireNode, WireNodes},
+    },
+    find_model_by_uuid, find_model_by_uuid_mut,
 };
 
 //TODO: cleanup maybe?
@@ -153,7 +157,7 @@ pub fn evaluate_builtin_chips(
 enum SignalNode {
     Wire(Entity),
     Pin(Uuid),
-    WireJoint(Entity),
+    WireJoint(Uuid),
 }
 
 /// Propagates signals starting from all output pins using BFS.
@@ -161,9 +165,12 @@ enum SignalNode {
 /// This should probably result in a conflict signal state.
 /// TODO: Optimize by only queueing changed output pins.
 pub fn propagate_signals(
-    mut q_wires: Query<(&Wire, &mut SignalState, Entity)>,
+    mut q_wires: Query<(&WireNodes, &mut SignalState, Entity)>,
     mut q_pin_model_collections: Query<&mut PinModelCollection>,
-    mut q_wire_joints: Query<&mut SignalState, (With<WireJoint>, Without<Wire>)>,
+    mut q_wire_joints: Query<
+        (&ModelId, &mut SignalState),
+        (With<WireJointModel>, Without<WireNodes>),
+    >,
 ) {
     let mut visited: HashSet<SignalNode> = HashSet::new();
     let mut queue: VecDeque<SignalNode> = q_pin_model_collections
@@ -181,8 +188,8 @@ pub fn propagate_signals(
                 )
                 .unwrap();
 
-                for (wire, mut wire_signal_state, wire_entity) in q_wires.iter_mut() {
-                    if !wire.nodes.iter().any(|node| matches!(node, WireNode::Pin(wire_node_pin_uuid) if wire_node_pin_uuid == pin_uuid)) {
+                for (wire_nodes, mut wire_signal_state, wire_entity) in q_wires.iter_mut() {
+                    if !wire_nodes.0.iter().any(|node| matches!(node, WireNode::Pin(wire_node_pin_uuid) if wire_node_pin_uuid == pin_uuid)) {
                         continue;
                     }
 
@@ -192,11 +199,12 @@ pub fn propagate_signals(
                     enqueue_if_new(&mut queue, &visited, SignalNode::Wire(wire_entity));
                 }
             }
-            SignalNode::WireJoint(joint_entity) => {
-                let wire_joint_signal_state = q_wire_joints.get(*joint_entity).unwrap();
+            SignalNode::WireJoint(joint_uuid) => {
+                let wire_joint_signal_state =
+                    find_model_by_uuid!(q_wire_joints, *joint_uuid).unwrap().1;
 
-                for (wire, mut wire_signal_state, wire_entity) in q_wires.iter_mut() {
-                    if !wire.nodes.iter().any(|node| matches!(node, WireNode::Joint(wire_node_joint_entity) if wire_node_joint_entity == joint_entity)) {
+                for (wire_nodes, mut wire_signal_state, wire_entity) in q_wires.iter_mut() {
+                    if !wire_nodes.0.iter().any(|node| matches!(node, WireNode::Joint(wire_node_joint_entity) if wire_node_joint_entity == joint_uuid)) {
                         continue;
                     }
 
@@ -207,17 +215,19 @@ pub fn propagate_signals(
                 }
             }
             SignalNode::Wire(wire_entity) => {
-                let (wire, wire_signal_state, _) = q_wires.get(*wire_entity).unwrap();
+                let (wire_nodes, wire_signal_state, _) = q_wires.get(*wire_entity).unwrap();
 
-                for node in wire.nodes.iter() {
-                    match node {
-                        WireNode::Joint(joint_entity) => {
+                for wire_node in wire_nodes.0.iter() {
+                    match wire_node {
+                        WireNode::Joint(joint_uuid) => {
                             let mut wire_joint_signal_state =
-                                q_wire_joints.get_mut(*joint_entity).unwrap();
+                                find_model_by_uuid_mut!(q_wire_joints, *joint_uuid)
+                                    .unwrap()
+                                    .1;
                             wire_joint_signal_state
                                 .push_signal(wire_signal_state.get_latest_signal().clone());
 
-                            queue.push_back(SignalNode::WireJoint(*joint_entity));
+                            queue.push_back(SignalNode::WireJoint(*joint_uuid));
                         }
                         WireNode::Pin(pin_uuid) => {
                             PinModelCollection::pin_model_scope(
@@ -247,9 +257,9 @@ pub fn propagate_signals(
 
 /// Resolves the final signal state after propagation, by checking the collected signal states on every [`SignalNode`].
 pub fn apply_signals(
-    mut q_wires: Query<&mut SignalState, With<Wire>>,
+    mut q_wires: Query<&mut SignalState, With<WireModel>>,
     mut q_pin_model_collections: Query<&mut PinModelCollection>,
-    mut q_wire_joints: Query<&mut SignalState, (With<WireJoint>, Without<Wire>)>,
+    mut q_wire_joints: Query<&mut SignalState, (With<WireJointModel>, Without<WireModel>)>,
 ) {
     for mut wire_signal_state in q_wires.iter_mut() {
         wire_signal_state.apply_signals();

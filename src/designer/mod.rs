@@ -5,6 +5,7 @@ pub mod designer_assets;
 pub mod designer_state;
 pub mod devices;
 pub mod macros;
+pub mod model;
 pub mod pin;
 pub mod position;
 pub mod render_settings;
@@ -20,9 +21,11 @@ use copy_paste::CopyPastePlugin;
 use cursor::CursorPlugin;
 use designer_assets::load_assets;
 use devices::DevicePlugin;
+use model::ModelId;
 use pin::PinPlugin;
 use save_management::SaveManagementPlugin;
 use selection::SelectionPlugin;
+use signal_state::SignalState;
 use wire::WirePlugin;
 
 use self::bounding_box::update_bounding_boxes;
@@ -50,6 +53,8 @@ pub struct DesignerPlugin;
 impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<DesignerState>()
+            .register_type::<SignalState>()
+            .register_type::<ModelId>()
             .add_systems(PreStartup, load_assets)
             .add_systems(
                 PostUpdate,

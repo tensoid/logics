@@ -7,12 +7,8 @@ use uuid::Uuid;
 use crate::events::events::{CopyEvent, PasteEvent};
 
 use super::{
-    devices::device::DeviceModel,
-    pin::PinModelCollection,
-    position::Position,
-    selection::Selected,
-    signal_state::SignalState,
-    wire::{Wire, WireBundle},
+    devices::device::DeviceModel, pin::PinModelCollection, position::Position, selection::Selected,
+    signal_state::SignalState, wire::WireNodes,
 };
 
 pub struct CopyPastePlugin;
@@ -152,14 +148,13 @@ pub fn paste_devices(world: &mut World) -> HashMap<Uuid, Uuid> {
 /// Stores all wires after copying.
 #[derive(Resource, Default)]
 pub struct WireClipboard {
-    pub items: Vec<(Wire, SignalState)>,
+    pub items: Vec<(WireNodes, SignalState)>,
 }
 
 /// Copies all wires and stores them in the [`WireClipboard`].
-pub fn copy_wires(
-    q_wires: Query<(&Wire, &SignalState)>,
-    q_selected_devices: Query<&PinModelCollection, (With<Selected>, With<DeviceModel>)>,
-    mut wire_clipboard: ResMut<WireClipboard>,
+pub fn copy_wires(// q_wires: Query<(&WireModel, &SignalState)>,
+    // q_selected_devices: Query<&PinModelCollection, (With<Selected>, With<DeviceModel>)>,
+    // mut wire_clipboard: ResMut<WireClipboard>,
 ) {
     // wire_clipboard.items.clear();
 

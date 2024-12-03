@@ -20,6 +20,7 @@ pub enum PinType {
     Output,
 }
 
+//TODO: maybe make pinmodel an entity. its weird having these inside a component.
 #[derive(Reflect, Clone)]
 pub struct PinModel {
     pub signal_state: SignalState,

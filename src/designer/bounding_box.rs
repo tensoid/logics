@@ -71,6 +71,7 @@ pub enum BoundingShape {
 }
 
 //TODO: rework, maybe add onto model?
+//TODO: split into plugin and files
 #[derive(Component, Clone)]
 pub struct BoundingBox {
     pub bounding_shape: BoundingShape,

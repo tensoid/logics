@@ -28,7 +28,9 @@ use xor_2::Xor2;
 
 use crate::simulation::simulation::propagate_signals;
 
-use super::{pin::PinModelCollection, position::Position, signal_state::SignalState, wire::Wire};
+use super::{
+    pin::PinModelCollection, position::Position, signal_state::SignalState, wire::WireNodes,
+};
 
 pub struct DevicePlugin;
 
@@ -40,15 +42,12 @@ impl Plugin for DevicePlugin {
             .register_type::<BinaryDisplay>()
             .register_type::<GenericChip>()
             .register_type::<PinModelCollection>()
-            .register_type::<Wire>()
-            .register_type::<SignalState>()
-            .register_type::<Clock>()
-            //TODO: move register view into register device or smth
-            .register_view::<DeviceViewKind, BinarySwitch>()
+            .register_type::<Clock>();
+
+        app.register_view::<DeviceViewKind, BinarySwitch>()
             .register_view::<DeviceViewKind, BinaryDisplay>()
             .register_view::<DeviceViewKind, GenericChip>()
-            .register_view::<DeviceViewKind, Clock>()
-            .register_viewable::<Wire>();
+            .register_view::<DeviceViewKind, Clock>();
 
         app.register_device::<And2>()
             .register_device::<Nand2>()

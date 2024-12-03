@@ -74,3 +74,24 @@ macro_rules! get_model_mut {
         $q_models.get_mut(src_model_entity).ok()
     }};
 }
+
+//TODO: yeah this is bonkers. query trait maybe.
+#[macro_export]
+macro_rules! find_model_by_uuid {
+    ($query:expr, $uuid:expr) => {
+        $query.iter().find(|item| {
+            // assuming the first component of the query is always ModelId
+            item.0 .0 == $uuid
+        })
+    };
+}
+
+#[macro_export]
+macro_rules! find_model_by_uuid_mut {
+    ($query:expr, $uuid:expr) => {
+        $query.iter_mut().find(|item| {
+            // assuming the first component of the query is always ModelId
+            item.0 .0 == $uuid
+        })
+    };
+}

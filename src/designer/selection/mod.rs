@@ -22,7 +22,7 @@ use super::{
     devices::device::{DeviceModel, DeviceView, DeviceViewKind},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
-    wire::{create_wire, Wire, WireView},
+    wire::{create_wire, WireModel, WireView},
 };
 
 pub struct SelectionPlugin;
@@ -150,7 +150,7 @@ pub fn update_selection_box(
     mut commands: Commands,
     q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox), With<DeviceView>>,
     q_selected: Query<(), With<Selected>>,
-    q_wires: Query<(&View<Wire>, &BoundingBox), With<WireView>>,
+    q_wires: Query<(&View<WireModel>, &BoundingBox), With<WireView>>,
 ) {
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
     let cursor_position = cursor_transform.translation.truncate();

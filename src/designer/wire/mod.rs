@@ -1,33 +1,43 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 use moonshine_core::object::Object;
-use moonshine_save::save::Save;
-use moonshine_view::{BuildView, ViewCommands, Viewable};
+use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use uuid::Uuid;
+use wire_joint::{create_wire_joint, WireJointModel};
+
+pub mod wire_joint;
 
 use crate::{
-    get_cursor, get_cursor_mut, simulation::simulation::propagate_signals,
+    find_model_by_uuid, get_cursor, get_cursor_mut, simulation::simulation::propagate_signals,
     ui::cursor_captured::IsCursorCaptured,
 };
 
 use super::{
     bounding_box::{BoundingBox, BoundingShape},
     cursor::{Cursor, CursorState},
-    pin::{PinModelCollection, PinView},
+    model::{Model, ModelId},
+    pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
     signal_state::{Signal, SignalState},
 };
 
-//TODO: quadradic/cubic curves wires
-//TODO: reimplement copy paste
-//TODO: implement wire delete (wire bbox)
+//TODO: query trait get with modelid
+//TODO: bounding box on model
+//TODO: Only ever access model, view only accessed from model itself for syncing
+//TODO: implement wire delete_selected / select_single / highlighting (wire bbox)
+//TODO: reimplement copy paste (single clipboard / same paste pipeline)
 //TODO: fix line jank (LineList)
+//TODO: quadradic/cubic curves wires
 //TODO: split into files
 pub struct WirePlugin;
 
 impl Plugin for WirePlugin {
     fn build(&self, app: &mut App) {
+        app.register_type::<WireNodes>()
+            .register_type::<WireModel>();
+
+        app.register_viewable::<WireModel>();
         app.add_systems(
             Update,
             (
@@ -38,8 +48,11 @@ impl Plugin for WirePlugin {
                 .chain()
                 .run_if(resource_equals(IsCursorCaptured(false))),
         )
-        .add_systems(Update, (cancel_wire_placement, update_wires).chain())
-        .add_systems(Update, update_wire_signal_colors.after(propagate_signals))
+        .add_systems(Update, (cancel_wire_placement, update_wire_views).chain())
+        .add_systems(
+            Update,
+            update_wire_view_signal_colors.after(propagate_signals),
+        )
         .add_systems(Update, update_wire_bbox);
         //TODO: observers or Changed<> Filter
     }
@@ -49,28 +62,34 @@ impl Plugin for WirePlugin {
 #[derive(Clone, Reflect, Debug, PartialEq, Eq, Hash)]
 pub enum WireNode {
     Pin(Uuid),
-    Joint(Entity),
+    Joint(Uuid),
 }
 
 #[derive(Component, Reflect, Clone, Debug, Default, PartialEq, Eq, Hash)]
 #[reflect(Component, Default)]
-pub struct Wire {
-    pub nodes: Vec<WireNode>,
-}
+pub struct WireNodes(pub Vec<WireNode>);
 
+/// Marker component for wire models
+#[derive(Component, Reflect, Clone)]
+#[reflect(Component)]
+pub struct WireModel;
+
+//TODO: go similar with other models? marker type as "XXXModel" and singular components like "wirenodes" instead of just "Wire"
 #[derive(Bundle)]
-pub struct WireBundle {
-    pub wire: Wire,
-    pub save: Save,
+pub struct WireModelBundle {
+    pub wire_model: WireModel,
+    pub wire_nodes: WireNodes,
+    pub model: Model,
     pub signal_state: SignalState,
 }
 
-impl WireBundle {
+impl WireModelBundle {
     pub fn new(wire_nodes: Vec<WireNode>) -> Self {
         Self {
-            wire: Wire { nodes: wire_nodes },
+            wire_model: WireModel,
+            model: Model::new(),
+            wire_nodes: WireNodes(wire_nodes),
             signal_state: SignalState::new(Signal::Low),
-            save: Save,
         }
     }
 }
@@ -107,8 +126,8 @@ impl WireViewBundle {
     }
 }
 
-impl BuildView for Wire {
-    fn build(world: &World, _: Object<Wire>, view: &mut ViewCommands<Wire>) {
+impl BuildView for WireModel {
+    fn build(world: &World, _: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         view.insert(WireViewBundle::new(render_settings));
@@ -116,10 +135,10 @@ impl BuildView for Wire {
 }
 
 #[allow(clippy::type_complexity)]
-pub fn update_wires(
-    q_wires: Query<(&mut Wire, &Viewable<Wire>, Entity)>,
+pub fn update_wire_views(
+    q_wires: Query<(&mut WireNodes, &Viewable<WireModel>, Entity)>,
     q_pins: Query<(&GlobalTransform, &PinView)>,
-    q_wire_joints: Query<&Transform, With<WireJoint>>,
+    q_wire_joints: Query<(&ModelId, &Position), With<WireJointModel>>,
     q_cursor: Query<(&Cursor, &Transform)>,
     mut q_wire_views: Query<&mut Path, With<WireView>>,
 ) {
@@ -129,10 +148,15 @@ pub fn update_wires(
         let mut wire_path = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
 
         let mut points: Vec<Vec2> = wire
-            .nodes
+            .0
             .iter()
             .map(|wire_node| match wire_node {
-                WireNode::Joint(joint) => q_wire_joints.get(*joint).unwrap().translation.truncate(),
+                WireNode::Joint(joint_uuid) => {
+                    find_model_by_uuid!(q_wire_joints, *joint_uuid)
+                        .unwrap()
+                        .1
+                         .0
+                }
                 WireNode::Pin(pin_uuid) => q_pins
                     .iter()
                     .find(|(_, pin_view)| pin_view.uuid == *pin_uuid)
@@ -161,38 +185,31 @@ pub fn update_wires(
 
 //TODO: performance
 pub fn update_wire_bbox(
-    q_wires: Query<(&Wire, &Viewable<Wire>)>,
+    q_wires: Query<(&WireNodes, &Viewable<WireModel>)>,
     mut q_wire_views: Query<&mut BoundingBox, With<WireView>>,
-    q_wire_joints: Query<&Transform, With<WireJoint>>,
+    q_wire_joints: Query<(&ModelId, &Position), With<WireJointModel>>,
     q_pins: Query<(&GlobalTransform, &PinView)>,
 ) {
-    for (wire, wire_viewable) in q_wires.iter() {
-        let mut wire_points: Vec<Vec2> = Vec::new();
-
-        for wire_node in wire.nodes.iter() {
-            match wire_node {
-                WireNode::Pin(pin_uuid) => {
-                    wire_points.push(
-                        q_pins
-                            .iter()
-                            .find(|(_, pin_view)| *pin_uuid == pin_view.uuid)
-                            .unwrap()
-                            .0
-                            .translation()
-                            .truncate(),
-                    );
+    for (wire_nodes, wire_viewable) in q_wires.iter() {
+        let wire_points: Vec<Vec2> = wire_nodes
+            .0
+            .iter()
+            .map(|wire_node| match wire_node {
+                WireNode::Joint(joint_uuid) => {
+                    find_model_by_uuid!(q_wire_joints, *joint_uuid)
+                        .unwrap()
+                        .1
+                         .0
                 }
-                WireNode::Joint(joint_entity) => {
-                    wire_points.push(
-                        q_wire_joints
-                            .get(*joint_entity)
-                            .unwrap()
-                            .translation
-                            .truncate(),
-                    );
-                }
-            }
-        }
+                WireNode::Pin(pin_uuid) => q_pins
+                    .iter()
+                    .find(|(_, pin_view)| pin_view.uuid == *pin_uuid)
+                    .unwrap()
+                    .0
+                    .translation()
+                    .truncate(),
+            })
+            .collect();
 
         let mut wire_bbox = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
 
@@ -229,7 +246,7 @@ pub fn create_wire(
 
         // cursor is on pin
         let wire = commands
-            .spawn(WireBundle::new(vec![WireNode::Pin(pin_view.uuid)]))
+            .spawn(WireModelBundle::new(vec![WireNode::Pin(pin_view.uuid)]))
             .id();
 
         cursor.state = CursorState::DraggingWire(wire);
@@ -259,8 +276,8 @@ pub fn cancel_wire_placement(
  * Updates all colors that are bound to a signal, e.g. pins or wires.
  */
 #[allow(clippy::type_complexity)]
-pub fn update_wire_signal_colors(
-    q_wires: Query<(&Viewable<Wire>, &SignalState)>,
+pub fn update_wire_view_signal_colors(
+    q_wires: Query<(&Viewable<WireModel>, &SignalState)>,
     mut q_wire_views: Query<&mut Stroke, With<WireView>>,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
@@ -281,55 +298,11 @@ pub fn update_wire_signal_colors(
     }
 }
 
-#[derive(Component)]
-pub struct WireJoint;
-
-#[derive(Bundle)]
-pub struct WireJointBundle {
-    wire_joint: WireJoint,
-    signal_state: SignalState,
-    spatial_bundle: SpatialBundle,
-}
-
-impl WireJointBundle {
-    pub fn new(position: Position) -> Self {
-        Self {
-            wire_joint: WireJoint,
-            signal_state: SignalState::new(Signal::Low),
-            spatial_bundle: SpatialBundle {
-                transform: Transform::from_translation(position.to_translation(0.0)),
-                ..default()
-            },
-        }
-    }
-}
-
-pub fn create_wire_joint(
-    input: Res<ButtonInput<MouseButton>>,
-    q_cursor: Query<(&Cursor, &Transform)>,
-    mut q_wires: Query<&mut Wire>,
-    mut commands: Commands,
-) {
-    let (cursor, cursor_transform) = get_cursor!(q_cursor);
-
-    if !input.just_pressed(MouseButton::Left) {
-        return;
-    }
-
-    if let CursorState::DraggingWire(wire_entity) = cursor.state {
-        if let Ok(mut wire) = q_wires.get_mut(wire_entity) {
-            let position = Position::from_translation(cursor_transform.translation);
-            let wire_joint_entity = commands.spawn(WireJointBundle::new(position)).id();
-            wire.nodes.push(WireNode::Joint(wire_joint_entity));
-        }
-    }
-}
-
 pub fn finish_wire_placement(
     input: Res<ButtonInput<MouseButton>>,
     q_pins: Query<(&BoundingBox, &PinView)>,
     mut q_cursor: Query<(&mut Cursor, &Transform), With<Cursor>>,
-    mut q_wires: Query<&mut Wire>,
+    mut q_wires: Query<&mut WireNodes>,
 ) {
     let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
 
@@ -345,7 +318,7 @@ pub fn finish_wire_placement(
 
     for (bbox, pin_view) in q_pins.iter() {
         if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
-            wire.nodes.push(WireNode::Pin(pin_view.uuid));
+            wire.0.push(WireNode::Pin(pin_view.uuid));
             cursor.state = CursorState::Idle;
             return;
         }
