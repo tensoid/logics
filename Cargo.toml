@@ -13,7 +13,7 @@ moonshine-view = "0.1.5"
 moonshine-core = "0.2.0"
 uuid = "1.11.0"
 bevy_framepace = "0.17.1"
-rfd = "0.15.1"
+bevy_file_dialog = "0.6.0"
 
 [profile.dev]
 opt-level = 1

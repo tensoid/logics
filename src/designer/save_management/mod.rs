@@ -2,11 +2,14 @@ use crate::events::events::{
     LoadEvent, LoadRequestEvent, NewFileEvent, SaveEvent, SaveRequestEvent,
 };
 use bevy::prelude::*;
+use bevy_file_dialog::{DialogFilePicked, FileDialogExt, FileDialogPlugin};
 use moonshine_save::{load::load_from_file_on_event, save::save_default};
-use rfd::FileDialog;
 use std::{env::current_exe, path::PathBuf};
 
 use super::devices::device::DeviceModel;
+
+struct LoadFilePick;
+struct SaveFilePick;
 
 pub struct SaveManagementPlugin;
 
@@ -33,6 +36,12 @@ impl Plugin for SaveManagementPlugin {
                 load_from_file_on_event::<LoadEvent>().run_if(on_event::<LoadEvent>()),
             ),
         )
+        .add_plugins(
+            FileDialogPlugin::new()
+                .with_pick_file::<SaveFilePick>()
+                .with_pick_file::<LoadFilePick>(),
+        )
+        .add_systems(Update, (save_file_picked, load_file_picked))
         .init_resource::<ActiveSaveFile>();
     }
 }
@@ -47,6 +56,7 @@ pub fn new_file(
     mut active_save_file: ResMut<ActiveSaveFile>,
     mut commands: Commands,
 ) {
+    //TODO: maybe moonshine function for this
     for entity in q_entities.iter() {
         commands.entity(entity).despawn_recursive();
     }
@@ -57,8 +67,9 @@ pub fn new_file(
 /// Saves the scene into the currently active save file if exists,
 /// otherwise opens a file dialog to save into a new file.
 pub fn handle_save_request(
-    mut active_save_file: ResMut<ActiveSaveFile>,
+    active_save_file: Res<ActiveSaveFile>,
     mut save_ev_writer: EventWriter<SaveEvent>,
+    mut commands: Commands,
 ) {
     if let Some(active_save_file_path) = active_save_file.path.clone() {
         save_ev_writer.send(SaveEvent {
@@ -67,29 +78,42 @@ pub fn handle_save_request(
         return;
     }
 
-    let dialog_result = FileDialog::new()
+    commands
+        .dialog()
         .add_filter("saves", &["ron"])
         .set_directory(get_saves_folder())
         .set_file_name("save.ron")
-        .save_file();
+        .pick_file_path::<SaveFilePick>();
+}
 
-    if let Some(path) = dialog_result {
+fn save_file_picked(
+    mut ev_saved: EventReader<DialogFilePicked<SaveFilePick>>,
+    mut save_ev_writer: EventWriter<SaveEvent>,
+    mut active_save_file: ResMut<ActiveSaveFile>,
+) {
+    for ev in ev_saved.read() {
+        let path = ev.path.clone();
         active_save_file.path = Some(path.clone());
         save_ev_writer.send(SaveEvent { path });
     }
 }
 
 /// Opens a file dialog to select a save file to load.
-pub fn handle_load_request(
-    mut load_ev_writer: EventWriter<LoadEvent>,
-    mut active_save_file: ResMut<ActiveSaveFile>,
-) {
-    let dialog_result = FileDialog::new()
+pub fn handle_load_request(mut commands: Commands) {
+    commands
+        .dialog()
         .add_filter("saves", &["ron"])
         .set_directory(get_saves_folder())
-        .pick_file();
+        .pick_file_path::<LoadFilePick>();
+}
 
-    if let Some(path) = dialog_result {
+fn load_file_picked(
+    mut ev_loaded: EventReader<DialogFilePicked<LoadFilePick>>,
+    mut active_save_file: ResMut<ActiveSaveFile>,
+    mut load_ev_writer: EventWriter<LoadEvent>,
+) {
+    for ev in ev_loaded.read() {
+        let path = ev.path.clone();
         active_save_file.path = Some(path.clone());
         load_ev_writer.send(LoadEvent { path });
     }

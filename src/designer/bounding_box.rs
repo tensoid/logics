@@ -63,6 +63,33 @@ fn is_point_in_rect(point: Vec2, rect_min: Vec2, rect_max: Vec2) -> bool {
     point.x >= rect_min.x && point.x <= rect_max.x && point.y >= rect_min.y && point.y <= rect_max.y
 }
 
+fn is_point_on_wire(point: Vec2, wire_points: Vec<Vec2>, wire_width: f32) -> bool {
+    let half_width = wire_width / 2.0;
+
+    for window in wire_points.windows(2) {
+        if point_to_line_segment_distance(point, window[0], window[1]) <= half_width {
+            return true;
+        }
+    }
+
+    false
+}
+
+fn point_to_line_segment_distance(point: Vec2, start: Vec2, end: Vec2) -> f32 {
+    info!("Checking: {}, {}-{}", point, start, end);
+
+    let line_vec = end - start;
+    let point_vec = point - start;
+    let line_len = line_vec.length();
+
+    // Project the point onto the line, clamping to the line segment
+    let t = (point_vec.dot(line_vec) / line_len.powi(2)).clamp(0.0, 1.0);
+    let projection = start + line_vec * t;
+
+    // Return the distance from the point to the closest point on the line segment
+    (point - projection).length()
+}
+
 #[derive(Clone)]
 pub enum BoundingShape {
     Aabb(Aabb2d),
@@ -122,10 +149,12 @@ impl BoundingBox {
     }
 
     pub fn point_in_bbox(&self, point: Vec2) -> bool {
-        match self.bounding_shape {
+        match &self.bounding_shape {
             BoundingShape::Aabb(aabb) => aabb.closest_point(point) == point,
             BoundingShape::Circle(circle) => circle.closest_point(point) == point,
-            BoundingShape::Wire(_) => false,
+            BoundingShape::Wire(wire) => {
+                is_point_on_wire(point, wire.points.clone(), wire.wire_width)
+            }
         }
     }
 

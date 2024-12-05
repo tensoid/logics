@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
-use moonshine_core::object::Object;
+use moonshine_core::{kind::Kind, object::Object};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use uuid::Uuid;
 use wire_joint::{create_wire_joint, WireJointModel};
@@ -22,11 +22,10 @@ use super::{
     signal_state::{Signal, SignalState},
 };
 
-//TODO: query trait get with modelid
-//TODO: bounding box on model
-//TODO: Only ever access model, view only accessed from model itself for syncing
+//TODO BUG: select single doesnt deselect
 //TODO: implement wire delete_selected / select_single / highlighting (wire bbox)
 //TODO: reimplement copy paste (single clipboard / same paste pipeline)
+//TODO: Only ever access model, view only accessed from model itself for syncing
 //TODO: fix line jank (LineList)
 //TODO: quadradic/cubic curves wires
 //TODO: split into files
@@ -127,12 +126,20 @@ impl WireViewBundle {
 }
 
 impl BuildView for WireModel {
-    fn build(world: &World, _: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
+    fn build(world: &World, object: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
-
+        info!("Spawn wire");
         view.insert(WireViewBundle::new(render_settings));
     }
 }
+
+// impl BuildView for WireModel {
+//     fn build(world: &World, _: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
+//         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
+
+//         view.insert(WireViewBundle::new(render_settings));
+//     }
+// }
 
 #[allow(clippy::type_complexity)]
 pub fn update_wire_views(
@@ -147,6 +154,7 @@ pub fn update_wire_views(
     for (wire, wire_viewable, wire_entity) in q_wires.iter() {
         let mut wire_path = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
 
+        //TODO: duplicate code, only update bounding box then use values from there
         let mut points: Vec<Vec2> = wire
             .0
             .iter()

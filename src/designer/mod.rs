@@ -20,13 +20,15 @@ use bevy::transform::TransformSystem;
 use copy_paste::CopyPastePlugin;
 use cursor::CursorPlugin;
 use designer_assets::load_assets;
+use devices::device::DeviceModel;
 use devices::DevicePlugin;
 use model::ModelId;
+use moonshine_core::kind::Kind;
 use pin::PinPlugin;
 use save_management::SaveManagementPlugin;
 use selection::SelectionPlugin;
 use signal_state::SignalState;
-use wire::WirePlugin;
+use wire::{WireModel, WirePlugin};
 
 use self::bounding_box::update_bounding_boxes;
 use self::designer_state::DesignerState;

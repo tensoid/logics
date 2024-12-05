@@ -6,13 +6,15 @@ use bevy_prototype_lyon::{
     draw::{Fill, Stroke},
     entity::{Path, ShapeBundle},
     geometry::GeometryBuilder,
+    path::ShapePath,
     shapes::{self, RectangleOrigin},
 };
+use moonshine_core::kind::Kind;
 use moonshine_view::{View, Viewable};
 
 use crate::{
     events::events::{DeleteEvent, SelectAllEvent},
-    get_cursor, get_cursor_mut,
+    find_descendant, find_model_by_uuid, get_cursor, get_cursor_mut, get_model,
     ui::cursor_captured::IsCursorCaptured,
 };
 
@@ -20,11 +22,14 @@ use super::{
     bounding_box::{BoundingBox, BoundingShape},
     cursor::{Cursor, CursorState},
     devices::device::{DeviceModel, DeviceView, DeviceViewKind},
+    model::ModelId,
+    pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
-    wire::{create_wire, WireModel, WireView},
+    wire::{create_wire, wire_joint::WireJointModel, WireModel, WireNode, WireNodes, WireView},
 };
 
+//TODO: split file, highlighting, selecting(box)
 pub struct SelectionPlugin;
 
 impl Plugin for SelectionPlugin {
@@ -40,6 +45,7 @@ impl Plugin for SelectionPlugin {
             )
             .add_systems(PostUpdate, delete_selected)
             .add_systems(PostUpdate, update_dragged_entities_position)
+            .add_systems(PostUpdate, highlight_selected_wires)
             .add_systems(PostUpdate, highlight_selected_devices); //TODO: observers?
     }
 }
@@ -56,19 +62,19 @@ pub struct Selected;
 pub struct SelectionBox;
 
 #[derive(Component)]
-pub struct SelectionOutline;
+pub struct DeviceSelectionOutline;
 
 #[derive(Bundle)]
-pub struct SelectionOutlineBundle {
-    selection_outline: SelectionOutline,
+pub struct DeviceSelectionOutlineBundle {
+    selection_outline: DeviceSelectionOutline,
     stroke: Stroke,
     shape_bundle: ShapeBundle,
 }
 
-impl SelectionOutlineBundle {
+impl DeviceSelectionOutlineBundle {
     pub fn new(render_settings: &CircuitBoardRenderingSettings, extents: Vec2) -> Self {
         Self {
-            selection_outline: SelectionOutline,
+            selection_outline: DeviceSelectionOutline,
             stroke: Stroke::new(
                 render_settings.device_stroke_color_selected,
                 render_settings.device_stroke_width,
@@ -80,6 +86,35 @@ impl SelectionOutlineBundle {
                 }),
                 spatial: SpatialBundle {
                     transform: Transform::from_xyz(0.0, 0.0, 1.0),
+                    ..default()
+                },
+                ..default()
+            },
+        }
+    }
+}
+
+#[derive(Component)]
+pub struct WireSelectionOutline;
+
+#[derive(Bundle)]
+pub struct WireSelectionOutlineBundle {
+    selection_outline: WireSelectionOutline,
+    stroke: Stroke,
+    shape_bundle: ShapeBundle,
+}
+
+impl WireSelectionOutlineBundle {
+    pub fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
+        Self {
+            selection_outline: WireSelectionOutline,
+            stroke: Stroke::new(
+                render_settings.device_stroke_color_selected,
+                render_settings.wire_line_width + 2.0,
+            ),
+            shape_bundle: ShapeBundle {
+                spatial: SpatialBundle {
+                    transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.1)),
                     ..default()
                 },
                 ..default()
@@ -229,7 +264,8 @@ pub fn select_single(
     mouse_input: Res<ButtonInput<MouseButton>>,
     key_input: Res<ButtonInput<KeyCode>>,
     mut commands: Commands,
-    q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox), With<DeviceView>>,
+    q_device_views: Query<(&View<DeviceViewKind>, &BoundingBox)>,
+    q_wire_views: Query<(&View<WireModel>, &BoundingBox)>,
     q_selected: Query<(Entity, &Position), (With<Selected>, Without<Dragged>)>,
 ) {
     if !mouse_input.just_pressed(MouseButton::Left) {
@@ -243,28 +279,30 @@ pub fn select_single(
         return;
     }
 
-    let hovered_device = q_device_views
+    let hovered = q_device_views
         .iter()
-        .find(|(_, bbox)| bbox.selectable && bbox.point_in_bbox(cursor_position));
+        .map(|(view, bbox)| (view.viewable().entity(), bbox))
+        .chain(
+            q_wire_views
+                .iter()
+                .map(|(view, bbox)| (view.viewable().entity(), bbox)),
+        )
+        .find(|(_, bbox)| bbox.selectable && bbox.point_in_bbox(cursor_position))
+        .map(|(e, _)| e);
 
-    if hovered_device.is_none() {
+    let Some(hovered_entity) = hovered else {
         return;
-    }
+    };
 
-    let hovered_device_model_entity = hovered_device.unwrap().0.viewable().entity();
-    let is_hovered_device_selected = q_selected.get(hovered_device_model_entity).is_ok();
+    let is_hovered_device_selected = q_selected.get(hovered_entity).is_ok();
     let ctrl_clicked = key_input.pressed(KeyCode::ControlLeft);
 
     // toggle selection with ctrl left-click
     if ctrl_clicked {
         if is_hovered_device_selected {
-            commands
-                .entity(hovered_device_model_entity)
-                .remove::<Selected>();
+            commands.entity(hovered_entity).remove::<Selected>();
         } else {
-            commands
-                .entity(hovered_device_model_entity)
-                .insert(Selected);
+            commands.entity(hovered_entity).insert(Selected);
         }
 
         return;
@@ -276,9 +314,7 @@ pub fn select_single(
             commands.entity(e).remove::<Selected>();
         });
 
-        commands
-            .entity(hovered_device_model_entity)
-            .insert(Selected);
+        commands.entity(hovered_entity).insert(Selected);
     }
 }
 
@@ -383,7 +419,7 @@ pub fn highlight_selected_devices(
     q_entities: Query<&Viewable<DeviceViewKind>>,
     mut q_deselected: RemovedComponents<Selected>,
     q_bounding_boxes: Query<&BoundingBox>,
-    q_selection_outlines: Query<(Entity, &Parent), With<SelectionOutline>>,
+    q_selection_outlines: Query<(Entity, &Parent), With<DeviceSelectionOutline>>,
     mut commands: Commands,
     render_settings: Res<CircuitBoardRenderingSettings>,
 ) {
@@ -396,7 +432,7 @@ pub fn highlight_selected_devices(
                 _ => panic!("invalid bounding shape on device"),
             };
 
-            cb.spawn(SelectionOutlineBundle::new(&render_settings, extents));
+            cb.spawn(DeviceSelectionOutlineBundle::new(&render_settings, extents));
         });
     }
 
@@ -406,11 +442,93 @@ pub fn highlight_selected_devices(
             let selection_outline_entity = q_selection_outlines
                 .iter()
                 .find(|so| so.1.get() == view_entity)
-                .unwrap() //TODO: crashed
+                .unwrap()
                 .0;
 
             commands.entity(selection_outline_entity).remove_parent();
             commands.entity(selection_outline_entity).despawn();
+        }
+    }
+}
+
+//TODO: performance, and really bad implementation
+#[allow(clippy::too_many_arguments)]
+pub fn highlight_selected_wires(
+    q_selected_wires: Query<(&WireNodes, &Viewable<WireModel>), With<Selected>>,
+    q_wires: Query<&Viewable<WireModel>>,
+    mut q_deselected: RemovedComponents<Selected>,
+    mut q_selection_outlines: Query<(Entity, &Parent, &mut Path), With<WireSelectionOutline>>,
+    mut commands: Commands,
+    render_settings: Res<CircuitBoardRenderingSettings>,
+    q_pins: Query<(&GlobalTransform, &PinView)>,
+    q_wire_joints: Query<(&ModelId, &Position), With<WireJointModel>>,
+    q_parents: Query<&Parent>,
+    q_wire_views: Query<&View<WireModel>>,
+    q_children: Query<&Children>,
+) {
+    // add outline if missing
+    for (_, viewable) in q_selected_wires.iter() {
+        let view_entity = viewable.view().entity();
+        let mut has_outline = false;
+        find_descendant!(q_children, view_entity, q_selection_outlines, |_| {
+            has_outline = true;
+        });
+
+        if !has_outline {
+            commands.entity(view_entity).with_children(|cb| {
+                cb.spawn(WireSelectionOutlineBundle::new(&render_settings));
+            });
+        }
+    }
+
+    // remove outline for deselected wires
+    for deselected_entity in q_deselected.read() {
+        if let Ok(viewable) = q_wires.get(deselected_entity) {
+            let view_entity = viewable.view().entity();
+            let selection_outline_entity = q_selection_outlines
+                .iter()
+                .find(|so| so.1.get() == view_entity)
+                .unwrap()
+                .0;
+
+            commands.entity(selection_outline_entity).remove_parent();
+            commands.entity(selection_outline_entity).despawn();
+        }
+    }
+
+    for (selection_outline_entity, _, mut selection_outline_path) in q_selection_outlines.iter_mut()
+    {
+        if let Some((wire_nodes, _)) = get_model!(
+            q_parents,
+            q_wire_views,
+            q_selected_wires,
+            selection_outline_entity
+        ) {
+            //TODO: duplicate code
+            let points: Vec<Vec2> = wire_nodes
+                .0
+                .iter()
+                .map(|wire_node| match wire_node {
+                    WireNode::Joint(joint_uuid) => {
+                        find_model_by_uuid!(q_wire_joints, *joint_uuid)
+                            .unwrap()
+                            .1
+                             .0
+                    }
+                    WireNode::Pin(pin_uuid) => q_pins
+                        .iter()
+                        .find(|(_, pin_view)| pin_view.uuid == *pin_uuid)
+                        .unwrap()
+                        .0
+                        .translation()
+                        .truncate(),
+                })
+                .collect();
+
+            *selection_outline_path = ShapePath::build_as(&shapes::Polygon {
+                points,
+                closed: false,
+            });
         }
     }
 }
