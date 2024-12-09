@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    ecs::component::{ComponentHooks, StorageType},
+    prelude::*,
+};
 use bevy_prototype_lyon::prelude::*;
 use moonshine_core::{kind::Kind, object::Object};
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
@@ -15,14 +18,15 @@ use crate::{
 use super::{
     bounding_box::{BoundingBox, BoundingShape},
     cursor::{Cursor, CursorState},
-    model::{Model, ModelId},
+    model::{Model, ModelId, ModelRegistry},
     pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
-    signal_state::{Signal, SignalState},
+    signal::{Signal, SignalState},
 };
 
-//TODO BUG: select single doesnt deselect
+//TODO: delete wire when pin is deleted
+
 //TODO: implement wire delete_selected / select_single / highlighting (wire bbox)
 //TODO: reimplement copy paste (single clipboard / same paste pipeline)
 //TODO: Only ever access model, view only accessed from model itself for syncing
@@ -52,7 +56,7 @@ impl Plugin for WirePlugin {
             Update,
             update_wire_view_signal_colors.after(propagate_signals),
         )
-        .add_systems(Update, update_wire_bbox);
+        .add_systems(Update, update_wire_bbox.after(create_wire_joint));
         //TODO: observers or Changed<> Filter
     }
 }
@@ -64,9 +68,35 @@ pub enum WireNode {
     Joint(Uuid),
 }
 
-#[derive(Component, Reflect, Clone, Debug, Default, PartialEq, Eq, Hash)]
+#[derive(Reflect, Clone, Debug, Default, PartialEq, Eq, Hash)]
 #[reflect(Component, Default)]
 pub struct WireNodes(pub Vec<WireNode>);
+
+impl Component for WireNodes {
+    const STORAGE_TYPE: StorageType = StorageType::Table;
+
+    fn register_component_hooks(hooks: &mut ComponentHooks) {
+        hooks.on_remove(|mut world, entity, component_id| {
+            let model_registry = world.get_resource::<ModelRegistry>().unwrap();
+            let wire_nodes = world.get::<WireNodes>(entity).unwrap();
+
+            let mut entities_to_delete: Vec<Entity> = Vec::new();
+
+            for wire_node in wire_nodes.0.iter() {
+                let WireNode::Joint(wire_joint) = wire_node else {
+                    continue;
+                };
+
+                entities_to_delete.push(model_registry.get_model_entity(wire_joint));
+            }
+
+            let mut commands = world.commands();
+            for entity in entities_to_delete {
+                commands.entity(entity).despawn_recursive();
+            }
+        });
+    }
+}
 
 /// Marker component for wire models
 #[derive(Component, Reflect, Clone)]
@@ -128,7 +158,6 @@ impl WireViewBundle {
 impl BuildView for WireModel {
     fn build(world: &World, object: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
-        info!("Spawn wire");
         view.insert(WireViewBundle::new(render_settings));
     }
 }

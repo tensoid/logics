@@ -11,7 +11,7 @@ pub mod position;
 pub mod render_settings;
 pub mod save_management;
 pub mod selection;
-pub mod signal_state;
+pub mod signal;
 pub mod wire;
 
 use bevy::app::PluginGroupBuilder;
@@ -22,12 +22,13 @@ use cursor::CursorPlugin;
 use designer_assets::load_assets;
 use devices::device::DeviceModel;
 use devices::DevicePlugin;
-use model::ModelId;
+use model::{ModelId, ModelRegistry};
 use moonshine_core::kind::Kind;
 use pin::PinPlugin;
 use save_management::SaveManagementPlugin;
 use selection::SelectionPlugin;
-use signal_state::SignalState;
+use signal::SignalState;
+use uuid::Uuid;
 use wire::{WireModel, WirePlugin};
 
 use self::bounding_box::update_bounding_boxes;
@@ -55,8 +56,10 @@ pub struct DesignerPlugin;
 impl Plugin for DesignerPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<DesignerState>()
+            .init_resource::<ModelRegistry>()
             .register_type::<SignalState>()
             .register_type::<ModelId>()
+            .register_type::<ModelRegistry>()
             .add_systems(PreStartup, load_assets)
             .add_systems(
                 PostUpdate,

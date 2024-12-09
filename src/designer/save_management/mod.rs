@@ -11,6 +11,7 @@ use super::devices::device::DeviceModel;
 struct LoadFilePick;
 struct SaveFilePick;
 
+//UNSURE: might be better outside of designer
 pub struct SaveManagementPlugin;
 
 impl Plugin for SaveManagementPlugin {

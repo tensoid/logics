@@ -1,17 +1,13 @@
-use bevy::{
-    ecs::query::{QueryData, QueryFilter, WorldQuery},
-    prelude::*,
-};
-use uuid::Uuid;
+use bevy::prelude::*;
 
 use crate::{
     designer::{
         cursor::{Cursor, CursorState},
-        model::{Model, ModelId},
+        model::Model,
         position::Position,
-        signal_state::{Signal, SignalState},
+        signal::{Signal, SignalState},
     },
-    find_model_by_uuid, get_cursor,
+    get_cursor,
 };
 
 use super::{WireNode, WireNodes};

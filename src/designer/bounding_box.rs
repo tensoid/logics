@@ -76,8 +76,6 @@ fn is_point_on_wire(point: Vec2, wire_points: Vec<Vec2>, wire_width: f32) -> boo
 }
 
 fn point_to_line_segment_distance(point: Vec2, start: Vec2, end: Vec2) -> f32 {
-    info!("Checking: {}, {}-{}", point, start, end);
-
     let line_vec = end - start;
     let point_vec = point - start;
     let line_len = line_vec.length();

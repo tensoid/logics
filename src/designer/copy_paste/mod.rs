@@ -8,7 +8,7 @@ use crate::events::events::{CopyEvent, PasteEvent};
 
 use super::{
     devices::device::DeviceModel, pin::PinModelCollection, position::Position, selection::Selected,
-    signal_state::SignalState, wire::WireNodes,
+    signal::SignalState, wire::WireNodes,
 };
 
 pub struct CopyPastePlugin;

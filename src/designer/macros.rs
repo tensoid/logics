@@ -75,7 +75,7 @@ macro_rules! get_model_mut {
     }};
 }
 
-//TODO: yeah this is bonkers. query trait maybe.
+//TODO: yeah this is bonkers. implement index registry
 #[macro_export]
 macro_rules! find_model_by_uuid {
     ($query:expr, $uuid:expr) => {

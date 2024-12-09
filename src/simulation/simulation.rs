@@ -8,7 +8,7 @@ use crate::{
         devices::generic_chip::GenericChip,
         model::ModelId,
         pin::PinModelCollection,
-        signal_state::{Signal, SignalState},
+        signal::{Signal, SignalState},
         wire::{wire_joint::WireJointModel, WireModel, WireNode, WireNodes},
     },
     find_model_by_uuid, find_model_by_uuid_mut,

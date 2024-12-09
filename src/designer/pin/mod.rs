@@ -1,7 +1,7 @@
 use super::{
     bounding_box::BoundingBox,
     render_settings::CircuitBoardRenderingSettings,
-    signal_state::{Signal, SignalState},
+    signal::{Signal, SignalState},
 };
 use bevy::prelude::*;
 use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};

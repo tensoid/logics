@@ -12,7 +12,7 @@ use crate::{
         pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
         position::Position,
         render_settings::CircuitBoardRenderingSettings,
-        signal_state::Signal,
+        signal::Signal,
     },
     find_descendant, get_cursor, get_model_mut,
 };
