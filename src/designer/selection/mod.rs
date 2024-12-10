@@ -12,7 +12,7 @@ use bevy_prototype_lyon::{
 use moonshine_view::{View, Viewable};
 
 use crate::{
-    events::events::{DeleteEvent, SelectAllEvent},
+    events::{DeleteEvent, SelectAllEvent},
     find_descendant, get_cursor, get_cursor_mut, get_model,
     ui::cursor_captured::IsCursorCaptured,
 };

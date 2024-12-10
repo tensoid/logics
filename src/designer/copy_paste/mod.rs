@@ -4,17 +4,16 @@ use bevy::prelude::*;
 use moonshine_save::save::Save;
 use uuid::Uuid;
 
-use crate::events::events::{CopyEvent, PasteEvent};
+use crate::events::{CopyEvent, PasteEvent};
 
 use super::{
     devices::device::DeviceModel,
     model::ModelId,
     pin::PinModelCollection,
-    position::{self, Position},
+    position::Position,
     selection::Selected,
-    signal::SignalState,
     wire::{
-        wire_joint::{self, WireJointModel, WireJointModelBundle},
+        wire_joint::{WireJointModel, WireJointModelBundle},
         WireModelBundle, WireNode, WireNodes,
     },
 };

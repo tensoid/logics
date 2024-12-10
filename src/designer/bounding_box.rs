@@ -56,7 +56,7 @@ fn line_segment_intersection(p1: Vec2, p2: Vec2, q1: Vec2, q2: Vec2) -> bool {
 
     // Check if r × s is not zero (lines are not parallel or collinear)
     // and t and u are between 0 and 1 (intersects within the segments)
-    r_cross_s != 0.0 && t >= 0.0 && t <= 1.0 && u >= 0.0 && u <= 1.0
+    r_cross_s != 0.0 && (0.0..=1.0).contains(&t) && (0.0..=1.0).contains(&u)
 }
 
 fn is_point_in_rect(point: Vec2, rect_min: Vec2, rect_max: Vec2) -> bool {

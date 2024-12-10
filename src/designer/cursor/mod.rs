@@ -26,7 +26,8 @@ pub enum CursorState {
     #[default]
     Idle,
     Dragging,
-    DraggingWire(Entity),
+    // Entity = Wire entity, Vec2 = position the wire is being dragged to so usually the current cursor position.
+    DraggingWire(Entity, Vec2),
     Selecting,
 }
 

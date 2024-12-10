@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     designer::{designer_assets::DesignerAssets, devices::device::DeviceIds, position::Position},
-    events::events::SpawnDeviceEvent,
+    events::SpawnDeviceEvent,
 };
 
 use super::styles::*;

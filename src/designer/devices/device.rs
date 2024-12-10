@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use moonshine_core::kind::Kind;
-use moonshine_save::save::Save;
 use moonshine_view::Viewable;
 
 use crate::{
@@ -11,7 +10,7 @@ use crate::{
         position::Position,
         selection::{Dragged, Selected},
     },
-    events::events::SpawnDeviceEvent,
+    events::SpawnDeviceEvent,
     get_cursor_mut,
 };
 

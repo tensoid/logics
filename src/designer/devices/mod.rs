@@ -28,9 +28,7 @@ use xor_2::Xor2;
 
 use crate::simulation::simulation::propagate_signals;
 
-use super::{
-    pin::PinModelCollection, position::Position, signal::SignalState, wire::WireNodes,
-};
+use super::{pin::PinModelCollection, position::Position};
 
 pub struct DevicePlugin;
 

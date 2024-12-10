@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::events::events::ToggleDebugModeEvent;
+use crate::events::ToggleDebugModeEvent;
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone, Default)]
 pub enum DebugModeState {

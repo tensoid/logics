@@ -1,14 +1,11 @@
-use crate::events::events::{
-    LoadEvent, LoadRequestEvent, NewFileEvent, SaveEvent, SaveRequestEvent,
-};
-use bevy::prelude::*;
+use crate::events::{LoadEvent, LoadRequestEvent, NewFileEvent, SaveEvent, SaveRequestEvent};
+use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_file_dialog::{DialogFilePicked, FileDialogExt, FileDialogPlugin};
 use moonshine_save::{
     load::load_from_file_on_event,
     save::{save_default, Save},
 };
 use std::{env::current_exe, path::PathBuf};
-
 
 struct LoadFilePick;
 struct SaveFilePick;
@@ -45,6 +42,10 @@ impl Plugin for SaveManagementPlugin {
                 .with_pick_file::<LoadFilePick>(),
         )
         .add_systems(Update, (save_file_picked, load_file_picked))
+        .add_systems(
+            Update,
+            update_window_handle.run_if(resource_changed::<ActiveSaveFile>),
+        )
         .init_resource::<ActiveSaveFile>();
     }
 }
@@ -60,7 +61,7 @@ pub fn new_file(
     mut commands: Commands,
 ) {
     for entity in q_entities.iter() {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn_recursive(); //TODO: fix
     }
 
     active_save_file.path = None;
@@ -127,4 +128,15 @@ fn get_saves_folder() -> PathBuf {
     exe_path.pop();
     exe_path.push("saves");
     exe_path
+}
+
+fn update_window_handle(
+    active_save_file: Res<ActiveSaveFile>,
+    mut q_window: Query<&mut Window, With<PrimaryWindow>>,
+) {
+    let mut window = q_window.get_single_mut().unwrap();
+    window.title = match &active_save_file.path {
+        Some(path) => path.file_name().unwrap().to_str().unwrap().to_string(),
+        None => "New File".into(),
+    }
 }

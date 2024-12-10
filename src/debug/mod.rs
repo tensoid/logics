@@ -6,7 +6,6 @@ use entity_ids::draw_entity_ids;
 use self::{
     bounding_box_gizmos::{draw_bounding_boxes, BoundingBoxGizmos},
     debug_mode_state::{toggle_debug_mode, DebugModeState},
-    window_fps_display::display_fps,
 };
 
 mod bounding_box_gizmos;
@@ -39,8 +38,7 @@ impl Plugin for DebugPlugin {
             .add_systems(
                 Update,
                 draw_bounding_boxes.run_if(should_draw_bounding_boxes),
-            )
-            .add_systems(Update, display_fps);
+            );
     }
 }
 

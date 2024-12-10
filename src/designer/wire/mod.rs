@@ -1,7 +1,4 @@
-use bevy::{
-    ecs::component::{ComponentHooks, StorageType},
-    prelude::*,
-};
+use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 use moonshine_core::object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
@@ -26,6 +23,7 @@ use super::{
     signal::{Signal, SignalState},
 };
 
+//TODO: implement shift to drag straight
 //TODO: refactor highlight code (observers)
 //TODO: Only ever access model, view only accessed from model itself for syncing
 //TODO: fix line jank (LineList)
@@ -57,6 +55,7 @@ impl Plugin for WirePlugin {
             Update,
             update_wire_view_signal_colors.after(propagate_signals),
         )
+        .add_systems(Update, update_wire_drag_point.after(create_wire_joint))
         .add_systems(Update, update_wire_bbox.after(create_wire_joint));
         //TODO: observers or Changed<> Filter
     }
@@ -78,7 +77,6 @@ pub struct WireNodes(pub Vec<WireNode>);
 #[reflect(Component)]
 pub struct WireModel;
 
-//TODO: go similar with other models? marker type as "XXXModel" and singular components like "wirenodes" instead of just "Wire"
 #[derive(Bundle)]
 pub struct WireModelBundle {
     pub wire_model: WireModel,
@@ -145,6 +143,9 @@ fn on_deselect_wire(
 }
 
 /// Despawns the wire joints when a wire is removed
+/// BUG: currently causes duplicate despawns of wire joints when the wire is selected during its deletion.
+/// This is because when a wire is selected its joints are also selected causing it to despawn from the delete action as well as this observer.
+/// Should not be a problem once wires can survive without needing to be connected to a device.
 fn on_remove_wire(
     trigger: Trigger<OnRemove, WireNodes>,
     q_wires: Query<&WireNodes>,
@@ -213,10 +214,10 @@ pub fn update_wire_views(
     q_pins: Query<(&GlobalTransform, &PinView)>,
     q_wire_joints: Query<(&ModelId, &Position), With<WireJointModel>>,
     model_registry: Res<ModelRegistry>,
-    q_cursor: Query<(&Cursor, &Transform)>,
+    q_cursor: Query<&Cursor>,
     mut q_wire_views: Query<&mut Path, With<WireView>>,
 ) {
-    let (cursor, cursor_transform) = get_cursor!(q_cursor);
+    let cursor = get_cursor!(q_cursor);
 
     for (wire, wire_viewable, wire_entity) in q_wires.iter() {
         let mut wire_path = q_wire_views.get_mut(wire_viewable.view().entity()).unwrap();
@@ -246,8 +247,11 @@ pub fn update_wire_views(
         //TODO: optimize by checking if dragged first otherwise only change if changed,
         //maybe get dragged wire first then update changed ones
 
-        if matches!(cursor.state, CursorState::DraggingWire(w) if w == wire_entity) {
-            points.push(cursor_transform.translation.truncate());
+        // straight wire when holding shift
+        if let CursorState::DraggingWire(wire, drag_position) = cursor.state {
+            if wire_entity == wire {
+                points.push(drag_position);
+            }
         }
 
         let new_wire = shapes::Polygon {
@@ -328,8 +332,58 @@ pub fn create_wire(
             .spawn(WireModelBundle::new(vec![WireNode::Pin(pin_view.uuid)]))
             .id();
 
-        cursor.state = CursorState::DraggingWire(wire);
+        cursor.state = CursorState::DraggingWire(wire, cursor_transform.translation.truncate());
         return;
+    }
+}
+
+///HACK: terrible, but only temporary until grid snapping is implemented
+pub fn update_wire_drag_point(
+    mut q_cursor: Query<(&mut Cursor, &Transform), With<Cursor>>,
+    q_wires: Query<&mut WireNodes>,
+    input: Res<ButtonInput<KeyCode>>,
+    q_wire_joints: Query<(&ModelId, &Position), With<WireJointModel>>,
+    model_registry: Res<ModelRegistry>,
+    q_pins: Query<(&GlobalTransform, &PinView)>,
+) {
+    let (mut cursor, cursor_transform) = get_cursor_mut!(q_cursor);
+
+    let CursorState::DraggingWire(wire, ref mut pos) = cursor.state else {
+        return;
+    };
+
+    //straight wire when holding shift
+    if !input.pressed(KeyCode::ShiftLeft) {
+        *pos = cursor_transform.translation.truncate();
+    } else {
+        //HACK: duplicate code
+        let last_point = match q_wires.get(wire).unwrap().0.last().unwrap() {
+            WireNode::Joint(joint_uuid) => {
+                q_wire_joints
+                    .get(model_registry.get_model_entity(joint_uuid))
+                    .unwrap()
+                    .1
+                     .0
+            }
+            WireNode::Pin(pin_uuid) => q_pins
+                .iter()
+                .find(|(_, pin_view)| pin_view.uuid == *pin_uuid)
+                .unwrap()
+                .0
+                .translation()
+                .truncate(),
+        };
+
+        let delta = (last_point - cursor_transform.translation.truncate()).abs();
+
+        let mut new_point = cursor_transform.translation.truncate();
+        if delta.x > delta.y {
+            new_point.y = last_point.y;
+        } else {
+            new_point.x = last_point.x;
+        }
+
+        *pos = new_point;
     }
 }
 
@@ -344,7 +398,7 @@ pub fn cancel_wire_placement(
         return;
     }
 
-    if let CursorState::DraggingWire(wire_entity) = cursor.state {
+    if let CursorState::DraggingWire(wire_entity, _) = cursor.state {
         cursor.state = CursorState::Idle;
         commands.entity(wire_entity).despawn_recursive();
     }
@@ -389,7 +443,7 @@ pub fn finish_wire_placement(
         return;
     }
 
-    let CursorState::DraggingWire(wire_entity) = cursor.state else {
+    let CursorState::DraggingWire(wire_entity, _) = cursor.state else {
         return;
     };
 
