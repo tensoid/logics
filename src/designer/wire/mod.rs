@@ -11,7 +11,7 @@ use wire_joint::{create_wire_joint, WireJointModel};
 pub mod wire_joint;
 
 use crate::{
-    find_model_by_uuid, get_cursor, get_cursor_mut, simulation::simulation::propagate_signals,
+    get_cursor, get_cursor_mut, simulation::simulation::propagate_signals,
     ui::cursor_captured::IsCursorCaptured,
 };
 
@@ -25,7 +25,6 @@ use super::{
     signal::{Signal, SignalState},
 };
 
-//TODO: implement wire delete_selected / select_single / highlighting (wire bbox)
 //TODO: reimplement copy paste (single clipboard / same paste pipeline)
 //TODO: Only ever access model, view only accessed from model itself for syncing
 //TODO: fix line jank (LineList)
@@ -173,6 +172,7 @@ pub fn update_wire_views(
     q_wires: Query<(&mut WireNodes, &Viewable<WireModel>, Entity)>,
     q_pins: Query<(&GlobalTransform, &PinView)>,
     q_wire_joints: Query<(&ModelId, &Position), With<WireJointModel>>,
+    model_registry: Res<ModelRegistry>,
     q_cursor: Query<(&Cursor, &Transform)>,
     mut q_wire_views: Query<&mut Path, With<WireView>>,
 ) {
@@ -187,7 +187,8 @@ pub fn update_wire_views(
             .iter()
             .map(|wire_node| match wire_node {
                 WireNode::Joint(joint_uuid) => {
-                    find_model_by_uuid!(q_wire_joints, *joint_uuid)
+                    q_wire_joints
+                        .get(model_registry.get_model_entity(joint_uuid))
                         .unwrap()
                         .1
                          .0
@@ -224,6 +225,7 @@ pub fn update_wire_bbox(
     mut q_wire_views: Query<&mut BoundingBox, With<WireView>>,
     q_wire_joints: Query<(&ModelId, &Position), With<WireJointModel>>,
     q_pins: Query<(&GlobalTransform, &PinView)>,
+    model_registry: Res<ModelRegistry>,
 ) {
     for (wire_nodes, wire_viewable) in q_wires.iter() {
         let wire_points: Vec<Vec2> = wire_nodes
@@ -231,7 +233,8 @@ pub fn update_wire_bbox(
             .iter()
             .map(|wire_node| match wire_node {
                 WireNode::Joint(joint_uuid) => {
-                    find_model_by_uuid!(q_wire_joints, *joint_uuid)
+                    q_wire_joints
+                        .get(model_registry.get_model_entity(joint_uuid))
                         .unwrap()
                         .1
                          .0

@@ -9,12 +9,11 @@ use bevy_prototype_lyon::{
     path::ShapePath,
     shapes::{self, RectangleOrigin},
 };
-use moonshine_core::kind::Kind;
 use moonshine_view::{View, Viewable};
 
 use crate::{
     events::events::{DeleteEvent, SelectAllEvent},
-    find_descendant, find_model_by_uuid, get_cursor, get_cursor_mut, get_model,
+    find_descendant, get_cursor, get_cursor_mut, get_model,
     ui::cursor_captured::IsCursorCaptured,
 };
 
@@ -22,7 +21,7 @@ use super::{
     bounding_box::{BoundingBox, BoundingShape},
     cursor::{Cursor, CursorState},
     devices::device::{DeviceModel, DeviceView, DeviceViewKind},
-    model::ModelId,
+    model::{ModelId, ModelRegistry},
     pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
@@ -465,6 +464,7 @@ pub fn highlight_selected_wires(
     q_parents: Query<&Parent>,
     q_wire_views: Query<&View<WireModel>>,
     q_children: Query<&Children>,
+    model_registry: Res<ModelRegistry>,
 ) {
     // add outline if missing
     for (_, viewable) in q_selected_wires.iter() {
@@ -510,7 +510,8 @@ pub fn highlight_selected_wires(
                 .iter()
                 .map(|wire_node| match wire_node {
                     WireNode::Joint(joint_uuid) => {
-                        find_model_by_uuid!(q_wire_joints, *joint_uuid)
+                        q_wire_joints
+                            .get(model_registry.get_model_entity(joint_uuid))
                             .unwrap()
                             .1
                              .0
