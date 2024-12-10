@@ -4,9 +4,7 @@ use super::{
     signal::{Signal, SignalState},
     wire::{WireNode, WireNodes},
 };
-use bevy::
-    prelude::*
-;
+use bevy::prelude::*;
 use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};
 use std::ops::{Deref, DerefMut, Index, IndexMut};
 use uuid::Uuid;
@@ -155,35 +153,10 @@ fn on_remove_pin_model_collection(
         }
     }
 
-    info!("Deleting: {:?}", entities_to_delete);
-
     for entity in entities_to_delete {
         commands.entity(entity).despawn_recursive();
     }
 }
-
-// impl Component for PinModelCollection {
-//     const STORAGE_TYPE: StorageType = StorageType::Table;
-
-//     fn register_component_hooks(hooks: &mut ComponentHooks) {
-//         hooks.on_remove(|mut world, entity, component_id| {
-//             // let model_registry = world.get_resource::<ModelRegistry>().unwrap();
-//             // let pin_model_collection = world.get::<PinModelCollection>(entity).unwrap();
-//             let q_wire_nodes = world.query_filtered::<(Entity, &WireNodes), ()>();
-
-//             // let mut entities_to_delete: Vec<Entity> = Vec::new();
-
-//             // for pin_model in pin_model_collection.0.iter() {
-//             //     entities_to_delete.push(model_registry.get_model_entity(&pin_model.uuid));
-//             // }
-
-//             // let mut commands = world.commands();
-//             // for entity in entities_to_delete {
-//             //     commands.entity(entity).despawn_recursive();
-//             // }
-//         });
-//     }
-// }
 
 impl Deref for PinModelCollection {
     type Target = Vec<PinModel>;
@@ -214,18 +187,18 @@ impl IndexMut<&str> for PinModelCollection {
 }
 
 #[derive(Component)]
-pub struct PinCollection;
+pub struct PinViewCollection;
 
 #[derive(Bundle)]
-pub struct PinCollectionBundle {
-    pin_collection: PinCollection,
+pub struct PinViewCollectionBundle {
+    pin_view_collection: PinViewCollection,
     spatial_bundle: SpatialBundle,
 }
 
-impl PinCollectionBundle {
+impl PinViewCollectionBundle {
     pub fn new() -> Self {
         Self {
-            pin_collection: PinCollection,
+            pin_view_collection: PinViewCollection,
             spatial_bundle: SpatialBundle::default(),
         }
     }

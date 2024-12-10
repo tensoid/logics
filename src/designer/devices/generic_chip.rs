@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use crate::designer::{
     designer_assets::DesignerAssets,
-    pin::{PinCollectionBundle, PinLabelBundle, PinModelCollection, PinViewBundle},
+    pin::{PinViewCollectionBundle, PinLabelBundle, PinModelCollection, PinViewBundle},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
 };
@@ -163,14 +163,14 @@ struct GenericChipPinCollection;
 #[derive(Bundle)]
 struct GenericChipPinCollectionBundle {
     chip_pin_collection: GenericChipPinCollection,
-    pin_collection_bundle: PinCollectionBundle,
+    pin_collection_bundle: PinViewCollectionBundle,
 }
 
 impl GenericChipPinCollectionBundle {
     fn new() -> Self {
         Self {
             chip_pin_collection: GenericChipPinCollection,
-            pin_collection_bundle: PinCollectionBundle::new(),
+            pin_collection_bundle: PinViewCollectionBundle::new(),
         }
     }
 

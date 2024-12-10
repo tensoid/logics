@@ -22,20 +22,24 @@ use super::{
     pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
+    selection::Selected,
     signal::{Signal, SignalState},
 };
 
-//TODO: reimplement copy paste (single clipboard / same paste pipeline)
+//TODO: refactor highlight code (observers)
 //TODO: Only ever access model, view only accessed from model itself for syncing
 //TODO: fix line jank (LineList)
-//TODO: quadradic/cubic curves wires
 //TODO: split into files
 pub struct WirePlugin;
 
 impl Plugin for WirePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<WireNodes>()
+            .register_type::<WireJointModel>()
             .register_type::<WireModel>();
+
+        app.observe(on_create_wire);
+        app.observe(on_remove_wire);
 
         app.register_viewable::<WireModel>();
         app.add_systems(
@@ -65,35 +69,9 @@ pub enum WireNode {
     Joint(Uuid),
 }
 
-#[derive(Reflect, Clone, Debug, Default, PartialEq, Eq, Hash)]
+#[derive(Component, Reflect, Clone, Debug, Default, PartialEq, Eq, Hash)]
 #[reflect(Component, Default)]
 pub struct WireNodes(pub Vec<WireNode>);
-
-impl Component for WireNodes {
-    const STORAGE_TYPE: StorageType = StorageType::Table;
-
-    fn register_component_hooks(hooks: &mut ComponentHooks) {
-        hooks.on_remove(|mut world, entity, component_id| {
-            let model_registry = world.get_resource::<ModelRegistry>().unwrap();
-            let wire_nodes = world.get::<WireNodes>(entity).unwrap();
-
-            let mut entities_to_delete: Vec<Entity> = Vec::new();
-
-            for wire_node in wire_nodes.0.iter() {
-                let WireNode::Joint(wire_joint) = wire_node else {
-                    continue;
-                };
-
-                entities_to_delete.push(model_registry.get_model_entity(wire_joint));
-            }
-
-            let mut commands = world.commands();
-            for entity in entities_to_delete {
-                commands.entity(entity).despawn_recursive();
-            }
-        });
-    }
-}
 
 /// Marker component for wire models
 #[derive(Component, Reflect, Clone)]
@@ -117,6 +95,76 @@ impl WireModelBundle {
             wire_nodes: WireNodes(wire_nodes),
             signal_state: SignalState::new(Signal::Low),
         }
+    }
+}
+
+/// Creates observers when a wire is spawned
+pub fn on_create_wire(trigger: Trigger<OnAdd, WireModel>, mut commands: Commands) {
+    commands.entity(trigger.entity()).observe(on_select_wire);
+    commands.entity(trigger.entity()).observe(on_deselect_wire);
+}
+
+/// Selects the wire joints when a wire is selected
+fn on_select_wire(
+    trigger: Trigger<OnAdd, Selected>,
+    q_wires: Query<&WireNodes>,
+    model_registry: Res<ModelRegistry>,
+    mut commands: Commands,
+) {
+    let wire_nodes = q_wires.get(trigger.entity()).unwrap();
+
+    for wire_node in wire_nodes.0.iter() {
+        let WireNode::Joint(joint) = wire_node else {
+            continue;
+        };
+
+        let joint_entity = model_registry.get_model_entity(joint);
+
+        commands.entity(joint_entity).insert(Selected);
+    }
+}
+
+/// Deselects the wire joints when a wire is deselected
+fn on_deselect_wire(
+    trigger: Trigger<OnRemove, Selected>,
+    q_wires: Query<&WireNodes>,
+    model_registry: Res<ModelRegistry>,
+    mut commands: Commands,
+) {
+    let wire_nodes = q_wires.get(trigger.entity()).unwrap();
+
+    for wire_node in wire_nodes.0.iter() {
+        let WireNode::Joint(joint) = wire_node else {
+            continue;
+        };
+
+        let joint_entity = model_registry.get_model_entity(joint);
+
+        commands.entity(joint_entity).remove::<Selected>();
+    }
+}
+
+/// Despawns the wire joints when a wire is removed
+fn on_remove_wire(
+    trigger: Trigger<OnRemove, WireNodes>,
+    q_wires: Query<&WireNodes>,
+    model_registry: Res<ModelRegistry>,
+    mut commands: Commands,
+) {
+    let wire_nodes = q_wires.get(trigger.entity()).unwrap();
+
+    let mut entities_to_delete: Vec<Entity> = Vec::new();
+
+    for wire_node in wire_nodes.0.iter() {
+        let WireNode::Joint(wire_joint) = wire_node else {
+            continue;
+        };
+
+        entities_to_delete.push(model_registry.get_model_entity(wire_joint));
+    }
+
+    for entity in entities_to_delete {
+        commands.entity(entity).despawn_recursive();
     }
 }
 
@@ -153,19 +201,11 @@ impl WireViewBundle {
 }
 
 impl BuildView for WireModel {
-    fn build(world: &World, object: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
+    fn build(world: &World, _: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
         view.insert(WireViewBundle::new(render_settings));
     }
 }
-
-// impl BuildView for WireModel {
-//     fn build(world: &World, _: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
-//         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
-
-//         view.insert(WireViewBundle::new(render_settings));
-//     }
-// }
 
 #[allow(clippy::type_complexity)]
 pub fn update_wire_views(
@@ -228,6 +268,7 @@ pub fn update_wire_bbox(
     model_registry: Res<ModelRegistry>,
 ) {
     for (wire_nodes, wire_viewable) in q_wires.iter() {
+        //TODO: duplicate
         let wire_points: Vec<Vec2> = wire_nodes
             .0
             .iter()

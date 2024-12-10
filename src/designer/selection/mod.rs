@@ -360,7 +360,7 @@ pub fn release_drag(
     mut commands: Commands,
     input: Res<ButtonInput<MouseButton>>,
     mut q_cursor: Query<(&mut Cursor, Entity, &Transform)>,
-    q_dragged_board_entities: Query<(Entity, &Position, &Dragged), With<DeviceModel>>,
+    q_dragged_board_entities: Query<(Entity, &Position, &Dragged)>,
 ) {
     let (mut cursor, _, _) = get_cursor_mut!(q_cursor);
 
@@ -384,7 +384,7 @@ pub fn release_drag(
 #[allow(clippy::type_complexity)]
 pub fn update_dragged_entities_position(
     mut q_cursor: Query<&Transform, With<Cursor>>,
-    mut q_dragged_board_entities: Query<(Entity, &mut Position, &Dragged), With<DeviceModel>>,
+    mut q_dragged_board_entities: Query<(Entity, &mut Position, &Dragged)>,
 ) {
     let cursor_transform = get_cursor_mut!(q_cursor);
 

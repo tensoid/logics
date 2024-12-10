@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{ecs::reflect, prelude::*};
 
 use crate::{
     designer::{
@@ -12,14 +12,15 @@ use crate::{
 
 use super::{WireNode, WireNodes};
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct WireJointModel;
 
 #[derive(Bundle)]
 pub struct WireJointModelBundle {
-    wire_joint: WireJointModel,
-    signal_state: SignalState,
-    model: Model,
+    pub wire_joint: WireJointModel,
+    pub signal_state: SignalState,
+    pub model: Model,
 }
 
 impl WireJointModelBundle {

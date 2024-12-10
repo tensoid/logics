@@ -9,7 +9,7 @@ use crate::{
         bounding_box::BoundingBox,
         cursor::Cursor,
         designer_assets::DesignerAssets,
-        pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
+        pin::{PinModel, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
         position::Position,
         render_settings::CircuitBoardRenderingSettings,
         signal::Signal,
@@ -159,14 +159,14 @@ struct BinarySwitchPinCollection;
 #[derive(Bundle)]
 struct BinarySwitchPinCollectionBundle {
     binary_switch_pin_collection: BinarySwitchPinCollection,
-    pin_collection_bundle: PinCollectionBundle,
+    pin_collection_bundle: PinViewCollectionBundle,
 }
 
 impl BinarySwitchPinCollectionBundle {
     fn new() -> Self {
         Self {
             binary_switch_pin_collection: BinarySwitchPinCollection,
-            pin_collection_bundle: PinCollectionBundle::new(),
+            pin_collection_bundle: PinViewCollectionBundle::new(),
         }
     }
 }
@@ -274,14 +274,14 @@ struct BinaryDisplayPinCollection;
 #[derive(Bundle)]
 struct BinaryDisplayPinCollectionBundle {
     binary_display_pin_collection: BinaryDisplayPinCollection,
-    pin_collection_bundle: PinCollectionBundle,
+    pin_collection_bundle: PinViewCollectionBundle,
 }
 
 impl BinaryDisplayPinCollectionBundle {
     fn new() -> Self {
         Self {
             binary_display_pin_collection: BinaryDisplayPinCollection,
-            pin_collection_bundle: PinCollectionBundle::new(),
+            pin_collection_bundle: PinViewCollectionBundle::new(),
         }
     }
 }

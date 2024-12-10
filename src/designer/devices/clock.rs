@@ -11,7 +11,7 @@ use uuid::Uuid;
 
 use crate::designer::{
     designer_assets::DesignerAssets,
-    pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle},
+    pin::{PinModel, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
 };
@@ -166,14 +166,14 @@ struct ClockPinCollection;
 #[derive(Bundle)]
 struct ClockPinCollectionBundle {
     clock_pin_collection: ClockPinCollection,
-    pin_collection_bundle: PinCollectionBundle,
+    pin_collection_bundle: PinViewCollectionBundle,
 }
 
 impl ClockPinCollectionBundle {
     fn new() -> Self {
         Self {
             clock_pin_collection: ClockPinCollection,
-            pin_collection_bundle: PinCollectionBundle::new(),
+            pin_collection_bundle: PinViewCollectionBundle::new(),
         }
     }
 }
