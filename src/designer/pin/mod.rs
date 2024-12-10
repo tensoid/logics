@@ -2,8 +2,11 @@ use super::{
     bounding_box::BoundingBox,
     render_settings::CircuitBoardRenderingSettings,
     signal::{Signal, SignalState},
+    wire::{WireNode, WireNodes},
 };
-use bevy::prelude::*;
+use bevy::
+    prelude::*
+;
 use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};
 use std::ops::{Deref, DerefMut, Index, IndexMut};
 use uuid::Uuid;
@@ -11,7 +14,9 @@ use uuid::Uuid;
 pub struct PinPlugin;
 
 impl Plugin for PinPlugin {
-    fn build(&self, _: &mut App) {}
+    fn build(&self, app: &mut App) {
+        app.observe(on_remove_pin_model_collection);
+    }
 }
 
 #[derive(Reflect, PartialEq, Clone)]
@@ -123,6 +128,62 @@ impl PinModelCollection {
         self.iter_mut().for_each(|m| m.uuid = Uuid::new_v4());
     }
 }
+
+/// Despawns all wires connected to a device when it is despawned.
+fn on_remove_pin_model_collection(
+    trigger: Trigger<OnRemove, PinModelCollection>,
+    q_pin_model_collection: Query<&PinModelCollection>,
+    q_wire_nodes: Query<(Entity, &WireNodes)>,
+    mut commands: Commands,
+) {
+    let pin_model_collection = q_pin_model_collection.get(trigger.entity()).unwrap();
+    let uuids_in_pin_model_collection: Vec<Uuid> =
+        pin_model_collection.0.iter().map(|p| p.uuid).collect();
+
+    let mut entities_to_delete: Vec<Entity> = Vec::new();
+
+    for (wire_entity, wire_nodes) in q_wire_nodes.iter() {
+        for wire_node in wire_nodes.0.iter() {
+            let WireNode::Pin(pin_uuid) = wire_node else {
+                continue;
+            };
+
+            if uuids_in_pin_model_collection.contains(pin_uuid) {
+                entities_to_delete.push(wire_entity);
+                break;
+            }
+        }
+    }
+
+    info!("Deleting: {:?}", entities_to_delete);
+
+    for entity in entities_to_delete {
+        commands.entity(entity).despawn_recursive();
+    }
+}
+
+// impl Component for PinModelCollection {
+//     const STORAGE_TYPE: StorageType = StorageType::Table;
+
+//     fn register_component_hooks(hooks: &mut ComponentHooks) {
+//         hooks.on_remove(|mut world, entity, component_id| {
+//             // let model_registry = world.get_resource::<ModelRegistry>().unwrap();
+//             // let pin_model_collection = world.get::<PinModelCollection>(entity).unwrap();
+//             let q_wire_nodes = world.query_filtered::<(Entity, &WireNodes), ()>();
+
+//             // let mut entities_to_delete: Vec<Entity> = Vec::new();
+
+//             // for pin_model in pin_model_collection.0.iter() {
+//             //     entities_to_delete.push(model_registry.get_model_entity(&pin_model.uuid));
+//             // }
+
+//             // let mut commands = world.commands();
+//             // for entity in entities_to_delete {
+//             //     commands.entity(entity).despawn_recursive();
+//             // }
+//         });
+//     }
+// }
 
 impl Deref for PinModelCollection {
     type Target = Vec<PinModel>;

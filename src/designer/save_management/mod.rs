@@ -3,10 +3,12 @@ use crate::events::events::{
 };
 use bevy::prelude::*;
 use bevy_file_dialog::{DialogFilePicked, FileDialogExt, FileDialogPlugin};
-use moonshine_save::{load::load_from_file_on_event, save::save_default};
+use moonshine_save::{
+    load::load_from_file_on_event,
+    save::{save_default, Save},
+};
 use std::{env::current_exe, path::PathBuf};
 
-use super::devices::device::DeviceModel;
 
 struct LoadFilePick;
 struct SaveFilePick;
@@ -53,11 +55,10 @@ pub struct ActiveSaveFile {
 }
 
 pub fn new_file(
-    q_entities: Query<Entity, With<DeviceModel>>,
+    q_entities: Query<Entity, With<Save>>,
     mut active_save_file: ResMut<ActiveSaveFile>,
     mut commands: Commands,
 ) {
-    //TODO: maybe moonshine function for this
     for entity in q_entities.iter() {
         commands.entity(entity).despawn_recursive();
     }

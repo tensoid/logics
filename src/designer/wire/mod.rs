@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 use bevy_prototype_lyon::prelude::*;
-use moonshine_core::{kind::Kind, object::Object};
+use moonshine_core::object::Object;
 use moonshine_view::{BuildView, RegisterView, ViewCommands, Viewable};
 use uuid::Uuid;
 use wire_joint::{create_wire_joint, WireJointModel};
@@ -24,8 +24,6 @@ use super::{
     render_settings::CircuitBoardRenderingSettings,
     signal::{Signal, SignalState},
 };
-
-//TODO: delete wire when pin is deleted
 
 //TODO: implement wire delete_selected / select_single / highlighting (wire bbox)
 //TODO: reimplement copy paste (single clipboard / same paste pipeline)
