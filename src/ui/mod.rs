@@ -7,7 +7,6 @@ use self::{
 
 pub mod chip_selector;
 pub mod cursor_captured;
-mod styles;
 
 pub struct UIPlugin;
 

@@ -23,6 +23,8 @@ use super::{
     signal::{Signal, SignalState},
 };
 
+//TODO: look into shape border radii
+//TODO: look into font_smoothing
 //TODO: implement shift to drag straight
 //TODO: refactor highlight code (observers)
 //TODO: Only ever access model, view only accessed from model itself for syncing
@@ -36,8 +38,8 @@ impl Plugin for WirePlugin {
             .register_type::<WireJointModel>()
             .register_type::<WireModel>();
 
-        app.observe(on_create_wire);
-        app.observe(on_remove_wire);
+        app.add_observer(on_create_wire);
+        app.add_observer(on_remove_wire);
 
         app.register_viewable::<WireModel>();
         app.add_systems(
@@ -185,10 +187,7 @@ impl WireViewBundle {
         Self {
             shape_bundle: ShapeBundle {
                 path: GeometryBuilder::build_as(&shapes::Line(Vec2::ZERO, Vec2::ZERO)),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(0.0, 0.0, 0.005),
-                    ..default()
-                },
+                transform: Transform::from_xyz(0.0, 0.0, 0.005),
                 ..default()
             },
             stroke: Stroke::new(
@@ -202,7 +201,7 @@ impl WireViewBundle {
 }
 
 impl BuildView for WireModel {
-    fn build(world: &World, _: Object<WireModel>, view: &mut ViewCommands<WireModel>) {
+    fn build(world: &World, _: Object<WireModel>, mut view: ViewCommands<Self>) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
         view.insert(WireViewBundle::new(render_settings));
     }

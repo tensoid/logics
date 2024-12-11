@@ -1,8 +1,7 @@
 use bevy::prelude::*;
+use moonshine_save::GetFilePath;
 
 use std::path::{Path, PathBuf};
-
-use moonshine_save::FilePath;
 
 use crate::designer::position::Position;
 
@@ -53,7 +52,7 @@ pub struct SaveEvent {
     pub path: PathBuf,
 }
 
-impl FilePath for SaveEvent {
+impl GetFilePath for SaveEvent {
     fn path(&self) -> &Path {
         &self.path
     }
@@ -64,7 +63,7 @@ pub struct LoadEvent {
     pub path: PathBuf,
 }
 
-impl FilePath for LoadEvent {
+impl GetFilePath for LoadEvent {
     fn path(&self) -> &Path {
         &self.path
     }

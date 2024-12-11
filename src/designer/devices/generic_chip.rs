@@ -5,8 +5,8 @@ use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
 use crate::designer::{
-    designer_assets::DesignerAssets,
-    pin::{PinViewCollectionBundle, PinLabelBundle, PinModelCollection, PinViewBundle},
+    designer_assets::{self, DesignerAssets},
+    pin::{PinLabelBundle, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
 };
@@ -42,18 +42,30 @@ pub struct GenericChipLabel;
 #[derive(Bundle)]
 pub struct GenericChipLabelBundle {
     chip_label: GenericChipLabel,
-    text_bundle: Text2dBundle,
+    text_2d: Text2d,
+    text_font: TextFont,
+    text_color: TextColor,
+    text_layout: TextLayout,
+    transform: Transform,
 }
 
 impl GenericChipLabelBundle {
-    fn new(label: String, text_style: TextStyle) -> Self {
+    fn new(
+        label: String,
+        render_settings: &CircuitBoardRenderingSettings,
+        designer_assets: &DesignerAssets,
+    ) -> Self {
         Self {
             chip_label: GenericChipLabel,
-            text_bundle: Text2dBundle {
-                text: Text::from_section(label, text_style).with_justify(JustifyText::Center),
-                transform: Transform::from_xyz(0.0, 0.0, 0.01),
+            text_2d: Text2d::new(label),
+            text_font: TextFont {
+                font: designer_assets.font.clone(),
+                font_size: render_settings.chip_label_font_size,
                 ..default()
             },
+            text_color: TextColor(Color::BLACK),
+            text_layout: TextLayout::new_with_justify(JustifyText::Center),
+            transform: Transform::from_xyz(0.0, 0.0, 0.01),
         }
     }
 }
@@ -103,7 +115,6 @@ impl GenericChipBodyBundle {
                     radius: render_settings.device_edge_radius,
                     closed: false,
                 }),
-                spatial: SpatialBundle::default(),
                 ..default()
             },
         }
@@ -177,9 +188,9 @@ impl GenericChipPinCollectionBundle {
     fn spawn_pins(
         pin_collection: &mut ChildBuilder,
         render_settings: &CircuitBoardRenderingSettings,
+        designer_assets: &DesignerAssets,
         chip_extents: Vec2,
         pin_model_collection: &PinModelCollection,
-        pin_label_text_style: TextStyle,
     ) {
         //Input pins
         for (i, pin_model) in pin_model_collection.iter_inputs().enumerate() {
@@ -196,7 +207,12 @@ impl GenericChipPinCollectionBundle {
                 .with_children(|pc| {
                     pc.spawn(PinLabelBundle::new(
                         pin_model.label.clone(),
-                        pin_label_text_style.clone(),
+                        TextColor(Color::BLACK),
+                        TextFont {
+                            font: designer_assets.font.clone(),
+                            font_size: render_settings.chip_pin_label_font_size,
+                            ..default()
+                        },
                         Vec3::new(12.0, 0.0, 0.2),
                     ));
                 });
@@ -213,7 +229,12 @@ impl GenericChipPinCollectionBundle {
             .with_children(|pc| {
                 pc.spawn(PinLabelBundle::new(
                     output_pin_model.label.clone(),
-                    pin_label_text_style,
+                    TextColor(Color::BLACK),
+                    TextFont {
+                        font: designer_assets.font.clone(),
+                        font_size: render_settings.chip_pin_label_font_size,
+                        ..default()
+                    },
                     Vec3::new(-12.0, 0.0, 0.2),
                 ));
             });
@@ -224,22 +245,10 @@ impl BuildView<DeviceViewKind> for GenericChip {
     fn build(
         world: &World,
         object: Object<DeviceViewKind>,
-        view: &mut ViewCommands<DeviceViewKind>,
+        mut view: ViewCommands<DeviceViewKind>,
     ) {
         let designer_assets = world.resource::<DesignerAssets>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
-
-        let chip_label_text_style = TextStyle {
-            font_size: render_settings.chip_label_font_size,
-            color: Color::BLACK,
-            font: designer_assets.font.clone(),
-        };
-
-        let pin_label_text_style = TextStyle {
-            font_size: render_settings.chip_pin_label_font_size,
-            color: Color::BLACK,
-            font: designer_assets.font.clone(),
-        };
 
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
@@ -255,7 +264,8 @@ impl BuildView<DeviceViewKind> for GenericChip {
             .with_children(|device| {
                 device.spawn(GenericChipLabelBundle::new(
                     generic_chip.name.clone(),
-                    chip_label_text_style,
+                    render_settings,
+                    designer_assets,
                 ));
                 device.spawn(GenericChipBodyBundle::new(
                     render_settings,
@@ -268,9 +278,9 @@ impl BuildView<DeviceViewKind> for GenericChip {
                         GenericChipPinCollectionBundle::spawn_pins(
                             pc,
                             render_settings,
+                            designer_assets,
                             chip_extents,
                             pin_model_collection,
-                            pin_label_text_style,
                         );
                     });
             });

@@ -21,6 +21,7 @@ use super::{
 //TODO:
 // maybe refactor by only having one copy and one paste function
 // and a pipeline for update_position, update_model_uuids, init_drag etc... just passing the spawned entity ids
+
 pub struct CopyPastePlugin;
 
 impl Plugin for CopyPastePlugin {
@@ -30,12 +31,12 @@ impl Plugin for CopyPastePlugin {
             .init_resource::<WireJointClipboard>()
             .add_systems(
                 Update,
-                (copy_devices, copy_wire_joints, copy_wires).run_if(on_event::<CopyEvent>()),
+                (copy_devices, copy_wire_joints, copy_wires).run_if(on_event::<CopyEvent>),
             )
             .add_systems(
                 Update,
                 (paste_devices.pipe(paste_wire_joints).pipe(paste_wires))
-                    .run_if(on_event::<PasteEvent>()),
+                    .run_if(on_event::<PasteEvent>),
             );
     }
 }
@@ -43,7 +44,7 @@ impl Plugin for CopyPastePlugin {
 /// Stores all components from all devices after copying using reflect.
 #[derive(Resource, Default)]
 pub struct DeviceClipboard {
-    pub items: Vec<Vec<Box<dyn Reflect>>>,
+    pub items: Vec<Vec<Box<dyn PartialReflect>>>,
 }
 
 /// Copies all devices and stores them in the [`DeviceClipboard`].
@@ -55,13 +56,13 @@ pub fn copy_devices(world: &mut World) {
         .iter(world)
         .collect();
 
-    let mut copied_devices: Vec<Vec<Box<dyn Reflect>>> = Vec::new();
+    let mut copied_devices: Vec<Vec<Box<dyn PartialReflect>>> = Vec::new();
 
     {
         let type_registry = world.resource::<AppTypeRegistry>().read();
         for &entity in entities.iter() {
             let entity_ref = world.entity(entity);
-            let device_components: Vec<Box<dyn Reflect>> = entity_ref
+            let device_components: Vec<Box<dyn PartialReflect>> = entity_ref
                 .archetype()
                 .components()
                 .filter_map(|component_id| {

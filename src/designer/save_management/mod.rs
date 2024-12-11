@@ -2,7 +2,8 @@ use crate::events::{LoadEvent, LoadRequestEvent, NewFileEvent, SaveEvent, SaveRe
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_file_dialog::{DialogFilePicked, FileDialogExt, FileDialogPlugin};
 use moonshine_save::{
-    load::load_from_file_on_event,
+    file_from_event,
+    load::load,
     save::{save_default, Save},
 };
 use std::{env::current_exe, path::PathBuf};
@@ -17,13 +18,13 @@ impl Plugin for SaveManagementPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            handle_save_request.run_if(on_event::<SaveRequestEvent>()),
+            handle_save_request.run_if(on_event::<SaveRequestEvent>),
         )
         .add_systems(
             Update,
-            handle_load_request.run_if(on_event::<LoadRequestEvent>()),
+            handle_load_request.run_if(on_event::<LoadRequestEvent>),
         )
-        .add_systems(Update, new_file.run_if(on_event::<NewFileEvent>()))
+        .add_systems(Update, new_file.run_if(on_event::<NewFileEvent>))
         .add_systems(
             PreUpdate,
             (
@@ -31,9 +32,9 @@ impl Plugin for SaveManagementPlugin {
                 // has_event doesnt consume the event and because of that it executes the pipeline multiple times per event which causes a crash.
                 // This might be fixed in the latest version of moonshine_save which is not yet published on crates io.
                 save_default()
-                    .into_file_on_event::<SaveEvent>()
-                    .run_if(on_event::<SaveEvent>()),
-                load_from_file_on_event::<LoadEvent>().run_if(on_event::<LoadEvent>()),
+                    .into(file_from_event::<SaveEvent>())
+                    .run_if(on_event::<SaveEvent>),
+                load(file_from_event::<LoadEvent>()).run_if(on_event::<LoadEvent>),
             ),
         )
         .add_plugins(

@@ -56,29 +56,27 @@ pub struct BinarySwitchButton;
 #[derive(Bundle)]
 pub struct BinarySwitchButtonBundle {
     binary_switch_switch: BinarySwitchButton,
-    sprite_bundle: SpriteBundle,
+    sprite: Sprite,
     bounding_box: BoundingBox,
+    transform: Transform,
 }
 
 impl BinarySwitchButtonBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings, texture: Handle<Image>) -> Self {
         Self {
             binary_switch_switch: BinarySwitchButton,
-            sprite_bundle: SpriteBundle {
-                texture,
-                transform: Transform::from_xyz(
-                    -render_settings.binary_switch_extents.x / 4.0,
-                    0.0,
-                    0.01,
+            sprite: Sprite {
+                custom_size: Some(
+                    render_settings.binary_switch_extents / Vec2::new(2.0, 1.0) * 0.8,
                 ),
-                sprite: Sprite {
-                    custom_size: Some(
-                        render_settings.binary_switch_extents / Vec2::new(2.0, 1.0) * 0.8,
-                    ),
-                    ..default()
-                },
+                image: texture,
                 ..default()
             },
+            transform: Transform::from_xyz(
+                -render_settings.binary_switch_extents.x / 4.0,
+                0.0,
+                0.01,
+            ),
             bounding_box: BoundingBox::rect_new(
                 render_settings.binary_switch_extents / Vec2::new(4.0, 2.0),
                 false,
@@ -123,7 +121,6 @@ impl BinarySwitchBodyBundle {
                     radius: render_settings.device_edge_radius,
                     closed: false,
                 }),
-                spatial: SpatialBundle::default(),
                 ..default()
             },
         }
@@ -238,7 +235,6 @@ impl BinaryDisplayBodyBundle {
                     radius: render_settings.device_edge_radius,
                     closed: false,
                 }),
-                spatial: SpatialBundle::default(),
                 ..default()
             },
         }
@@ -292,7 +288,11 @@ pub struct BoardBinaryDisplay;
 #[derive(Bundle)]
 pub struct BoardBinaryDisplayBundle {
     board_binary_display: BoardBinaryDisplay,
-    text_bundle: Text2dBundle,
+    text_2d: Text2d,
+    text_color: TextColor,
+    text_font: TextFont,
+    text_layout: TextLayout,
+    transform: Transform,
 }
 
 impl BoardBinaryDisplayBundle {
@@ -301,12 +301,6 @@ impl BoardBinaryDisplayBundle {
         designer_assets: &DesignerAssets,
         is_input: bool,
     ) -> Self {
-        let text_style = TextStyle {
-            font_size: render_settings.binary_display_font_size,
-            color: Color::BLACK,
-            font: designer_assets.font.clone(),
-        };
-
         let x_offset = match is_input {
             true => render_settings.binary_switch_extents.x / 4.0,
             false => 0.0,
@@ -314,11 +308,15 @@ impl BoardBinaryDisplayBundle {
 
         Self {
             board_binary_display: BoardBinaryDisplay,
-            text_bundle: Text2dBundle {
-                text: Text::from_section("0", text_style).with_justify(JustifyText::Center),
-                transform: Transform::from_xyz(x_offset, 0.0, 0.01),
+            text_2d: Text2d::new("0"),
+            text_color: TextColor(Color::BLACK),
+            text_font: TextFont {
+                font_size: render_settings.binary_display_font_size,
+                font: designer_assets.font.clone(),
                 ..default()
             },
+            text_layout: TextLayout::new_with_justify(JustifyText::Center),
+            transform: Transform::from_xyz(x_offset, 0.0, 0.01),
         }
     }
 }
@@ -327,7 +325,7 @@ impl BuildView<DeviceViewKind> for BinarySwitch {
     fn build(
         world: &World,
         object: Object<DeviceViewKind>,
-        view: &mut ViewCommands<DeviceViewKind>,
+        mut view: ViewCommands<DeviceViewKind>,
     ) {
         let designer_assets = world.resource::<DesignerAssets>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
@@ -367,7 +365,7 @@ impl BuildView<DeviceViewKind> for BinaryDisplay {
     fn build(
         world: &World,
         object: Object<DeviceViewKind>,
-        view: &mut ViewCommands<DeviceViewKind>,
+        mut view: ViewCommands<DeviceViewKind>,
     ) {
         let designer_assets = world.resource::<DesignerAssets>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
@@ -408,18 +406,23 @@ pub fn update_board_binary_displays(
         ),
     >,
     q_children: Query<&Children>,
-    mut q_displays: Query<&mut Text, With<BoardBinaryDisplay>>,
+    mut q_displays: Query<&mut Text2d, With<BoardBinaryDisplay>>,
 ) {
     for (pin_model_collection, viewable) in q_board_binary_io.iter() {
         let view_entity = viewable.view().entity();
 
-        find_descendant!(q_children, view_entity, q_displays, |target: &mut Text| {
-            target.sections[0].value = match pin_model_collection["Q"].signal_state.get_signal() {
-                Signal::High => "1".into(),
-                Signal::Low => "0".into(),
-                Signal::Conflict => "C".into(),
-            };
-        });
+        find_descendant!(
+            q_children,
+            view_entity,
+            q_displays,
+            |target: &mut Text2d| {
+                target.0 = match pin_model_collection["Q"].signal_state.get_signal() {
+                    Signal::High => "1".into(),
+                    Signal::Low => "0".into(),
+                    Signal::Conflict => "C".into(),
+                };
+            }
+        );
     }
 }
 

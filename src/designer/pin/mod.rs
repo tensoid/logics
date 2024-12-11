@@ -13,7 +13,7 @@ pub struct PinPlugin;
 
 impl Plugin for PinPlugin {
     fn build(&self, app: &mut App) {
-        app.observe(on_remove_pin_model_collection);
+        app.add_observer(on_remove_pin_model_collection);
     }
 }
 
@@ -237,10 +237,7 @@ impl PinViewBundle {
                     radius,
                     ..default()
                 }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_translation(translation),
-                    ..default()
-                },
+                transform: Transform::from_translation(translation),
                 ..default()
             },
             fill: Fill::color(render_settings.pin_color),
@@ -255,18 +252,27 @@ pub struct PinLabel;
 #[derive(Bundle)]
 pub struct PinLabelBundle {
     pin_label: PinLabel,
-    text_bundle: Text2dBundle,
+    text_2d: Text2d,
+    text_color: TextColor,
+    text_font: TextFont,
+    text_layout: TextLayout,
+    transform: Transform,
 }
 
 impl PinLabelBundle {
-    pub fn new(label: String, text_style: TextStyle, translation: Vec3) -> Self {
+    pub fn new(
+        label: String,
+        text_color: TextColor,
+        text_font: TextFont,
+        translation: Vec3,
+    ) -> Self {
         Self {
             pin_label: PinLabel,
-            text_bundle: Text2dBundle {
-                text: Text::from_section(label, text_style).with_justify(JustifyText::Center),
-                transform: Transform::from_translation(translation),
-                ..default()
-            },
+            text_2d: Text2d(label),
+            text_layout: TextLayout::new_with_justify(JustifyText::Center),
+            text_color,
+            text_font,
+            transform: Transform::from_translation(translation),
         }
     }
 }

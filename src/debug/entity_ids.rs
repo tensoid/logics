@@ -24,21 +24,18 @@ pub fn draw_entity_ids(
         debug_mode_state.eq(&DebugModeState::On) && debug_mode_settings.draw_entity_ids;
 
     if should_be_active && !is_currently_active {
-        let text_style = TextStyle {
-            font_size: 20.0, // TODO: settings
-            color: Color::BLACK,
-            font: designer_assets.font.clone(),
-        };
-
         for entity in q_entities.iter() {
             commands.entity(entity).with_children(|cb| {
                 cb.spawn((
-                    Text2dBundle {
-                        text: Text::from_section(entity.to_string(), text_style.clone())
-                            .with_justify(JustifyText::Center),
-                        transform: Transform::from_translation(Vec3::new(0.0, 10.0, 0.1)),
+                    Text2d::new(entity.to_string()),
+                    TextLayout::new_with_justify(JustifyText::Center),
+                    TextFont {
+                        font: designer_assets.font.clone(),
+                        font_size: 20.0, // TODO: settings
                         ..default()
                     },
+                    TextColor(Color::BLACK),
+                    Transform::from_translation(Vec3::new(0.0, 10.0, 0.1)),
                     EntityIdDebugText,
                 ));
             });

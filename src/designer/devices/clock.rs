@@ -95,7 +95,6 @@ impl ClockBodyBundle {
                     radius: render_settings.device_edge_radius,
                     closed: false,
                 }),
-                spatial: SpatialBundle::default(),
                 ..default()
             },
         }
@@ -108,7 +107,11 @@ pub struct ClockLabel;
 #[derive(Bundle)]
 pub struct ClockLabelBundle {
     clock_label: ClockLabel,
-    text_bundle: Text2dBundle,
+    text_2d: Text2d,
+    text_font: TextFont,
+    text_color: TextColor,
+    text_layout: TextLayout,
+    transform: Transform,
 }
 
 impl ClockLabelBundle {
@@ -116,19 +119,17 @@ impl ClockLabelBundle {
         render_settings: &CircuitBoardRenderingSettings,
         designer_assets: &DesignerAssets,
     ) -> Self {
-        let text_style = TextStyle {
-            font_size: render_settings.clock_label_font_size, // TODO: settings
-            color: Color::BLACK,
-            font: designer_assets.font.clone(),
-        };
-
         Self {
             clock_label: ClockLabel,
-            text_bundle: Text2dBundle {
-                text: Text::from_section("C", text_style).with_justify(JustifyText::Center),
-                transform: Transform::from_xyz(0.0, 0.0, 0.01),
+            text_2d: Text2d::new("C"),
+            text_color: TextColor(Color::BLACK),
+            text_font: TextFont {
+                font: designer_assets.font.clone(),
+                font_size: render_settings.clock_label_font_size,
                 ..default()
             },
+            text_layout: TextLayout::new_with_justify(JustifyText::Center),
+            transform: Transform::from_xyz(0.0, 0.0, 0.01),
         }
     }
 }
@@ -182,7 +183,7 @@ impl BuildView<DeviceViewKind> for Clock {
     fn build(
         world: &World,
         object: Object<DeviceViewKind>,
-        view: &mut ViewCommands<DeviceViewKind>,
+        mut view: ViewCommands<DeviceViewKind>,
     ) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
         let designer_assets = world.resource::<DesignerAssets>();

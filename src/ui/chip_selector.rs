@@ -1,11 +1,9 @@
-use bevy::prelude::*;
+use bevy::{color::palettes::css::GRAY, prelude::*};
 
 use crate::{
     designer::{designer_assets::DesignerAssets, devices::device::DeviceIds, position::Position},
     events::SpawnDeviceEvent,
 };
-
-use super::styles::*;
 
 #[derive(Component)]
 pub struct ChipSelector;
@@ -21,27 +19,41 @@ pub fn spawn_chip_selector(
     commands
         .spawn((
             ChipSelector,
-            NodeBundle {
-                style: chip_selector_style(),
-                background_color: chip_selector_background_color(),
-                border_color: chip_selector_border_color(),
+            Node {
+                width: Val::Vw(20.0),
+                height: Val::Vh(100.0),
+                justify_self: JustifySelf::End,
+                justify_content: JustifyContent::Center,
+                flex_direction: FlexDirection::Column,
+                align_items: AlignItems::Center,
+                border: UiRect::left(Val::Px(2.0)),
                 ..default()
             },
+            BackgroundColor(Color::WHITE),
+            BorderColor(Color::BLACK),
         ))
         .with_children(|cs| {
             for device_id in q_device_ids.devices.iter() {
                 cs.spawn((
                     ChipButton,
-                    ButtonBundle {
-                        style: chip_button_style(),
-                        background_color: chip_button_background_color(),
+                    Button,
+                    Node {
+                        width: Val::Percent(100.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
                         ..default()
                     },
+                    BackgroundColor(Color::WHITE),
                 ))
                 .with_children(|b| {
-                    b.spawn(TextBundle::from_section(
-                        device_id,
-                        chip_button_text_style(&designer_assets),
+                    b.spawn((
+                        Text::new(device_id),
+                        TextFont {
+                            font: designer_assets.font.clone(),
+                            font_size: 20.0,
+                            ..default()
+                        },
+                        TextColor(Color::BLACK),
                     ));
                 });
             }
@@ -62,15 +74,11 @@ pub fn chip_selector_button_interact(
 
         match *interaction {
             Interaction::None => {
-                *background_color = chip_button_background_color();
+                background_color.0 = Color::WHITE;
             }
-            Interaction::Hovered => {
-                *background_color = chip_button_background_color_hovered();
-            }
+            Interaction::Hovered => background_color.0 = GRAY.into(),
             Interaction::Pressed => {
-                *background_color = chip_button_background_color_pressed();
-
-                let device_id = button_text.sections.first().unwrap().value.clone();
+                let device_id = button_text.0.clone();
 
                 spawn_ev_writer.send(SpawnDeviceEvent {
                     device_id,

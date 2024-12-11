@@ -23,7 +23,11 @@ pub fn draw_bounding_boxes(
 
         match bbox.bounding_shape {
             BoundingShape::Aabb(aabb) => {
-                bbox_gizmos.rect_2d(aabb.center(), 0.0, aabb.half_size() * 2.0, color);
+                bbox_gizmos.rect_2d(
+                    Isometry2d::from_translation(aabb.center()),
+                    aabb.half_size() * 2.0,
+                    color,
+                );
             }
             BoundingShape::Circle(circle) => {
                 bbox_gizmos.circle_2d(circle.center(), circle.radius(), color);

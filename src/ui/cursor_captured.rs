@@ -10,7 +10,7 @@ pub fn check_cursor_captured(
     q_window: Query<&Window, With<PrimaryWindow>>,
     mut is_cursor_captured: ResMut<IsCursorCaptured>,
     node_query: Query<
-        (&Node, &GlobalTransform, &InheritedVisibility), /* , Without<NoCursorCapture>*/
+        (&ComputedNode, &GlobalTransform, &InheritedVisibility), /* , Without<NoCursorCapture>*/
     >,
 ) {
     let window = q_window.get_single().unwrap();

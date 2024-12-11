@@ -29,7 +29,7 @@ impl RegisterDevice for App {
         // register spawn func
         self.add_systems(
             Update,
-            spawn_device::<T>.run_if(on_event::<SpawnDeviceEvent>()),
+            spawn_device::<T>.run_if(on_event::<SpawnDeviceEvent>),
         );
 
         // store device_id in resource
@@ -83,7 +83,7 @@ pub struct DeviceView;
 pub struct DeviceViewBundle {
     device_view: DeviceView,
     bounding_box: BoundingBox,
-    spatial_bundle: SpatialBundle,
+    transform: Transform,
 }
 
 impl DeviceViewBundle {
@@ -95,10 +95,7 @@ impl DeviceViewBundle {
                 Vec2::ZERO,
                 true,
             ),
-            spatial_bundle: SpatialBundle {
-                transform: Transform::from_xyz(position.0.x, position.0.y, 0.0),
-                ..default()
-            },
+            transform: Transform::from_xyz(position.0.x, position.0.y, 0.0),
         }
     }
 }

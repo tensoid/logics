@@ -33,7 +33,7 @@ pub struct SelectionPlugin;
 
 impl Plugin for SelectionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, select_all.run_if(on_event::<SelectAllEvent>()))
+        app.add_systems(Update, select_all.run_if(on_event::<SelectAllEvent>))
             .add_systems(Update, release_drag)
             .add_systems(Update, update_selection_box)
             .add_systems(
@@ -83,10 +83,7 @@ impl DeviceSelectionOutlineBundle {
                     extents,
                     ..default()
                 }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_xyz(0.0, 0.0, 1.0),
-                    ..default()
-                },
+                transform: Transform::from_xyz(0.0, 0.0, 1.0),
                 ..default()
             },
         }
@@ -112,10 +109,7 @@ impl WireSelectionOutlineBundle {
                 render_settings.wire_line_width + 2.0,
             ),
             shape_bundle: ShapeBundle {
-                spatial: SpatialBundle {
-                    transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.1)),
-                    ..default()
-                },
+                transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.1)),
                 ..default()
             },
         }
@@ -159,11 +153,9 @@ pub fn spawn_selection_box(
             path: GeometryBuilder::build_as(&shapes::Rectangle {
                 extents: Vec2::ZERO,
                 origin: RectangleOrigin::BottomLeft,
-            }),
-            spatial: SpatialBundle {
-                transform: Transform::from_xyz(cursor_position.x, cursor_position.y, 2.0),
                 ..default()
-            },
+            }),
+            transform: Transform::from_xyz(cursor_position.x, cursor_position.y, 2.0),
             ..default()
         },
         Stroke::new(
@@ -254,6 +246,7 @@ pub fn update_selection_box(
     *path = GeometryBuilder::build_as(&shapes::Rectangle {
         extents: cursor_position - selection_box_position,
         origin: RectangleOrigin::BottomLeft,
+        ..default()
     });
 }
 
