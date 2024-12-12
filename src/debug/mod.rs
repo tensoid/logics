@@ -31,7 +31,7 @@ impl Plugin for DebugPlugin {
             .add_systems(
                 Update,
                 draw_entity_ids.run_if(
-                    resource_changed::<DebugModeSettings>.or_else(state_changed::<DebugModeState>),
+                    resource_changed::<DebugModeSettings>.or(state_changed::<DebugModeState>),
                 ),
             )
             .add_systems(Update, toggle_debug_mode)

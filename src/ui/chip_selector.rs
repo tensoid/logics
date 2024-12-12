@@ -1,4 +1,4 @@
-use bevy::{color::palettes::css::GRAY, prelude::*};
+use bevy::{color::palettes::css::GRAY, prelude::*, text::FontSmoothing};
 
 use crate::{
     designer::{designer_assets::DesignerAssets, devices::device::DeviceIds, position::Position},
@@ -51,7 +51,7 @@ pub fn spawn_chip_selector(
                         TextFont {
                             font: designer_assets.font.clone(),
                             font_size: 20.0,
-                            ..default()
+                            font_smoothing: FontSmoothing::None,
                         },
                         TextColor(Color::BLACK),
                     ));

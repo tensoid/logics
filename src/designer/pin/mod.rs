@@ -192,14 +192,16 @@ pub struct PinViewCollection;
 #[derive(Bundle)]
 pub struct PinViewCollectionBundle {
     pin_view_collection: PinViewCollection,
-    spatial_bundle: SpatialBundle,
+    transform: Transform,
+    visibility: Visibility,
 }
 
 impl PinViewCollectionBundle {
     pub fn new() -> Self {
         Self {
             pin_view_collection: PinViewCollection,
-            spatial_bundle: SpatialBundle::default(),
+            transform: Transform::default(),
+            visibility: Visibility::default(),
         }
     }
 }

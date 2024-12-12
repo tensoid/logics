@@ -13,7 +13,7 @@ moonshine-view = "0.1.6"
 moonshine-core = "0.2.1"
 uuid = "1.11.0"
 bevy_framepace = "0.17.1"
-bevy_file_dialog = { git = "https://github.com/richardhozak/bevy_file_dialog" }
+bevy_file_dialog = { git = "https://github.com/richardhozak/bevy_file_dialog" } #TODO: wait for crate update to bevy 0.15
 
 [profile.dev]
 opt-level = 1

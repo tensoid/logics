@@ -41,7 +41,7 @@ impl Plugin for WirePlugin {
         app.add_observer(on_create_wire);
         app.add_observer(on_remove_wire);
 
-        app.register_viewable::<WireModel>();
+        app.add_viewable::<WireModel>();
         app.add_systems(
             Update,
             (

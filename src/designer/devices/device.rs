@@ -84,6 +84,7 @@ pub struct DeviceViewBundle {
     device_view: DeviceView,
     bounding_box: BoundingBox,
     transform: Transform,
+    visibility: Visibility,
 }
 
 impl DeviceViewBundle {
@@ -96,6 +97,7 @@ impl DeviceViewBundle {
                 true,
             ),
             transform: Transform::from_xyz(position.0.x, position.0.y, 0.0),
+            visibility: Visibility::default(),
         }
     }
 }

@@ -39,7 +39,8 @@ pub struct Cursor {
 #[derive(Bundle, Default)]
 pub struct CursorBundle {
     cursor: Cursor,
-    spatial: SpatialBundle,
+    transform: Transform,
+    visibility: Visibility,
 }
 
 pub fn screen_to_world_space(

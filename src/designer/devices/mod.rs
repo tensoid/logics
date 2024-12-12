@@ -42,10 +42,10 @@ impl Plugin for DevicePlugin {
             .register_type::<PinModelCollection>()
             .register_type::<Clock>();
 
-        app.register_view::<DeviceViewKind, BinarySwitch>()
-            .register_view::<DeviceViewKind, BinaryDisplay>()
-            .register_view::<DeviceViewKind, GenericChip>()
-            .register_view::<DeviceViewKind, Clock>();
+        app.add_view::<DeviceViewKind, BinarySwitch>()
+            .add_view::<DeviceViewKind, BinaryDisplay>()
+            .add_view::<DeviceViewKind, GenericChip>()
+            .add_view::<DeviceViewKind, Clock>();
 
         app.register_device::<And2>()
             .register_device::<Nand2>()
