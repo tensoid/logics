@@ -181,12 +181,17 @@ pub fn paste_wires(
     wire_clipboard: Res<WireClipboard>,
 ) {
     for wire_nodes in wire_clipboard.items.iter() {
+        // updates the uuids to the mapped ones or discards the wire if a mapping doesnt exist
         let new_wire_nodes: Vec<WireNode> = wire_nodes
             .0
             .iter()
-            .map(|wire_node| match wire_node {
-                WireNode::Joint(uuid) => WireNode::Joint(*uuid_mapping.get(uuid).unwrap()),
-                WireNode::Pin(uuid) => WireNode::Pin(*uuid_mapping.get(uuid).unwrap()),
+            .filter_map(|wire_node| match wire_node {
+                WireNode::Joint(uuid) => uuid_mapping
+                    .get(uuid)
+                    .map(|&mapped_uuid| WireNode::Joint(mapped_uuid)),
+                WireNode::Pin(uuid) => uuid_mapping
+                    .get(uuid)
+                    .map(|&mapped_uuid| WireNode::Pin(mapped_uuid)),
             })
             .collect();
 

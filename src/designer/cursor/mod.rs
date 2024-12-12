@@ -34,6 +34,7 @@ pub enum CursorState {
 #[derive(Component, Default)]
 pub struct Cursor {
     pub state: CursorState,
+    pub just_finished_wire: bool,
 }
 
 #[derive(Bundle, Default)]
@@ -61,10 +62,11 @@ pub fn spawn_cursor(mut commands: Commands) {
 pub fn update_cursor(
     q_window: Query<&Window, With<PrimaryWindow>>,
     q_camera: Query<(&Camera, &GlobalTransform), Without<GenericChip>>,
-    mut q_cursor: Query<&mut Transform, With<Cursor>>,
+    mut q_cursor: Query<(&mut Transform, &mut Cursor)>,
 ) {
-    let mut cursor_transform = get_cursor_mut!(q_cursor);
+    let (mut cursor_transform, mut cursor) = get_cursor_mut!(q_cursor);
 
+    // update cursor transform
     if let Ok(window) = q_window.get_single() {
         if q_camera.iter().count() > 1 {
             panic!("More than one camera in the scene.");
@@ -76,6 +78,9 @@ pub fn update_cursor(
             }
         }
     }
+
+    // clear flags
+    cursor.just_finished_wire = false;
 }
 
 #[allow(clippy::type_complexity)]

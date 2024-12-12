@@ -8,12 +8,13 @@ bevy = "0.15.0"
 bevy_prototype_lyon = "0.13.0"
 bevy-inspector-egui = "0.28.0"
 bevy_pancam = "0.16.0"
+bevy_framepace = "0.17.1"
 moonshine-save = "0.3.10"
 moonshine-view = "0.1.6"
 moonshine-core = "0.2.1"
 uuid = "1.11.0"
-bevy_framepace = "0.17.1"
-bevy_file_dialog = { git = "https://github.com/richardhozak/bevy_file_dialog" } #TODO: wait for crate update to bevy 0.15
+rfd = "0.15.1"
+crossbeam-channel = "0.5"
 
 [profile.dev]
 opt-level = 1

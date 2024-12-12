@@ -47,6 +47,7 @@ impl Plugin for WirePlugin {
             (
                 finish_wire_placement,
                 create_wire_joint.before(propagate_signals),
+                update_wire_drag_point,
                 create_wire,
             )
                 .chain()
@@ -57,7 +58,6 @@ impl Plugin for WirePlugin {
             Update,
             update_wire_view_signal_colors.after(propagate_signals),
         )
-        .add_systems(Update, update_wire_drag_point.after(create_wire_joint))
         .add_systems(Update, update_wire_bbox.after(create_wire_joint));
         //TODO: observers or Changed<> Filter
     }
@@ -321,6 +321,10 @@ pub fn create_wire(
         return;
     }
 
+    if cursor.just_finished_wire {
+        return;
+    }
+
     for (bbox, pin_view) in q_pins.iter() {
         if !bbox.point_in_bbox(cursor_transform.translation.truncate()) {
             continue;
@@ -452,6 +456,7 @@ pub fn finish_wire_placement(
         if bbox.point_in_bbox(cursor_transform.translation.truncate()) {
             wire.0.push(WireNode::Pin(pin_view.uuid));
             cursor.state = CursorState::Idle;
+            cursor.just_finished_wire = true;
             return;
         }
     }

@@ -40,8 +40,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -51.99996,
-          y: 232.99997,
+          -51.99996,
+          232.99997,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -49,8 +49,8 @@
     4294967327: (
       components: {
         "logics::designer::position::Position": ((
-          x: -167.0,
-          y: 189.99997,
+          -167.0,
+          189.99997,
         )),
         "logics::designer::model::ModelId": ("fb9244ed-c8fa-4ef5-9799-96c77a341c8c"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -64,8 +64,8 @@
     4294967328: (
       components: {
         "logics::designer::position::Position": ((
-          x: -153.00003,
-          y: 256.99994,
+          -153.00003,
+          256.99994,
         )),
         "logics::designer::model::ModelId": ("22f4f229-924c-44e2-8e20-fb97bc4d5412"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -86,8 +86,8 @@
           Pin("43af10ec-2331-4d4b-92b7-35370fa6d68d"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("26251893-c2d9-4e14-91eb-a5fa9f24754f"),
         "logics::designer::signal::SignalState": (
@@ -136,8 +136,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -193.00003,
-          y: 94.99997,
+          -193.00003,
+          94.99997,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -145,8 +145,8 @@
     4294967358: (
       components: {
         "logics::designer::position::Position": ((
-          x: -81.000015,
-          y: 52.99996,
+          -81.000015,
+          52.99996,
         )),
         "logics::designer::model::ModelId": ("e7bcbf69-6dae-41da-bfe9-79a9d3b1b3b5"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -160,8 +160,8 @@
     4294967359: (
       components: {
         "logics::designer::position::Position": ((
-          x: -67.00004,
-          y: 119.99996,
+          -67.00004,
+          119.99996,
         )),
         "logics::designer::model::ModelId": ("9f0f6577-4f28-4d61-955e-9347a55162dd"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -182,8 +182,8 @@
           Pin("767c0c82-2aaa-413f-823d-bec03fbf7c61"),
         ]),
         "logics::designer::position::Position": ((
-          x: -129.0,
-          y: 105.99997,
+          -129.0,
+          105.99997,
         )),
         "logics::designer::model::ModelId": ("a95d514d-0961-41f5-90a3-83a38d48713a"),
         "logics::designer::signal::SignalState": (
@@ -201,8 +201,8 @@
           Pin("60d8e743-c1e4-4899-9159-d63a69137858"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("ee031260-a3e3-4ecb-9777-4de23b06b52f"),
         "logics::designer::signal::SignalState": (
@@ -220,8 +220,8 @@
           Pin("e32de954-741f-4096-a0cb-d790859ef095"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("7622557a-9ec3-4337-8a98-49cacd9987e3"),
         "logics::designer::signal::SignalState": (
@@ -248,8 +248,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 126.99997,
-          y: 90.99996,
+          126.99997,
+          90.99996,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -293,8 +293,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -199.0,
-          y: -7.000023,
+          -199.0,
+          -7.000023,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -316,8 +316,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -378.0,
-          y: -5.0000076,
+          -378.0,
+          -5.0000076,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -339,8 +339,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 121.0,
-          y: -11.000023,
+          121.0,
+          -11.000023,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -348,8 +348,8 @@
     4294967452: (
       components: {
         "logics::designer::position::Position": ((
-          x: -87.00001,
-          y: -49.000023,
+          -87.00001,
+          -49.000023,
         )),
         "logics::designer::model::ModelId": ("8f5afcb9-3ead-424f-a8f3-9b2d065f8eeb"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -363,8 +363,8 @@
     4294967453: (
       components: {
         "logics::designer::position::Position": ((
-          x: -73.00004,
-          y: 17.999977,
+          -73.00004,
+          17.999977,
         )),
         "logics::designer::model::ModelId": ("d1e219e5-0192-462e-bb59-490ba06d9c39"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -385,8 +385,8 @@
           Pin("e970bc4d-23f9-4aa9-a211-e30cceefff2d"),
         ]),
         "logics::designer::position::Position": ((
-          x: -220.99997,
-          y: 140.99997,
+          -220.99997,
+          140.99997,
         )),
         "logics::designer::model::ModelId": ("26a6428c-d176-4d26-8eb1-a698571be431"),
         "logics::designer::signal::SignalState": (
@@ -404,8 +404,8 @@
           Pin("6c264647-3eaf-4ba9-bf52-2308c277be64"),
         ]),
         "logics::designer::position::Position": ((
-          x: -220.99997,
-          y: 140.99997,
+          -220.99997,
+          140.99997,
         )),
         "logics::designer::model::ModelId": ("f72567fb-dc34-4f9f-b9a8-4d958677a024"),
         "logics::designer::signal::SignalState": (
@@ -423,8 +423,8 @@
           Pin("05404d82-04c2-4435-a5e9-0847b0ade2b1"),
         ]),
         "logics::designer::position::Position": ((
-          x: -220.99997,
-          y: 140.99997,
+          -220.99997,
+          140.99997,
         )),
         "logics::designer::model::ModelId": ("6e1a5ab5-33c8-4fe5-a3f2-5b46aa0cd771"),
         "logics::designer::signal::SignalState": (
@@ -442,8 +442,8 @@
           Pin("4464d243-6d72-4587-8465-b3b7b153ad6a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -220.99997,
-          y: 140.99997,
+          -220.99997,
+          140.99997,
         )),
         "logics::designer::model::ModelId": ("8295207e-7860-43d9-8314-fceb70cd862e"),
         "logics::designer::signal::SignalState": (
@@ -461,8 +461,8 @@
           Pin("f2d82c76-1677-4695-8b49-6535a6c00499"),
         ]),
         "logics::designer::position::Position": ((
-          x: -220.99997,
-          y: 140.99997,
+          -220.99997,
+          140.99997,
         )),
         "logics::designer::model::ModelId": ("5d3d8462-6794-4dd4-a057-9fcb35308eba"),
         "logics::designer::signal::SignalState": (
@@ -511,8 +511,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -98.88352,
-          y: -261.3753,
+          -98.88352,
+          -261.3753,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -556,8 +556,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 42.11654,
-          y: -123.37529,
+          42.11654,
+          -123.37529,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -601,8 +601,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 128.11653,
-          y: -260.37527,
+          128.11653,
+          -260.37527,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -646,8 +646,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 122.11653,
-          y: -362.37527,
+          122.11653,
+          -362.37527,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -691,8 +691,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -104.88349,
-          y: -363.37527,
+          -104.88349,
+          -363.37527,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -714,8 +714,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -328.8835,
-          y: -126.37529,
+          -328.8835,
+          -126.37529,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -737,8 +737,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -277.8835,
-          y: -259.3753,
+          -277.8835,
+          -259.3753,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -760,8 +760,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -283.8835,
-          y: -361.37527,
+          -283.8835,
+          -361.37527,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -783,8 +783,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 180.11652,
-          y: -129.37532,
+          180.11652,
+          -129.37532,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -806,8 +806,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 221.11649,
-          y: -265.3753,
+          221.11649,
+          -265.3753,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -829,8 +829,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 215.11652,
-          y: -367.37527,
+          215.11652,
+          -367.37527,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -838,8 +838,8 @@
     4294967535: (
       components: {
         "logics::designer::position::Position": ((
-          x: -72.8835,
-          y: -166.3753,
+          -72.8835,
+          -166.3753,
         )),
         "logics::designer::model::ModelId": ("b6b0d044-9b3b-41f8-bc92-91272877a921"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -853,8 +853,8 @@
     4294967536: (
       components: {
         "logics::designer::position::Position": ((
-          x: -58.88353,
-          y: -99.37532,
+          -58.88353,
+          -99.37532,
         )),
         "logics::designer::model::ModelId": ("825db613-2625-4884-b0e5-4607dc84b99e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -868,8 +868,8 @@
     4294967537: (
       components: {
         "logics::designer::position::Position": ((
-          x: 13.116486,
-          y: -303.3753,
+          13.116486,
+          -303.3753,
         )),
         "logics::designer::model::ModelId": ("df7ec2e6-af29-4d87-aaf0-1d78163166c9"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -883,8 +883,8 @@
     4294967538: (
       components: {
         "logics::designer::position::Position": ((
-          x: 27.116465,
-          y: -236.3753,
+          27.116465,
+          -236.3753,
         )),
         "logics::designer::model::ModelId": ("5988236d-3791-4d78-b952-52c2f771cbb1"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -898,8 +898,8 @@
     4294967539: (
       components: {
         "logics::designer::position::Position": ((
-          x: 7.116493,
-          y: -405.37527,
+          7.116493,
+          -405.37527,
         )),
         "logics::designer::model::ModelId": ("51e98e17-6415-4060-9a12-de2a3fb4ba2d"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -913,8 +913,8 @@
     4294967540: (
       components: {
         "logics::designer::position::Position": ((
-          x: 21.116465,
-          y: -338.37527,
+          21.116465,
+          -338.37527,
         )),
         "logics::designer::model::ModelId": ("61665d0c-966e-4fe9-a8df-36a9b1d1a6ee"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -933,8 +933,8 @@
           Pin("d363b9d7-a788-45fa-b107-48e45ef084ab"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("9589c738-0dec-4646-a8dd-cdb2c8d64340"),
         "logics::designer::signal::SignalState": (
@@ -952,8 +952,8 @@
           Pin("8b289013-a7ee-4bcd-819e-12a6018b9def"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("a67c7332-ab2a-4b3d-b6be-ba6e3ecc1908"),
         "logics::designer::signal::SignalState": (
@@ -973,8 +973,8 @@
           Pin("972e16f3-f290-405f-9dcc-62054931dcb1"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("871299a6-0fea-4091-aafc-ed4d748e125a"),
         "logics::designer::signal::SignalState": (
@@ -992,8 +992,8 @@
           Pin("43b12601-b0c5-4cb5-9040-3e0eb35114be"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("d8d1f4f8-a560-44df-923a-39f198a4c5b7"),
         "logics::designer::signal::SignalState": (
@@ -1011,8 +1011,8 @@
           Pin("a0ea3136-1ff3-4588-abcc-beab9171fc6d"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("a7408330-5678-4d8d-80cf-297de9a87a7f"),
         "logics::designer::signal::SignalState": (
@@ -1030,8 +1030,8 @@
           Pin("c44f65cf-d175-48f8-ba13-25e9f9a24a95"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("c6349bcc-6073-435c-921d-c1fdf8e7def7"),
         "logics::designer::signal::SignalState": (
@@ -1051,8 +1051,8 @@
           Pin("0456a65f-feb8-482d-bd10-131f6119ccb0"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("decf7054-0092-4471-83de-d48202e030e2"),
         "logics::designer::signal::SignalState": (
@@ -1070,8 +1070,8 @@
           Pin("7323ee69-0f8a-44eb-924e-09663145110e"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("5f4b3833-a819-475c-9b07-4f092fa00a77"),
         "logics::designer::signal::SignalState": (
@@ -1089,8 +1089,8 @@
           Pin("189e6f53-6fb8-404a-bdba-7b891881c83e"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("8e4a7fbf-cb9f-458a-8dfd-298fc01df509"),
         "logics::designer::signal::SignalState": (
@@ -1110,8 +1110,8 @@
           Pin("1b74db02-e80e-46e3-85de-e3a740205844"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("5d5d0cfc-1b05-481c-a768-533a33ed99ad"),
         "logics::designer::signal::SignalState": (
@@ -1129,8 +1129,8 @@
           Pin("40bf5a2a-0da9-4941-b1cc-1c66e68a1b4a"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("631abbff-dfc7-4b0a-9a75-7d5e0704072b"),
         "logics::designer::signal::SignalState": (
@@ -1148,8 +1148,8 @@
           Pin("7ff63636-e431-498c-b36d-fa2cbeeece42"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("e915bc7b-a7b7-4a90-95da-4baeddf0ab92"),
         "logics::designer::signal::SignalState": (
@@ -1167,8 +1167,8 @@
           Pin("2cb49c91-63c4-415d-a6e7-df22313294c1"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("3282023e-47ef-4917-8f79-4f2cd5789e47"),
         "logics::designer::signal::SignalState": (
@@ -1186,8 +1186,8 @@
           Pin("9c9b8660-f232-4a40-9e12-625b3eca174c"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("91e47723-fa99-4030-8afd-f2e02205f342"),
         "logics::designer::signal::SignalState": (
@@ -1205,8 +1205,8 @@
           Pin("6d3bef9e-8e20-4f94-bd81-f7d2d7ff0397"),
         ]),
         "logics::designer::position::Position": ((
-          x: 44.1165,
-          y: -306.37527,
+          44.1165,
+          -306.37527,
         )),
         "logics::designer::model::ModelId": ("466e9286-ad88-4e08-8623-46259da9eb15"),
         "logics::designer::signal::SignalState": (
@@ -1255,8 +1255,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 459.57837,
-          y: 66.968994,
+          459.57837,
+          66.968994,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -1300,8 +1300,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 453.57843,
-          y: -35.031006,
+          453.57843,
+          -35.031006,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -1345,8 +1345,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 467.6949,
-          y: -152.40627,
+          467.6949,
+          -152.40627,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -1390,8 +1390,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 600.5785,
-          y: 204.96896,
+          600.5785,
+          204.96896,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -1435,8 +1435,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 686.5784,
-          y: 67.969025,
+          686.5784,
+          67.969025,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -1480,8 +1480,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 680.5784,
-          y: -34.030975,
+          680.5784,
+          -34.030975,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -1525,8 +1525,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 553.6949,
-          y: -289.40628,
+          553.6949,
+          -289.40628,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -1570,8 +1570,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 694.69495,
-          y: -151.40627,
+          694.69495,
+          -151.40627,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -1615,8 +1615,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 547.69495,
-          y: -391.40625,
+          547.69495,
+          -391.40625,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -1660,8 +1660,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 780.69495,
-          y: -288.40625,
+          780.69495,
+          -288.40625,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -1705,8 +1705,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 774.69495,
-          y: -390.40625,
+          774.69495,
+          -390.40625,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -1728,8 +1728,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 229.57843,
-          y: 201.96896,
+          229.57843,
+          201.96896,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -1751,8 +1751,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 280.57843,
-          y: 68.968994,
+          280.57843,
+          68.968994,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -1774,8 +1774,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 274.57843,
-          y: -33.030975,
+          274.57843,
+          -33.030975,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -1797,8 +1797,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 323.6949,
-          y: -154.40627,
+          323.6949,
+          -154.40627,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -1820,8 +1820,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 374.6949,
-          y: -287.40628,
+          374.6949,
+          -287.40628,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -1843,8 +1843,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 368.6949,
-          y: -389.40625,
+          368.6949,
+          -389.40625,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -1866,8 +1866,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 738.5784,
-          y: 198.96896,
+          738.5784,
+          198.96896,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -1889,8 +1889,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 773.5784,
-          y: -39.031006,
+          773.5784,
+          -39.031006,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -1912,8 +1912,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 779.57837,
-          y: 62.968994,
+          779.57837,
+          62.968994,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -1935,8 +1935,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 832.69495,
-          y: -157.4063,
+          832.69495,
+          -157.4063,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -1958,8 +1958,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 873.6949,
-          y: -293.40628,
+          873.6949,
+          -293.40628,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -1981,8 +1981,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 867.69495,
-          y: -395.40625,
+          867.69495,
+          -395.40625,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -1990,8 +1990,8 @@
     4294967745: (
       components: {
         "logics::designer::position::Position": ((
-          x: 485.57843,
-          y: 161.96896,
+          485.57843,
+          161.96896,
         )),
         "logics::designer::model::ModelId": ("6419803e-41d4-4216-bc56-fa1789549c4a"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2005,8 +2005,8 @@
     4294967746: (
       components: {
         "logics::designer::position::Position": ((
-          x: 499.57837,
-          y: 228.96896,
+          499.57837,
+          228.96896,
         )),
         "logics::designer::model::ModelId": ("961bdd05-b6c0-4c50-a592-e799f13ee26a"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2020,8 +2020,8 @@
     4294967747: (
       components: {
         "logics::designer::position::Position": ((
-          x: 565.57837,
-          y: -77.031006,
+          565.57837,
+          -77.031006,
         )),
         "logics::designer::model::ModelId": ("3a0e777a-e4e8-4855-985b-4ebdd577d17c"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2035,8 +2035,8 @@
     4294967748: (
       components: {
         "logics::designer::position::Position": ((
-          x: 579.57837,
-          y: -10.031006,
+          579.57837,
+          -10.031006,
         )),
         "logics::designer::model::ModelId": ("2e88a6ae-9af2-4493-b8c0-aecc04fa88bd"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2050,8 +2050,8 @@
     4294967749: (
       components: {
         "logics::designer::position::Position": ((
-          x: 579.69495,
-          y: -194.40628,
+          579.69495,
+          -194.40628,
         )),
         "logics::designer::model::ModelId": ("d4158fcc-751e-4405-9247-b96e2031672e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2065,8 +2065,8 @@
     4294967750: (
       components: {
         "logics::designer::position::Position": ((
-          x: 593.6949,
-          y: -127.40628,
+          593.6949,
+          -127.40628,
         )),
         "logics::designer::model::ModelId": ("0510efb6-20c3-4933-adc1-f16ec07092f0"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2080,8 +2080,8 @@
     4294967751: (
       components: {
         "logics::designer::position::Position": ((
-          x: 571.57837,
-          y: 24.968994,
+          571.57837,
+          24.968994,
         )),
         "logics::designer::model::ModelId": ("843f1a50-e295-43a6-8552-87f7af42b249"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2095,8 +2095,8 @@
     4294967752: (
       components: {
         "logics::designer::position::Position": ((
-          x: 585.57837,
-          y: 91.968994,
+          585.57837,
+          91.968994,
         )),
         "logics::designer::model::ModelId": ("8cb9fb35-382a-4eb5-9c4f-6b3f771dbd34"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2110,8 +2110,8 @@
     4294967753: (
       components: {
         "logics::designer::position::Position": ((
-          x: 665.6949,
-          y: -331.40628,
+          665.6949,
+          -331.40628,
         )),
         "logics::designer::model::ModelId": ("94af9cf2-ae23-48a4-88ab-60c580202f3e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2125,8 +2125,8 @@
     4294967754: (
       components: {
         "logics::designer::position::Position": ((
-          x: 679.6949,
-          y: -264.40628,
+          679.6949,
+          -264.40628,
         )),
         "logics::designer::model::ModelId": ("20b7f588-f075-4928-87ff-9730b11a7897"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2140,8 +2140,8 @@
     4294967755: (
       components: {
         "logics::designer::position::Position": ((
-          x: 659.69495,
-          y: -433.40625,
+          659.69495,
+          -433.40625,
         )),
         "logics::designer::model::ModelId": ("b80c3dea-f016-4d0b-9f23-8d8402168888"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2155,8 +2155,8 @@
     4294967756: (
       components: {
         "logics::designer::position::Position": ((
-          x: 673.6949,
-          y: -366.40625,
+          673.6949,
+          -366.40625,
         )),
         "logics::designer::model::ModelId": ("b5ef4caf-bdb6-4d65-aac5-d2869b1429d4"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2175,8 +2175,8 @@
           Pin("b5d860ea-8017-4083-ab16-fdbdebe1858e"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("9374711c-ee39-40ea-9cf0-49460bd33e9e"),
         "logics::designer::signal::SignalState": (
@@ -2194,8 +2194,8 @@
           Pin("6e439283-6405-4a30-8e35-a6b9c60f6040"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("fd87f955-9d8d-431a-973d-626080ef9ca6"),
         "logics::designer::signal::SignalState": (
@@ -2213,8 +2213,8 @@
           Pin("e2ef076a-a755-4f6d-8bd9-cd9a2edaddf4"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("46957843-3dfe-496a-9015-cb940b14c6e4"),
         "logics::designer::signal::SignalState": (
@@ -2232,8 +2232,8 @@
           Pin("55edb4a1-36a6-40d5-805a-d523c46ba1d7"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("f1052058-dd5c-4a4f-b622-8b664bf5de67"),
         "logics::designer::signal::SignalState": (
@@ -2251,8 +2251,8 @@
           Pin("a78a3f01-3b8c-4951-82c4-986811830ea2"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("ff11138f-77fb-4557-bcb6-8a2715f322c8"),
         "logics::designer::signal::SignalState": (
@@ -2270,8 +2270,8 @@
           Pin("bcab56f8-9188-4086-9950-ea6aa0005da8"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("8470c208-41a0-4386-8afa-e2765d93f1da"),
         "logics::designer::signal::SignalState": (
@@ -2289,8 +2289,8 @@
           Pin("3d384cfe-ab8c-4e9e-81bd-f289d9e1b732"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("9b7d3f51-59d8-43c5-a613-1251db1a7d22"),
         "logics::designer::signal::SignalState": (
@@ -2308,8 +2308,8 @@
           Pin("5165ece0-e676-4d3f-bee2-620bcfa79a89"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("c1a0de2c-d597-440c-8093-729fb71b4dcf"),
         "logics::designer::signal::SignalState": (
@@ -2329,8 +2329,8 @@
           Pin("bd3462d5-2305-4092-940f-4363c29c8620"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("010c3aad-ef42-4bd2-9b5e-8dce21b6c0c8"),
         "logics::designer::signal::SignalState": (
@@ -2348,8 +2348,8 @@
           Pin("4c98e71d-f2aa-496a-9fbf-a1aed9689458"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("f5d3a18e-b22f-4f86-9567-1544f160e949"),
         "logics::designer::signal::SignalState": (
@@ -2369,8 +2369,8 @@
           Pin("4e6ae32c-28b1-469d-9c4c-5e2ca4eba353"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("ad679e53-10e7-4005-8834-1ff78e9f714a"),
         "logics::designer::signal::SignalState": (
@@ -2390,8 +2390,8 @@
           Pin("bbe32705-8fb9-4e88-beb3-0d202e667a4c"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("d1cda1b9-e6f2-42e3-a7b0-1a3232fcf6fb"),
         "logics::designer::signal::SignalState": (
@@ -2411,8 +2411,8 @@
           Pin("601bad4e-d1aa-4654-92ad-537950924f74"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("72099fe8-2ba9-408f-b075-7281db327f4c"),
         "logics::designer::signal::SignalState": (
@@ -2430,8 +2430,8 @@
           Pin("0481b4cc-6fe0-4d67-91d7-5237f0775b19"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("186cfd70-2652-46c8-b88c-0c4613ba443f"),
         "logics::designer::signal::SignalState": (
@@ -2449,8 +2449,8 @@
           Pin("c75787bd-b2bc-486e-98d0-74730240dc35"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("8f7bc955-cc75-4b03-b914-ab41320575a8"),
         "logics::designer::signal::SignalState": (
@@ -2468,8 +2468,8 @@
           Pin("3830d2ac-a21f-4c09-b12d-53f0ad73fcf0"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("7ba2083a-213e-48bb-9e26-f72efbf29f22"),
         "logics::designer::signal::SignalState": (
@@ -2487,8 +2487,8 @@
           Pin("4ec4aa48-b9df-4ef1-973d-85ed7ccb5238"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("143732b0-7fad-46dc-930a-76f191b8c7be"),
         "logics::designer::signal::SignalState": (
@@ -2506,8 +2506,8 @@
           Pin("56e8e364-08a7-4b9b-a30d-f43ab918de99"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("269aaf98-b8b5-4c0e-99ec-cab3ae7a54c2"),
         "logics::designer::signal::SignalState": (
@@ -2527,8 +2527,8 @@
           Pin("ee1759d7-ef2f-4748-837d-5344424d5c78"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("d0843e0a-64ea-47bd-b0ac-5c568d164d11"),
         "logics::designer::signal::SignalState": (
@@ -2546,8 +2546,8 @@
           Pin("0c88314a-aa97-4c9e-b509-42b10c0c61de"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("5b068812-b3a1-4d92-bbf2-32d1f7a173fe"),
         "logics::designer::signal::SignalState": (
@@ -2565,8 +2565,8 @@
           Pin("7f8d7e08-11af-4c3b-b605-64b90317aee9"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("6e1b2794-22a1-4f90-b019-da9159ecb2e9"),
         "logics::designer::signal::SignalState": (
@@ -2584,8 +2584,8 @@
           Pin("d214ddb9-05f3-40cf-bed1-8e4a15b96f97"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("db5cd388-9050-4fd4-a7f6-e862aad76656"),
         "logics::designer::signal::SignalState": (
@@ -2603,8 +2603,8 @@
           Pin("46a1f8ac-7529-43f5-a14d-eb701b433eb0"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("444c6681-61ef-489a-8f8b-5962b26d496b"),
         "logics::designer::signal::SignalState": (
@@ -2624,8 +2624,8 @@
           Pin("b4cfe0bf-d6d0-43f8-a431-e938da828f19"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("4cd4a045-cba0-4de9-866d-e859c79c2d29"),
         "logics::designer::signal::SignalState": (
@@ -2643,8 +2643,8 @@
           Pin("50c8730d-5b29-48a7-97e6-520ce4472c12"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("f2d424f4-19bc-442b-96f4-f8bafeb7f401"),
         "logics::designer::signal::SignalState": (
@@ -2662,8 +2662,8 @@
           Pin("0bdb672d-8591-499b-a005-9aafb7da89a0"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("1d50069b-5343-461a-9d4d-9dd69e67d8bd"),
         "logics::designer::signal::SignalState": (
@@ -2681,8 +2681,8 @@
           Pin("902638f7-bcec-496f-a3ca-8fcc472a437d"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("c7f87e6d-fd6e-47e8-9319-a94f95f6de6b"),
         "logics::designer::signal::SignalState": (
@@ -2700,8 +2700,8 @@
           Pin("18f2e822-6938-44ab-90d6-11355f0e96e4"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("64d95cb8-b9a6-4405-a46f-a2f8a8566b82"),
         "logics::designer::signal::SignalState": (
@@ -2719,8 +2719,8 @@
           Pin("a6d92110-f6aa-49c4-96db-5b244d7d6f55"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("92e5d4b2-41ba-4974-a499-caf84eb0ef22"),
         "logics::designer::signal::SignalState": (
@@ -2738,8 +2738,8 @@
           Pin("df6b502a-bde6-4820-ab0d-6ddd1850225f"),
         ]),
         "logics::designer::position::Position": ((
-          x: 602.5784,
-          y: 21.969025,
+          602.5784,
+          21.969025,
         )),
         "logics::designer::model::ModelId": ("4e5f97ec-07a4-4f36-bb6a-b2282b844981"),
         "logics::designer::signal::SignalState": (
@@ -2788,8 +2788,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -512.2756,
-          y: -405.88354,
+          -512.2756,
+          -405.88354,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -2833,8 +2833,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -733.27563,
-          y: -304.88358,
+          -733.27563,
+          -304.88358,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -2878,8 +2878,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -506.27557,
-          y: -303.88354,
+          -506.27557,
+          -303.88354,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -2923,8 +2923,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -819.27563,
-          y: -167.88356,
+          -819.27563,
+          -167.88356,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -2968,8 +2968,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -592.2756,
-          y: -166.88354,
+          -592.2756,
+          -166.88354,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3013,8 +3013,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1258.9705,
-          y: -21.477295,
+          -1258.9705,
+          -21.477295,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3058,8 +3058,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1244.854,
-          y: -138.8526,
+          -1244.854,
+          -138.8526,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3103,8 +3103,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1158.854,
-          y: -275.85257,
+          -1158.854,
+          -275.85257,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3148,8 +3148,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1164.854,
-          y: -377.85257,
+          -1164.854,
+          -377.85257,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3193,8 +3193,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -833.3921,
-          y: -50.5083,
+          -833.3921,
+          -50.5083,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3238,8 +3238,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -606.3921,
-          y: -49.50827,
+          -606.3921,
+          -49.50827,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3283,8 +3283,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1385.854,
-          y: -276.8526,
+          -1385.854,
+          -276.8526,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3328,8 +3328,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1391.854,
-          y: -378.85257,
+          -1391.854,
+          -378.85257,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3373,8 +3373,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1252.9705,
-          y: 80.522705,
+          -1252.9705,
+          80.522705,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3418,8 +3418,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1479.9706,
-          y: 79.522675,
+          -1479.9706,
+          79.522675,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3463,8 +3463,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1485.9705,
-          y: -22.477325,
+          -1485.9705,
+          -22.477325,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3508,8 +3508,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1471.854,
-          y: -139.8526,
+          -1471.854,
+          -139.8526,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3553,8 +3553,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -827.39215,
-          y: 51.4917,
+          -827.39215,
+          51.4917,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3598,8 +3598,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -600.3921,
-          y: 52.49173,
+          -600.3921,
+          52.49173,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3643,8 +3643,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -913.3921,
-          y: 188.49164,
+          -913.3921,
+          188.49164,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3688,8 +3688,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -686.392,
-          y: 189.49164,
+          -686.392,
+          189.49164,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3733,8 +3733,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1565.9706,
-          y: 216.52264,
+          -1565.9706,
+          216.52264,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -3778,8 +3778,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1338.9705,
-          y: 217.52264,
+          -1338.9705,
+          217.52264,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -3801,8 +3801,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -912.27563,
-          y: -302.88358,
+          -912.27563,
+          -302.88358,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -3824,8 +3824,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -918.27563,
-          y: -404.88354,
+          -918.27563,
+          -404.88354,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -3847,8 +3847,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -963.27563,
-          y: -169.88356,
+          -963.27563,
+          -169.88356,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -3870,8 +3870,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1012.3921,
-          y: -48.50827,
+          -1012.3921,
+          -48.50827,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -3893,8 +3893,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1006.3921,
-          y: 53.4917,
+          -1006.3921,
+          53.4917,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -3916,8 +3916,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1564.854,
-          y: -274.8526,
+          -1564.854,
+          -274.8526,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -3939,8 +3939,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1570.854,
-          y: -376.85257,
+          -1570.854,
+          -376.85257,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -3962,8 +3962,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1615.854,
-          y: -141.8526,
+          -1615.854,
+          -141.8526,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -3985,8 +3985,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1658.9706,
-          y: 81.522675,
+          -1658.9706,
+          81.522675,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -4008,8 +4008,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1664.9706,
-          y: -20.477295,
+          -1664.9706,
+          -20.477295,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -4031,8 +4031,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1057.3921,
-          y: 186.49164,
+          -1057.3921,
+          186.49164,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -4054,8 +4054,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1709.9706,
-          y: 214.52264,
+          -1709.9706,
+          214.52264,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -4077,8 +4077,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -419.27557,
-          y: -410.88354,
+          -419.27557,
+          -410.88354,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -4100,8 +4100,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -413.27563,
-          y: -308.88358,
+          -413.27563,
+          -308.88358,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -4123,8 +4123,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1106.854,
-          y: -144.8526,
+          -1106.854,
+          -144.8526,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -4146,8 +4146,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1065.854,
-          y: -280.8526,
+          -1065.854,
+          -280.8526,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -4169,8 +4169,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1071.854,
-          y: -382.85257,
+          -1071.854,
+          -382.85257,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -4192,8 +4192,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -454.27557,
-          y: -172.88359,
+          -454.27557,
+          -172.88359,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -4215,8 +4215,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -513.3921,
-          y: -54.5083,
+          -513.3921,
+          -54.5083,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -4238,8 +4238,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1165.9705,
-          y: -26.477325,
+          -1165.9705,
+          -26.477325,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -4261,8 +4261,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1159.9706,
-          y: 75.522675,
+          -1159.9706,
+          75.522675,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -4284,8 +4284,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -507.39215,
-          y: 47.4917,
+          -507.39215,
+          47.4917,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -4307,8 +4307,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -548.3921,
-          y: 183.49164,
+          -548.3921,
+          183.49164,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -4330,8 +4330,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1200.9705,
-          y: 211.52264,
+          -1200.9705,
+          211.52264,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -4339,8 +4339,8 @@
     4294968165: (
       components: {
         "logics::designer::position::Position": ((
-          x: -627.2756,
-          y: -448.88354,
+          -627.2756,
+          -448.88354,
         )),
         "logics::designer::model::ModelId": ("d6ecd428-98e4-42d3-aa97-f2d812994229"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4354,8 +4354,8 @@
     4294968166: (
       components: {
         "logics::designer::position::Position": ((
-          x: -613.27563,
-          y: -381.88354,
+          -613.27563,
+          -381.88354,
         )),
         "logics::designer::model::ModelId": ("c799d9b1-1d71-464c-8893-65b1211ec608"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4369,8 +4369,8 @@
     4294968167: (
       components: {
         "logics::designer::position::Position": ((
-          x: -621.27563,
-          y: -346.88358,
+          -621.27563,
+          -346.88358,
         )),
         "logics::designer::model::ModelId": ("d60eec51-39f0-497f-82e6-a3d016d8f4ec"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4384,8 +4384,8 @@
     4294968168: (
       components: {
         "logics::designer::position::Position": ((
-          x: -607.27563,
-          y: -279.88358,
+          -607.27563,
+          -279.88358,
         )),
         "logics::designer::model::ModelId": ("3ad9fcdc-5034-49e3-ad16-c2bceeb4bab7"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4399,8 +4399,8 @@
     4294968169: (
       components: {
         "logics::designer::position::Position": ((
-          x: -707.2756,
-          y: -209.88358,
+          -707.2756,
+          -209.88358,
         )),
         "logics::designer::model::ModelId": ("02938175-750e-40d8-8f92-ccb0972b6348"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4414,8 +4414,8 @@
     4294968170: (
       components: {
         "logics::designer::position::Position": ((
-          x: -693.27563,
-          y: -142.88358,
+          -693.27563,
+          -142.88358,
         )),
         "logics::designer::model::ModelId": ("af6d525f-16f3-4084-a96f-dff33743559b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4429,8 +4429,8 @@
     4294968171: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1273.854,
-          y: -318.8526,
+          -1273.854,
+          -318.8526,
         )),
         "logics::designer::model::ModelId": ("5ff588b0-e4cc-4546-9ed8-a3f423c82a8b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4444,8 +4444,8 @@
     4294968172: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1259.854,
-          y: -251.8526,
+          -1259.854,
+          -251.8526,
         )),
         "logics::designer::model::ModelId": ("3cd234b1-e1b0-4be1-acb5-6220699f949b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4459,8 +4459,8 @@
     4294968173: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1279.854,
-          y: -420.85257,
+          -1279.854,
+          -420.85257,
         )),
         "logics::designer::model::ModelId": ("69f132d0-e875-43cd-9573-8fdd498b3dc7"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4474,8 +4474,8 @@
     4294968174: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1265.854,
-          y: -353.85257,
+          -1265.854,
+          -353.85257,
         )),
         "logics::designer::model::ModelId": ("191b9537-3613-4bab-99aa-9a5cf4f1811b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4489,8 +4489,8 @@
     4294968175: (
       components: {
         "logics::designer::position::Position": ((
-          x: -721.39215,
-          y: -92.5083,
+          -721.39215,
+          -92.5083,
         )),
         "logics::designer::model::ModelId": ("5bfab98c-53bc-4377-815b-9e97b0a0f241"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4504,8 +4504,8 @@
     4294968176: (
       components: {
         "logics::designer::position::Position": ((
-          x: -707.39215,
-          y: -25.5083,
+          -707.39215,
+          -25.5083,
         )),
         "logics::designer::model::ModelId": ("9e55718b-d2a5-4549-9624-490bcfcdcfac"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4519,8 +4519,8 @@
     4294968177: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1373.9705,
-          y: -64.477325,
+          -1373.9705,
+          -64.477325,
         )),
         "logics::designer::model::ModelId": ("312f4883-65c0-4c23-857a-6f954b9295a6"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4534,8 +4534,8 @@
     4294968178: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1359.9706,
-          y: 2.5226746,
+          -1359.9706,
+          2.5226746,
         )),
         "logics::designer::model::ModelId": ("bfde731d-e794-469a-b539-10eeb42101c4"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4549,8 +4549,8 @@
     4294968179: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1359.854,
-          y: -181.8526,
+          -1359.854,
+          -181.8526,
         )),
         "logics::designer::model::ModelId": ("ffa26394-77e5-472e-a309-35b3e7d2ff6a"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4564,8 +4564,8 @@
     4294968180: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1345.854,
-          y: -114.8526,
+          -1345.854,
+          -114.8526,
         )),
         "logics::designer::model::ModelId": ("eec84e85-627e-4274-96f4-af0ad20c594d"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4579,8 +4579,8 @@
     4294968181: (
       components: {
         "logics::designer::position::Position": ((
-          x: -715.39215,
-          y: 9.491699,
+          -715.39215,
+          9.491699,
         )),
         "logics::designer::model::ModelId": ("483db683-28d5-488d-addd-a532928b7d74"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4594,8 +4594,8 @@
     4294968182: (
       components: {
         "logics::designer::position::Position": ((
-          x: -701.39215,
-          y: 76.4917,
+          -701.39215,
+          76.4917,
         )),
         "logics::designer::model::ModelId": ("7468bc65-1d1a-4256-9722-5a7b2352cd93"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4609,8 +4609,8 @@
     4294968183: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1367.9705,
-          y: 37.522675,
+          -1367.9705,
+          37.522675,
         )),
         "logics::designer::model::ModelId": ("d10cb323-b38d-458d-80d2-e7836eafb517"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4624,8 +4624,8 @@
     4294968184: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1353.9706,
-          y: 104.522644,
+          -1353.9706,
+          104.522644,
         )),
         "logics::designer::model::ModelId": ("ef9fddc2-d484-4127-92a4-f7aedb5c83d4"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4639,8 +4639,8 @@
     4294968185: (
       components: {
         "logics::designer::position::Position": ((
-          x: -801.3921,
-          y: 146.49164,
+          -801.3921,
+          146.49164,
         )),
         "logics::designer::model::ModelId": ("8f3a0563-170f-4ec9-b6c0-1b9f9d6c103d"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4654,8 +4654,8 @@
     4294968186: (
       components: {
         "logics::designer::position::Position": ((
-          x: -787.39215,
-          y: 213.49164,
+          -787.39215,
+          213.49164,
         )),
         "logics::designer::model::ModelId": ("fb61aaf0-b049-4a2c-b88a-d3ba099df78b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4669,8 +4669,8 @@
     4294968187: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1453.9705,
-          y: 174.52264,
+          -1453.9705,
+          174.52264,
         )),
         "logics::designer::model::ModelId": ("cdb92d1a-d217-422a-95b8-cee4892bf941"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4684,8 +4684,8 @@
     4294968188: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1439.9706,
-          y: 241.52264,
+          -1439.9706,
+          241.52264,
         )),
         "logics::designer::model::ModelId": ("9660fe45-7092-42da-84b4-85245a2f4472"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -4706,8 +4706,8 @@
           Pin("fb286db8-6713-495b-9301-e9fdbaa23397"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("7f9d2674-dcea-41b1-911b-db033823b9bc"),
         "logics::designer::signal::SignalState": (
@@ -4725,8 +4725,8 @@
           Pin("b916ba1e-1104-4741-9bbc-2d523200a6a2"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("c8c5ac2a-aae0-4f16-aadd-09458e707e62"),
         "logics::designer::signal::SignalState": (
@@ -4744,8 +4744,8 @@
           Pin("2684c85d-df94-4275-ae7f-028eb787e4ab"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("7aca9e0c-e81e-4081-8bee-332b7d2e4d86"),
         "logics::designer::signal::SignalState": (
@@ -4763,8 +4763,8 @@
           Pin("0d21f8d2-4853-4579-bd80-a4dbd3cbb9d2"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("003815ca-b469-4dbe-996d-ad6a08797234"),
         "logics::designer::signal::SignalState": (
@@ -4782,8 +4782,8 @@
           Pin("867dea7b-3f30-49a7-ab11-2d335dabb100"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("c089c966-2ad6-4662-9f0d-0a240aaa3622"),
         "logics::designer::signal::SignalState": (
@@ -4803,8 +4803,8 @@
           Pin("c5843717-1024-4d61-b99d-d7f5455b511a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("85424485-1386-4176-b7df-d94b9625b737"),
         "logics::designer::signal::SignalState": (
@@ -4822,8 +4822,8 @@
           Pin("3cf7cbbf-500e-4ed5-a4d1-4098456fba1e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("6ace38db-0561-407b-985c-dce10f908a8d"),
         "logics::designer::signal::SignalState": (
@@ -4841,8 +4841,8 @@
           Pin("27a0512f-0041-4030-9bee-ef3213228159"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("aea86968-2eb1-4bed-8d0f-0bab0974afef"),
         "logics::designer::signal::SignalState": (
@@ -4860,8 +4860,8 @@
           Pin("63787fd2-aaf2-4105-9420-881338c05c05"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("e8cb2cd8-193a-4f82-bfbd-92a2fe624161"),
         "logics::designer::signal::SignalState": (
@@ -4879,8 +4879,8 @@
           Pin("1c1e5368-21df-4c8c-9c54-aa7ba380ce17"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("2df3d314-4ae4-4f4d-869c-2825a872cb1e"),
         "logics::designer::signal::SignalState": (
@@ -4898,8 +4898,8 @@
           Pin("9a1e64d7-d8d1-4658-9ce1-f006dd69de89"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("1b2d35b1-08e2-4f75-a7d4-15f57f6dec0a"),
         "logics::designer::signal::SignalState": (
@@ -4917,8 +4917,8 @@
           Pin("69127b8c-2b60-4a13-a696-d76062b477d4"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("10e5a315-6c13-49b0-8613-f4bc9d4e1468"),
         "logics::designer::signal::SignalState": (
@@ -4936,8 +4936,8 @@
           Pin("62efc3d8-c7a6-49f4-b1ca-34651c06d179"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("128b4285-fb17-46fd-b5d6-cb91c0647f8b"),
         "logics::designer::signal::SignalState": (
@@ -4955,8 +4955,8 @@
           Pin("85148293-ca23-4714-b5da-081246cc300e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("af922ce8-8a01-4c03-96dd-45ee1077d7b2"),
         "logics::designer::signal::SignalState": (
@@ -4976,8 +4976,8 @@
           Pin("b9ae008c-5f35-4b19-9ca7-a6a959fe95b1"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("4486defc-ab79-4391-85b8-1072fc7669f4"),
         "logics::designer::signal::SignalState": (
@@ -4995,8 +4995,8 @@
           Pin("1c7654f7-63be-48b0-9326-5b94a3158e2d"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("d07864a8-11c8-4f18-b137-484c0a4d3fc5"),
         "logics::designer::signal::SignalState": (
@@ -5014,8 +5014,8 @@
           Pin("8fe5b389-03f5-4380-b22d-510d281cf933"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("66808b2f-b152-4c8f-a029-a94aafe44e37"),
         "logics::designer::signal::SignalState": (
@@ -5035,8 +5035,8 @@
           Pin("0d74a358-82ac-4434-9e05-125b96dc1700"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("404ac41f-a841-4827-8974-549d8a29d1dc"),
         "logics::designer::signal::SignalState": (
@@ -5054,8 +5054,8 @@
           Pin("66c5c6ff-c13c-4384-9625-ee1e6a08b60e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("ca548e00-648a-43f3-be1b-eb7353f640ab"),
         "logics::designer::signal::SignalState": (
@@ -5073,8 +5073,8 @@
           Pin("cbd0ef85-0266-430e-82d3-e12721b469e7"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("cc4a6e6e-8c36-4f66-951c-d88942d48682"),
         "logics::designer::signal::SignalState": (
@@ -5094,8 +5094,8 @@
           Pin("79bdf7e6-178c-4bbf-b8b4-c1a1adf05947"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("5ce505bb-6751-470b-a214-465cdafd192b"),
         "logics::designer::signal::SignalState": (
@@ -5113,8 +5113,8 @@
           Pin("666b484c-d92f-44e5-8eec-efb70f368110"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("71e443ab-5649-4482-a90d-5df21c5e8adc"),
         "logics::designer::signal::SignalState": (
@@ -5132,8 +5132,8 @@
           Pin("eb866f3a-c6e1-4b15-ace9-bc852bab1f9c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("089b2e29-bcda-4780-9945-79f41200f4e1"),
         "logics::designer::signal::SignalState": (
@@ -5151,8 +5151,8 @@
           Pin("17997350-b243-4649-80a6-8924d4926de6"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("69328945-f9e7-46de-9dd3-038868dd7d2e"),
         "logics::designer::signal::SignalState": (
@@ -5172,8 +5172,8 @@
           Pin("c1293367-9614-4417-8e10-b36357c5887e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("063af5bc-9447-4ace-b279-94299076137d"),
         "logics::designer::signal::SignalState": (
@@ -5191,8 +5191,8 @@
           Pin("29791029-e508-4241-969e-aa115a5e76a7"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("bdbcb0b0-f887-46bf-b897-79d80d45cf43"),
         "logics::designer::signal::SignalState": (
@@ -5212,8 +5212,8 @@
           Pin("63d8e11d-2311-4855-997a-1fd0cff77ded"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("127a2660-4789-4cbd-9501-529240a154c9"),
         "logics::designer::signal::SignalState": (
@@ -5233,8 +5233,8 @@
           Pin("bb3bfddc-3a34-48d7-8101-69e44d52a0b8"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("2a4768cd-1b37-4d41-8e0d-f39bd3b9e31b"),
         "logics::designer::signal::SignalState": (
@@ -5252,8 +5252,8 @@
           Pin("c930c257-0c45-4fcc-bea7-f1ade4622d08"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("826e6a06-13ed-49b1-94da-27c336e90164"),
         "logics::designer::signal::SignalState": (
@@ -5273,8 +5273,8 @@
           Pin("51835689-426d-4554-81af-14c0798539e7"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("a6101242-69da-455b-a491-458e0d955416"),
         "logics::designer::signal::SignalState": (
@@ -5292,8 +5292,8 @@
           Pin("e1fcd6bf-16e6-490a-9abb-1428c04a1334"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("8001f414-92a7-41e0-914f-eac2efb14008"),
         "logics::designer::signal::SignalState": (
@@ -5311,8 +5311,8 @@
           Pin("0b683d93-a2fd-4a98-b6a5-8b148d8220e2"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("997f4fa1-9d4c-4a01-8fd5-91b36134da3e"),
         "logics::designer::signal::SignalState": (
@@ -5330,8 +5330,8 @@
           Pin("e25ebf35-ec68-41eb-b84d-eb215dc3c667"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("bed5ec29-9dc0-4788-a3b9-61e5dd418ec1"),
         "logics::designer::signal::SignalState": (
@@ -5349,8 +5349,8 @@
           Pin("668c40d8-8ab5-4378-8148-e5c91d6189df"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("796378f4-73d8-4e86-9b9e-1d3906742f52"),
         "logics::designer::signal::SignalState": (
@@ -5368,8 +5368,8 @@
           Pin("a367af96-abae-43de-ac34-501a1cc09021"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("d095bf66-625a-4391-b7f4-6678d1a1250e"),
         "logics::designer::signal::SignalState": (
@@ -5387,8 +5387,8 @@
           Pin("3bd9170b-ba2c-4112-b402-c55398fd6490"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("939ed128-ff12-40e2-b110-6500c66a495b"),
         "logics::designer::signal::SignalState": (
@@ -5406,8 +5406,8 @@
           Pin("bab3fbd7-46fb-477a-a70d-374638c63b42"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("9ff4b9a0-9d86-4b52-b687-c7337f8ca7fc"),
         "logics::designer::signal::SignalState": (
@@ -5425,8 +5425,8 @@
           Pin("8ff4f58e-af06-4539-8490-3c99f0859a54"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("60604a32-74f7-472f-8171-29ed7d88b0a4"),
         "logics::designer::signal::SignalState": (
@@ -5444,8 +5444,8 @@
           Pin("bf46d8f3-a278-4b3e-952d-1cbe67bac536"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("55df465c-2148-4993-9ad8-f79cdbdd8711"),
         "logics::designer::signal::SignalState": (
@@ -5463,8 +5463,8 @@
           Pin("4181791d-edb1-4792-9642-61ac823ab4d2"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("32c94fc9-0637-4fdb-bebf-5229bd93d39a"),
         "logics::designer::signal::SignalState": (
@@ -5482,8 +5482,8 @@
           Pin("101e17bd-bac1-440c-98e0-28407e63d35b"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("16732f81-a25a-4998-af1c-87c1a6cfa2fe"),
         "logics::designer::signal::SignalState": (
@@ -5503,8 +5503,8 @@
           Pin("c001528b-ce9e-4c6b-9fdf-7dd36afaac12"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("bc979c7a-4550-4e3b-82d6-100b0f379519"),
         "logics::designer::signal::SignalState": (
@@ -5522,8 +5522,8 @@
           Pin("43783aa0-ef06-4b81-a9a1-317464278f9f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("89f56702-ca83-4f5b-8a2c-4e4c9b89fff7"),
         "logics::designer::signal::SignalState": (
@@ -5541,8 +5541,8 @@
           Pin("3be7c0a8-b141-43c8-b923-887116be33f3"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("f5c5824d-c23c-464e-87a5-fb3f69197d05"),
         "logics::designer::signal::SignalState": (
@@ -5560,8 +5560,8 @@
           Pin("f93337af-2467-4ea9-a6a1-c407aa567658"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("2797c876-6f4d-4055-991a-930d901d97ad"),
         "logics::designer::signal::SignalState": (
@@ -5579,8 +5579,8 @@
           Pin("798682fc-1527-4d0c-8a42-de3481831324"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("32e1e262-72e2-4bc3-8109-9105da24dd7a"),
         "logics::designer::signal::SignalState": (
@@ -5598,8 +5598,8 @@
           Pin("10678c35-381b-454e-9b9c-eda12053f534"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("d7ebf6b7-fdc4-49ea-837a-4d932cf5a90f"),
         "logics::designer::signal::SignalState": (
@@ -5617,8 +5617,8 @@
           Pin("4ca4c0e5-bb54-4d31-a3e3-44842e465acc"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("e062117b-7009-443a-9b49-e2ef360eaf7a"),
         "logics::designer::signal::SignalState": (
@@ -5636,8 +5636,8 @@
           Pin("48990e76-6f66-42c3-ae96-70721c63ef7c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("4d28a690-244f-4a47-8399-efc0b1d12053"),
         "logics::designer::signal::SignalState": (
@@ -5655,8 +5655,8 @@
           Pin("e537dea5-e84b-49d9-bbe2-f7371b491b6f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("406358f7-8153-455f-9008-e4fbdaecd749"),
         "logics::designer::signal::SignalState": (
@@ -5676,8 +5676,8 @@
           Pin("c116501e-fb4d-45db-b762-0441f4541316"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("b154b321-2572-4fc0-938c-5bce003f2c30"),
         "logics::designer::signal::SignalState": (
@@ -5695,8 +5695,8 @@
           Pin("34ec6e27-274c-4b27-bfc8-a1178fec8d7c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("8fa4f7c2-794c-4a38-a5e6-c7b2ae6be140"),
         "logics::designer::signal::SignalState": (
@@ -5714,8 +5714,8 @@
           Pin("04e7d02f-a659-4afe-a6db-b39dea953f24"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("744816b2-25dd-4949-989f-d1017de01580"),
         "logics::designer::signal::SignalState": (
@@ -5733,8 +5733,8 @@
           Pin("c2c8dc5b-1a3d-4bc4-a57e-3b57973dbb3f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("ed8c75b9-c180-4cc7-af8a-1daf7733388b"),
         "logics::designer::signal::SignalState": (
@@ -5754,8 +5754,8 @@
           Pin("679bc179-6944-4aa5-a8c0-4f3550206e74"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("f2e85264-20ef-436e-9163-8288268b0f37"),
         "logics::designer::signal::SignalState": (
@@ -5773,8 +5773,8 @@
           Pin("a6965f2b-3067-4a9d-b37d-28c737e1f76f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("28634fef-eff4-432c-be03-0d536b08167f"),
         "logics::designer::signal::SignalState": (
@@ -5792,8 +5792,8 @@
           Pin("a10f480a-33a3-447c-b8d2-9c5454d04da3"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("72ab1e10-0731-486e-b4c5-32a4ad5f3401"),
         "logics::designer::signal::SignalState": (
@@ -5811,8 +5811,8 @@
           Pin("f2004847-a341-4164-a97c-f6a3eeb91b84"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("ce51dde3-a5ec-49be-a253-e45d47c2d264"),
         "logics::designer::signal::SignalState": (
@@ -5830,8 +5830,8 @@
           Pin("d7e4d5ff-1758-4c15-a25d-9a737b795b89"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("39de1bf9-1689-456b-9ae7-c8f276556714"),
         "logics::designer::signal::SignalState": (
@@ -5849,8 +5849,8 @@
           Pin("49957f65-bdbc-4e7b-83db-6ff05e1707eb"),
         ]),
         "logics::designer::position::Position": ((
-          x: -1336.9705,
-          y: 34.522705,
+          -1336.9705,
+          34.522705,
         )),
         "logics::designer::model::ModelId": ("968ada93-77aa-4921-b83f-3a6563101dc0"),
         "logics::designer::signal::SignalState": (
@@ -5899,8 +5899,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 387.14325,
-          y: 416.9551,
+          387.14325,
+          416.9551,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -5944,8 +5944,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 381.14337,
-          y: 314.95514,
+          381.14337,
+          314.95514,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -5989,8 +5989,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 614.1434,
-          y: 417.95514,
+          614.1434,
+          417.95514,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6034,8 +6034,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 301.14325,
-          y: 553.95514,
+          301.14325,
+          553.95514,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6079,8 +6079,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 528.1434,
-          y: 554.95514,
+          528.1434,
+          554.95514,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6124,8 +6124,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -38.43506,
-          y: 445.9861,
+          -38.43506,
+          445.9861,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6169,8 +6169,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -44.43506,
-          y: 343.98615,
+          -44.43506,
+          343.98615,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6214,8 +6214,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 287.0268,
-          y: 671.3304,
+          287.0268,
+          671.3304,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6259,8 +6259,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 514.0268,
-          y: 672.33044,
+          514.0268,
+          672.33044,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6304,8 +6304,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -132.55157,
-          y: 802.3614,
+          -132.55157,
+          802.3614,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6349,8 +6349,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -359.55157,
-          y: 801.3614,
+          -359.55157,
+          801.3614,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6394,8 +6394,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -138.55157,
-          y: 700.3614,
+          -138.55157,
+          700.3614,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6439,8 +6439,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -365.55157,
-          y: 699.3614,
+          -365.55157,
+          699.3614,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6484,8 +6484,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -351.43512,
-          y: 581.9861,
+          -351.43512,
+          581.9861,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6529,8 +6529,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -265.43512,
-          y: 444.98608,
+          -265.43512,
+          444.98608,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6574,8 +6574,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -124.43506,
-          y: 582.9861,
+          -124.43506,
+          582.9861,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6619,8 +6619,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -271.43506,
-          y: 342.98615,
+          -271.43506,
+          342.98615,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6664,8 +6664,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 293.0268,
-          y: 773.3304,
+          293.0268,
+          773.3304,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6709,8 +6709,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 520.0268,
-          y: 774.33044,
+          520.0268,
+          774.33044,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6754,8 +6754,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -218.55151,
-          y: 939.3614,
+          -218.55151,
+          939.3614,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6799,8 +6799,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -445.55157,
-          y: 938.3614,
+          -445.55157,
+          938.3614,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6844,8 +6844,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 207.0268,
-          y: 910.3304,
+          207.0268,
+          910.3304,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -6889,8 +6889,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 434.02692,
-          y: 911.3304,
+          434.02692,
+          911.3304,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6934,8 +6934,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -678.82715,
-          y: 300.47784,
+          -678.82715,
+          300.47784,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -6979,8 +6979,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -672.82715,
-          y: 402.47784,
+          -672.82715,
+          402.47784,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7024,8 +7024,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -905.82715,
-          y: 299.47784,
+          -905.82715,
+          299.47784,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7069,8 +7069,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -899.8272,
-          y: 401.4778,
+          -899.8272,
+          401.4778,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7114,8 +7114,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -985.8272,
-          y: 538.47784,
+          -985.8272,
+          538.47784,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7159,8 +7159,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -758.82715,
-          y: 539.47784,
+          -758.82715,
+          539.47784,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7204,8 +7204,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -999.94366,
-          y: 655.8531,
+          -999.94366,
+          655.8531,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7249,8 +7249,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -772.94366,
-          y: 656.85315,
+          -772.94366,
+          656.85315,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7294,8 +7294,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -993.9437,
-          y: 757.8531,
+          -993.9437,
+          757.8531,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7339,8 +7339,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -766.94366,
-          y: 758.85315,
+          -766.94366,
+          758.85315,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7384,8 +7384,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -852.9436,
-          y: 895.853,
+          -852.9436,
+          895.853,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7429,8 +7429,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1079.9436,
-          y: 894.853,
+          -1079.9436,
+          894.853,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7474,8 +7474,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1325.4055,
-          y: 430.50882,
+          -1325.4055,
+          430.50882,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7519,8 +7519,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1331.4055,
-          y: 328.50885,
+          -1331.4055,
+          328.50885,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7564,8 +7564,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1425.522,
-          y: 684.8841,
+          -1425.522,
+          684.8841,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7609,8 +7609,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1411.4055,
-          y: 567.5088,
+          -1411.4055,
+          567.5088,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7654,8 +7654,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1419.522,
-          y: 786.8841,
+          -1419.522,
+          786.8841,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7699,8 +7699,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1505.522,
-          y: 923.88403,
+          -1505.522,
+          923.88403,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -7744,8 +7744,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1552.4055,
-          y: 429.5088,
+          -1552.4055,
+          429.5088,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7789,8 +7789,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1558.4055,
-          y: 327.50885,
+          -1558.4055,
+          327.50885,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7834,8 +7834,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1638.4055,
-          y: 566.5088,
+          -1638.4055,
+          566.5088,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7879,8 +7879,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1646.5222,
-          y: 785.8841,
+          -1646.5222,
+          785.8841,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7924,8 +7924,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1652.522,
-          y: 683.88403,
+          -1652.522,
+          683.88403,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7969,8 +7969,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -1732.5222,
-          y: 922.88403,
+          -1732.5222,
+          922.88403,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -7992,8 +7992,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 208.14325,
-          y: 418.9551,
+          208.14325,
+          418.9551,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8015,8 +8015,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 202.14325,
-          y: 316.95514,
+          202.14325,
+          316.95514,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8038,8 +8038,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 108.026855,
-          y: 673.33044,
+          108.026855,
+          673.33044,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8061,8 +8061,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 157.14325,
-          y: 551.95514,
+          157.14325,
+          551.95514,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -8084,8 +8084,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 114.026855,
-          y: 775.3304,
+          114.026855,
+          775.3304,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8107,8 +8107,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -589.5516,
-          y: 936.3614,
+          -589.5516,
+          936.3614,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -8130,8 +8130,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -538.5516,
-          y: 803.3614,
+          -538.5516,
+          803.3614,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8153,8 +8153,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -544.5516,
-          y: 701.3614,
+          -544.5516,
+          701.3614,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8176,8 +8176,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -495.4351,
-          y: 579.9861,
+          -495.4351,
+          579.9861,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -8199,8 +8199,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -444.4351,
-          y: 446.98608,
+          -444.4351,
+          446.98608,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8222,8 +8222,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -450.4351,
-          y: 344.98615,
+          -450.4351,
+          344.98615,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8245,8 +8245,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: 63.026855,
-          y: 908.3304,
+          63.026855,
+          908.3304,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -8268,8 +8268,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1078.8271,
-          y: 403.4778,
+          -1078.8271,
+          403.4778,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8291,8 +8291,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1084.8271,
-          y: 301.47784,
+          -1084.8271,
+          301.47784,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8314,8 +8314,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1129.8271,
-          y: 536.47784,
+          -1129.8271,
+          536.47784,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -8337,8 +8337,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1178.9436,
-          y: 657.85315,
+          -1178.9436,
+          657.85315,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8360,8 +8360,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1172.9436,
-          y: 759.8531,
+          -1172.9436,
+          759.8531,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8383,8 +8383,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1223.9436,
-          y: 892.853,
+          -1223.9436,
+          892.853,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -8406,8 +8406,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1731.4055,
-          y: 431.5088,
+          -1731.4055,
+          431.5088,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8429,8 +8429,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1737.4055,
-          y: 329.50885,
+          -1737.4055,
+          329.50885,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8452,8 +8452,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1782.4055,
-          y: 564.5088,
+          -1782.4055,
+          564.5088,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -8475,8 +8475,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1825.5222,
-          y: 787.8841,
+          -1825.5222,
+          787.8841,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8498,8 +8498,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1831.5222,
-          y: 685.8841,
+          -1831.5222,
+          685.8841,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -8521,8 +8521,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -1876.5222,
-          y: 920.88403,
+          -1876.5222,
+          920.88403,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -8544,8 +8544,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 701.1434,
-          y: 310.95514,
+          701.1434,
+          310.95514,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8567,8 +8567,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 707.14325,
-          y: 412.9551,
+          707.14325,
+          412.9551,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8590,8 +8590,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 666.1434,
-          y: 548.9551,
+          666.1434,
+          548.9551,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -8613,8 +8613,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -45.551575,
-          y: 695.3614,
+          -45.551575,
+          695.3614,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8636,8 +8636,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 13.564941,
-          y: 576.9861,
+          13.564941,
+          576.9861,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -8659,8 +8659,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 54.56488,
-          y: 440.98608,
+          54.56488,
+          440.98608,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8682,8 +8682,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 48.56494,
-          y: 338.98615,
+          48.56494,
+          338.98615,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8705,8 +8705,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 607.0268,
-          y: 667.3304,
+          607.0268,
+          667.3304,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8728,8 +8728,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -39.551575,
-          y: 797.3613,
+          -39.551575,
+          797.3613,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8751,8 +8751,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 613.0268,
-          y: 769.3304,
+          613.0268,
+          769.3304,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8774,8 +8774,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -80.551575,
-          y: 933.3613,
+          -80.551575,
+          933.3613,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -8797,8 +8797,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 572.0268,
-          y: 905.3304,
+          572.0268,
+          905.3304,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -8820,8 +8820,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -585.82715,
-          y: 295.47784,
+          -585.82715,
+          295.47784,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8843,8 +8843,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -579.8272,
-          y: 397.4778,
+          -579.8272,
+          397.4778,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8866,8 +8866,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -620.82715,
-          y: 533.4778,
+          -620.82715,
+          533.4778,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -8889,8 +8889,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -679.94366,
-          y: 651.8531,
+          -679.94366,
+          651.8531,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8912,8 +8912,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -673.9437,
-          y: 753.8531,
+          -673.9437,
+          753.8531,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -8935,8 +8935,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -714.94366,
-          y: 889.853,
+          -714.94366,
+          889.853,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -8958,8 +8958,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1273.4055,
-          y: 561.5088,
+          -1273.4055,
+          561.5088,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -8981,8 +8981,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1232.4055,
-          y: 425.5088,
+          -1232.4055,
+          425.5088,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -9004,8 +9004,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1238.4055,
-          y: 323.50885,
+          -1238.4055,
+          323.50885,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -9027,8 +9027,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1332.522,
-          y: 679.88403,
+          -1332.522,
+          679.88403,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -9050,8 +9050,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1326.5222,
-          y: 781.8841,
+          -1326.5222,
+          781.8841,
         )),
         "logics::designer::model::ModelId": ("82e612ee-2a58-4358-b658-e8b6781d41b6"),
       },
@@ -9073,8 +9073,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: -1367.522,
-          y: 917.88403,
+          -1367.522,
+          917.88403,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -9082,8 +9082,8 @@
     4294969005: (
       components: {
         "logics::designer::position::Position": ((
-          x: 493.14337,
-          y: 272.95514,
+          493.14337,
+          272.95514,
         )),
         "logics::designer::model::ModelId": ("3b985cf9-ec3e-4c05-9e77-02cb22b80709"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9097,8 +9097,8 @@
     4294969006: (
       components: {
         "logics::designer::position::Position": ((
-          x: 507.14325,
-          y: 339.95514,
+          507.14325,
+          339.95514,
         )),
         "logics::designer::model::ModelId": ("0dee15ed-51ac-440a-80ee-c8aed641ae16"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9112,8 +9112,8 @@
     4294969007: (
       components: {
         "logics::designer::position::Position": ((
-          x: 499.14325,
-          y: 374.9551,
+          499.14325,
+          374.9551,
         )),
         "logics::designer::model::ModelId": ("876b31af-70b0-4189-bf72-60f38deb8b70"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9127,8 +9127,8 @@
     4294969008: (
       components: {
         "logics::designer::position::Position": ((
-          x: 513.14325,
-          y: 441.9551,
+          513.14325,
+          441.9551,
         )),
         "logics::designer::model::ModelId": ("c086b8a1-b1ae-44db-ba10-68e854af3e5f"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9142,8 +9142,8 @@
     4294969009: (
       components: {
         "logics::designer::position::Position": ((
-          x: 413.14337,
-          y: 511.9551,
+          413.14337,
+          511.9551,
         )),
         "logics::designer::model::ModelId": ("f4c11a62-8799-41e4-93ca-34bdd2a28c01"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9157,8 +9157,8 @@
     4294969010: (
       components: {
         "logics::designer::position::Position": ((
-          x: 427.14325,
-          y: 578.9551,
+          427.14325,
+          578.9551,
         )),
         "logics::designer::model::ModelId": ("598f39bb-5809-4fd0-b9b7-57087f5d634a"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9172,8 +9172,8 @@
     4294969011: (
       components: {
         "logics::designer::position::Position": ((
-          x: 399.0268,
-          y: 629.3304,
+          399.0268,
+          629.3304,
         )),
         "logics::designer::model::ModelId": ("e7fefcb7-f4af-4852-8771-d6f7a12badc3"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9187,8 +9187,8 @@
     4294969012: (
       components: {
         "logics::designer::position::Position": ((
-          x: 413.0268,
-          y: 696.3304,
+          413.0268,
+          696.3304,
         )),
         "logics::designer::model::ModelId": ("45faf190-8108-4e84-b297-9b80413b0618"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9202,8 +9202,8 @@
     4294969013: (
       components: {
         "logics::designer::position::Position": ((
-          x: -153.43512,
-          y: 402.98608,
+          -153.43512,
+          402.98608,
         )),
         "logics::designer::model::ModelId": ("907c35bd-88fc-47f0-af12-4da254e9ef6b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9217,8 +9217,8 @@
     4294969014: (
       components: {
         "logics::designer::position::Position": ((
-          x: -139.43512,
-          y: 469.98608,
+          -139.43512,
+          469.98608,
         )),
         "logics::designer::model::ModelId": ("34e85ade-bdc8-43f1-853f-6c4aa3b3369e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9232,8 +9232,8 @@
     4294969015: (
       components: {
         "logics::designer::position::Position": ((
-          x: -159.43506,
-          y: 300.98615,
+          -159.43506,
+          300.98615,
         )),
         "logics::designer::model::ModelId": ("27a08937-0bb5-43f4-9e62-39627186533f"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9247,8 +9247,8 @@
     4294969016: (
       components: {
         "logics::designer::position::Position": ((
-          x: -145.43512,
-          y: 367.98615,
+          -145.43512,
+          367.98615,
         )),
         "logics::designer::model::ModelId": ("439e83ea-8363-4f9b-b0b1-216da1be68e4"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9262,8 +9262,8 @@
     4294969017: (
       components: {
         "logics::designer::position::Position": ((
-          x: -253.55157,
-          y: 657.3614,
+          -253.55157,
+          657.3614,
         )),
         "logics::designer::model::ModelId": ("cc1ba1cf-ee92-4497-b0df-11d792dbeef9"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9277,8 +9277,8 @@
     4294969018: (
       components: {
         "logics::designer::position::Position": ((
-          x: -239.55164,
-          y: 724.3614,
+          -239.55164,
+          724.3614,
         )),
         "logics::designer::model::ModelId": ("a4e9fe1e-7159-4570-b17c-85788c6b98a1"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9292,8 +9292,8 @@
     4294969019: (
       components: {
         "logics::designer::position::Position": ((
-          x: -239.43506,
-          y: 539.9861,
+          -239.43506,
+          539.9861,
         )),
         "logics::designer::model::ModelId": ("64ff21af-21e3-4804-98d3-4b1860a1c69c"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9307,8 +9307,8 @@
     4294969020: (
       components: {
         "logics::designer::position::Position": ((
-          x: -225.43512,
-          y: 606.9861,
+          -225.43512,
+          606.9861,
         )),
         "logics::designer::model::ModelId": ("731d5567-f4c4-472a-af99-54ba0b734688"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9322,8 +9322,8 @@
     4294969021: (
       components: {
         "logics::designer::position::Position": ((
-          x: 405.0268,
-          y: 731.3304,
+          405.0268,
+          731.3304,
         )),
         "logics::designer::model::ModelId": ("e7a4cac0-880b-4447-96bb-d4321aa8c063"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9337,8 +9337,8 @@
     4294969022: (
       components: {
         "logics::designer::position::Position": ((
-          x: 419.0268,
-          y: 798.3304,
+          419.0268,
+          798.3304,
         )),
         "logics::designer::model::ModelId": ("3fa50906-ea7b-4aac-af64-4838a9bb2240"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9352,8 +9352,8 @@
     4294969023: (
       components: {
         "logics::designer::position::Position": ((
-          x: -247.55157,
-          y: 759.3613,
+          -247.55157,
+          759.3613,
         )),
         "logics::designer::model::ModelId": ("4991b930-79ad-425f-a2b0-0222072807db"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9367,8 +9367,8 @@
     4294969024: (
       components: {
         "logics::designer::position::Position": ((
-          x: -233.55164,
-          y: 826.3613,
+          -233.55164,
+          826.3613,
         )),
         "logics::designer::model::ModelId": ("2d8061c0-e6a6-40f2-a8bc-2352302b2b09"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9382,8 +9382,8 @@
     4294969025: (
       components: {
         "logics::designer::position::Position": ((
-          x: 319.0268,
-          y: 868.3304,
+          319.0268,
+          868.3304,
         )),
         "logics::designer::model::ModelId": ("6c2ddf7a-7578-49e9-b954-bc196cb8e958"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9397,8 +9397,8 @@
     4294969026: (
       components: {
         "logics::designer::position::Position": ((
-          x: 333.0268,
-          y: 935.3304,
+          333.0268,
+          935.3304,
         )),
         "logics::designer::model::ModelId": ("16d3cf7e-7cb0-4a4d-9617-c82a511d779d"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9412,8 +9412,8 @@
     4294969027: (
       components: {
         "logics::designer::position::Position": ((
-          x: -333.55157,
-          y: 896.3614,
+          -333.55157,
+          896.3614,
         )),
         "logics::designer::model::ModelId": ("92030a59-2e73-4e20-8325-207a70006526"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9427,8 +9427,8 @@
     4294969028: (
       components: {
         "logics::designer::position::Position": ((
-          x: -319.55157,
-          y: 963.3613,
+          -319.55157,
+          963.3613,
         )),
         "logics::designer::model::ModelId": ("4ea2454c-16a4-498c-a927-e51f367a637e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9442,8 +9442,8 @@
     4294969029: (
       components: {
         "logics::designer::position::Position": ((
-          x: -967.94366,
-          y: 852.853,
+          -967.94366,
+          852.853,
         )),
         "logics::designer::model::ModelId": ("8e7088cc-e7b8-4900-8552-408c8b86f4b8"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9457,8 +9457,8 @@
     4294969030: (
       components: {
         "logics::designer::position::Position": ((
-          x: -953.9437,
-          y: 919.853,
+          -953.9437,
+          919.853,
         )),
         "logics::designer::model::ModelId": ("52bda292-2583-41f8-a230-f4ebf6ec4a77"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9472,8 +9472,8 @@
     4294969031: (
       components: {
         "logics::designer::position::Position": ((
-          x: -881.9437,
-          y: 715.8531,
+          -881.9437,
+          715.8531,
         )),
         "logics::designer::model::ModelId": ("fd00e856-b373-42f3-ae16-bd59ec5b75a7"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9487,8 +9487,8 @@
     4294969032: (
       components: {
         "logics::designer::position::Position": ((
-          x: -867.9437,
-          y: 782.8531,
+          -867.9437,
+          782.8531,
         )),
         "logics::designer::model::ModelId": ("147a817e-1825-4d44-8d5f-641b13a55c22"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9502,8 +9502,8 @@
     4294969033: (
       components: {
         "logics::designer::position::Position": ((
-          x: -887.9437,
-          y: 613.8531,
+          -887.9437,
+          613.8531,
         )),
         "logics::designer::model::ModelId": ("54bb8bbe-5b7a-43e2-b621-8c6c9a57c2dd"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9517,8 +9517,8 @@
     4294969034: (
       components: {
         "logics::designer::position::Position": ((
-          x: -873.9437,
-          y: 680.8531,
+          -873.9437,
+          680.8531,
         )),
         "logics::designer::model::ModelId": ("c7e63885-ba36-40b8-bf0b-42994fb8a13b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9532,8 +9532,8 @@
     4294969035: (
       components: {
         "logics::designer::position::Position": ((
-          x: -873.82715,
-          y: 496.4778,
+          -873.82715,
+          496.4778,
         )),
         "logics::designer::model::ModelId": ("6ea20f44-4455-4b4e-90f0-a9d9f54f29ee"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9547,8 +9547,8 @@
     4294969036: (
       components: {
         "logics::designer::position::Position": ((
-          x: -859.8272,
-          y: 563.4778,
+          -859.8272,
+          563.4778,
         )),
         "logics::designer::model::ModelId": ("b35a90cf-46fb-4bf4-9aaf-e09dce621f18"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9562,8 +9562,8 @@
     4294969037: (
       components: {
         "logics::designer::position::Position": ((
-          x: -787.8272,
-          y: 359.47784,
+          -787.8272,
+          359.47784,
         )),
         "logics::designer::model::ModelId": ("decda0fe-5504-4a2b-89c3-1d1ea2b426b3"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9577,8 +9577,8 @@
     4294969038: (
       components: {
         "logics::designer::position::Position": ((
-          x: -773.8272,
-          y: 426.4778,
+          -773.8272,
+          426.4778,
         )),
         "logics::designer::model::ModelId": ("318dcc48-4ae4-4a15-b0d7-4dd5b231a3bc"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9592,8 +9592,8 @@
     4294969039: (
       components: {
         "logics::designer::position::Position": ((
-          x: -793.82715,
-          y: 257.47784,
+          -793.82715,
+          257.47784,
         )),
         "logics::designer::model::ModelId": ("e0c1051d-24be-452d-9c02-b7468f969ecd"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9607,8 +9607,8 @@
     4294969040: (
       components: {
         "logics::designer::position::Position": ((
-          x: -779.8272,
-          y: 324.47784,
+          -779.8272,
+          324.47784,
         )),
         "logics::designer::model::ModelId": ("ff0574fe-2214-4271-bda6-0f9c847a636f"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9622,8 +9622,8 @@
     4294969041: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1446.4055,
-          y: 285.50885,
+          -1446.4055,
+          285.50885,
         )),
         "logics::designer::model::ModelId": ("c4550f71-fb6a-44a6-bb6c-99cc8a94eafb"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9637,8 +9637,8 @@
     4294969042: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1432.4055,
-          y: 352.50885,
+          -1432.4055,
+          352.50885,
         )),
         "logics::designer::model::ModelId": ("cadedeb2-04e8-4a76-a957-ab2bd420e5ed"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9652,8 +9652,8 @@
     4294969043: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1440.4055,
-          y: 387.5088,
+          -1440.4055,
+          387.5088,
         )),
         "logics::designer::model::ModelId": ("52363edf-9ff2-4fa5-b838-9dff3c15938f"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9667,8 +9667,8 @@
     4294969044: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1426.4055,
-          y: 454.5088,
+          -1426.4055,
+          454.5088,
         )),
         "logics::designer::model::ModelId": ("0a9af66e-c777-4bd3-9c63-774a7b426275"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9682,8 +9682,8 @@
     4294969045: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1540.522,
-          y: 641.88403,
+          -1540.522,
+          641.88403,
         )),
         "logics::designer::model::ModelId": ("e3ae3606-63a8-43d3-a746-fafb89a47694"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9697,8 +9697,8 @@
     4294969046: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1526.5222,
-          y: 708.88403,
+          -1526.5222,
+          708.88403,
         )),
         "logics::designer::model::ModelId": ("64e232ed-b02b-4fef-b368-11131bc29ac7"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9712,8 +9712,8 @@
     4294969047: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1526.4055,
-          y: 524.5088,
+          -1526.4055,
+          524.5088,
         )),
         "logics::designer::model::ModelId": ("571ad74a-7fb5-4dc1-a0ff-80197d6986d1"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9727,8 +9727,8 @@
     4294969048: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1512.4055,
-          y: 591.5088,
+          -1512.4055,
+          591.5088,
         )),
         "logics::designer::model::ModelId": ("ab9aa93a-ffcc-4624-b937-def2c30e170e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9742,8 +9742,8 @@
     4294969049: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1534.522,
-          y: 743.88403,
+          -1534.522,
+          743.88403,
         )),
         "logics::designer::model::ModelId": ("3637e697-fa47-412c-809d-2640b82ec441"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9757,8 +9757,8 @@
     4294969050: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1520.5222,
-          y: 810.88403,
+          -1520.5222,
+          810.88403,
         )),
         "logics::designer::model::ModelId": ("29971ac4-bdd5-4a94-a956-509fc601b049"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9772,8 +9772,8 @@
     4294969051: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1620.522,
-          y: 880.88403,
+          -1620.522,
+          880.88403,
         )),
         "logics::designer::model::ModelId": ("5d84530a-8dec-486c-af7b-3a72b6ef4fc9"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9787,8 +9787,8 @@
     4294969052: (
       components: {
         "logics::designer::position::Position": ((
-          x: -1606.5222,
-          y: 947.88403,
+          -1606.5222,
+          947.88403,
         )),
         "logics::designer::model::ModelId": ("6e4d1081-3986-4d89-abfb-b1753885f044"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -9809,8 +9809,8 @@
           Pin("9b8cd52c-318d-4a82-9b71-6e152e1b3b80"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("f0e1f847-0664-4a0d-a173-ee3f8cd382ce"),
         "logics::designer::signal::SignalState": (
@@ -9828,8 +9828,8 @@
           Pin("f8cd2f7f-efa7-4b13-b635-ff6f8b1ec32f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("5b73d77d-6a1d-47d5-87ea-894e6ff72515"),
         "logics::designer::signal::SignalState": (
@@ -9847,8 +9847,8 @@
           Pin("7889a781-d6cc-4985-bf31-eb0bf6b78ca6"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("00374946-edb2-4b0e-87a6-81265bf1bea1"),
         "logics::designer::signal::SignalState": (
@@ -9868,8 +9868,8 @@
           Pin("cd0b5cc7-0b96-4b9a-8795-85dece8cb02a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("17a2c53b-9c4c-4876-9c7e-e36daa20d0c6"),
         "logics::designer::signal::SignalState": (
@@ -9887,8 +9887,8 @@
           Pin("97e468d6-876d-4397-8c96-8668ac58c677"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("2451e448-fb1e-4bbf-9eef-554c99758eee"),
         "logics::designer::signal::SignalState": (
@@ -9906,8 +9906,8 @@
           Pin("57fdb49e-c160-4cea-b59f-eb7c9f6a94e2"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("62d5d0e0-251a-43bf-8979-d0bae03612cd"),
         "logics::designer::signal::SignalState": (
@@ -9925,8 +9925,8 @@
           Pin("f400bf0e-e7db-47da-b6a3-89c4e969d222"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("0f2d85a5-796f-4492-9591-16fbdb4c483d"),
         "logics::designer::signal::SignalState": (
@@ -9944,8 +9944,8 @@
           Pin("aaa8a522-8284-4118-b461-f40b2ff50d53"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("f4104856-1571-4683-b188-003e219ccbc9"),
         "logics::designer::signal::SignalState": (
@@ -9963,8 +9963,8 @@
           Pin("e1d5b52b-2cbe-4e40-bb54-fa26636bf85c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("8ac4f7b9-ccf4-4aa9-844b-71211833e85b"),
         "logics::designer::signal::SignalState": (
@@ -9982,8 +9982,8 @@
           Pin("29d25e19-5d79-403c-bce0-a48a5babfb24"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("dd9f2f0d-a917-4c52-b6c2-7fa11c1ecc9d"),
         "logics::designer::signal::SignalState": (
@@ -10001,8 +10001,8 @@
           Pin("7ff5c251-ab19-4764-a5a4-a239f1a7414f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("b1839a1a-5340-4264-a817-cb29511f7772"),
         "logics::designer::signal::SignalState": (
@@ -10020,8 +10020,8 @@
           Pin("78f0ad85-9439-455e-9beb-7afee7258e3e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("ca891cfa-cf93-487a-9dbd-3f760f170d37"),
         "logics::designer::signal::SignalState": (
@@ -10041,8 +10041,8 @@
           Pin("e5c08c49-7305-4d8c-9f58-8af243612a31"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("36072d03-d815-4bb5-900a-81644193c3c9"),
         "logics::designer::signal::SignalState": (
@@ -10060,8 +10060,8 @@
           Pin("572642f4-6931-4d0e-867b-9aefcfa11c6b"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("aa67ccc2-0e90-41df-877d-b66f6bf228a4"),
         "logics::designer::signal::SignalState": (
@@ -10079,8 +10079,8 @@
           Pin("401a0172-5475-42a6-a11a-6b3fb1bbb8da"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("67fa0115-c7d6-4228-9672-3403dab3798c"),
         "logics::designer::signal::SignalState": (
@@ -10098,8 +10098,8 @@
           Pin("25f38af1-377c-4569-8b21-87e30aaea81d"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("926d8ac7-d8c3-40bb-bb0c-50cb364d437a"),
         "logics::designer::signal::SignalState": (
@@ -10117,8 +10117,8 @@
           Pin("6fbc7a14-bdf5-4b7a-9dd2-faf353daf352"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("524cb4cf-7c0a-45bf-abfb-0a9e0100ea43"),
         "logics::designer::signal::SignalState": (
@@ -10136,8 +10136,8 @@
           Pin("4dda925d-42fe-4c4d-ba3b-bcb6cba13455"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("c8a1ea7b-fdb1-4bc6-ba6d-473183d66a1b"),
         "logics::designer::signal::SignalState": (
@@ -10155,8 +10155,8 @@
           Pin("6fb49b11-a6c7-45b1-8e35-b2b844a8ca7a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("63e7921a-b685-4bda-bd7f-2c2ca7f8775d"),
         "logics::designer::signal::SignalState": (
@@ -10174,8 +10174,8 @@
           Pin("74875bde-e847-4530-96d2-62d2afeb9951"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("73e72260-d4b9-4f03-bc16-19ff3e0d58dd"),
         "logics::designer::signal::SignalState": (
@@ -10195,8 +10195,8 @@
           Pin("23033b54-7662-41c1-a29a-a0b48acb863e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("8631a374-e6f6-4927-b37d-d3f371b65967"),
         "logics::designer::signal::SignalState": (
@@ -10214,8 +10214,8 @@
           Pin("2546b80f-cc6c-40e3-ad2a-f645e76f644c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("65f7cec9-a1bd-40d9-86b0-6910f5c519f2"),
         "logics::designer::signal::SignalState": (
@@ -10233,8 +10233,8 @@
           Pin("c88f0a3c-4e65-4dbf-b9d4-3b9e775db57f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("2d1a774e-67a2-469e-bd65-a945b178d186"),
         "logics::designer::signal::SignalState": (
@@ -10252,8 +10252,8 @@
           Pin("81cd58ec-7c2b-456e-b00e-9fc041c4ebaa"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("2023fcef-8665-493a-8f78-65f0e0afe2d5"),
         "logics::designer::signal::SignalState": (
@@ -10273,8 +10273,8 @@
           Pin("2f73c7be-9daa-4b0d-aaf4-6dc1a8c5901f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("ad2f7153-0336-488e-b47d-bb1ea85cb975"),
         "logics::designer::signal::SignalState": (
@@ -10292,8 +10292,8 @@
           Pin("a822a62f-fc2a-43ec-820b-034b83e677e8"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("a87df15c-dd9a-4ac0-9260-542bd75f69e6"),
         "logics::designer::signal::SignalState": (
@@ -10313,8 +10313,8 @@
           Pin("fcb26b4b-3c31-4d28-906f-bf3bdda00efc"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("621342d8-d8c1-4b4f-ab88-7c33579b0038"),
         "logics::designer::signal::SignalState": (
@@ -10332,8 +10332,8 @@
           Pin("38f373c4-1518-49c8-8a79-265c56d20580"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("8ca44437-71a7-4c46-bdd0-9914a87d103a"),
         "logics::designer::signal::SignalState": (
@@ -10353,8 +10353,8 @@
           Pin("61a85030-8cbb-4528-a179-f7d996282750"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("f08b2bb6-a11a-4d59-be36-6c25b14ff94f"),
         "logics::designer::signal::SignalState": (
@@ -10374,8 +10374,8 @@
           Pin("f8fa1732-da36-403c-a2b1-268f917f71ff"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("983aeb54-df78-41a7-9951-1867a68c3a21"),
         "logics::designer::signal::SignalState": (
@@ -10393,8 +10393,8 @@
           Pin("c6f3bda7-8d34-4239-91a2-29f445431dff"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("004a4895-0c26-4376-8545-020150aa0937"),
         "logics::designer::signal::SignalState": (
@@ -10414,8 +10414,8 @@
           Pin("e0b19fb0-7535-4a06-8772-07be7422a831"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("118e53b0-b2e7-43aa-9223-da0fff9e60a8"),
         "logics::designer::signal::SignalState": (
@@ -10433,8 +10433,8 @@
           Pin("59d03608-8852-4a4d-b4a6-a40140340a0d"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("3bc27126-c23f-4c15-ae81-9aefcee8a287"),
         "logics::designer::signal::SignalState": (
@@ -10452,8 +10452,8 @@
           Pin("ea863ed0-dcf2-4601-a3e4-3420ca20dcf1"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("5d0d4a76-32d9-41ff-b5e0-1a31494c07cc"),
         "logics::designer::signal::SignalState": (
@@ -10471,8 +10471,8 @@
           Pin("5c0ed3c8-7a02-4d35-a50f-46c85974f34e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("6b9ffbc6-847a-43f7-91a4-1829394057bb"),
         "logics::designer::signal::SignalState": (
@@ -10490,8 +10490,8 @@
           Pin("24c55749-e310-4f12-8b8d-e1de6e6f5bb3"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("0480eb13-ab1e-41fd-8734-6a98af358ded"),
         "logics::designer::signal::SignalState": (
@@ -10509,8 +10509,8 @@
           Pin("3a998fe8-aa9c-46ef-9cca-32b721d7b0ff"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("b64c0d4b-c477-484b-8d4a-cef325a8f35c"),
         "logics::designer::signal::SignalState": (
@@ -10528,8 +10528,8 @@
           Pin("eceb0aec-648f-45dd-aad5-ea4845fff14f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("29b3ecba-b9e5-4398-adeb-58801dcb878e"),
         "logics::designer::signal::SignalState": (
@@ -10547,8 +10547,8 @@
           Pin("d8071e5b-1828-4f0a-a912-46ab6c76f8e6"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("80488b17-cbf4-4e89-a0dc-30936c33ef0a"),
         "logics::designer::signal::SignalState": (
@@ -10566,8 +10566,8 @@
           Pin("282796f7-d55b-4539-b85a-65e50eacd0f2"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("0ada84b2-13a7-4cf5-ac5a-e0162cc2dbb4"),
         "logics::designer::signal::SignalState": (
@@ -10585,8 +10585,8 @@
           Pin("5d7d707c-1fd9-4c92-b409-91383cb964e6"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("980d7450-7ad4-41ce-97a9-325fc89bfb7b"),
         "logics::designer::signal::SignalState": (
@@ -10604,8 +10604,8 @@
           Pin("e559467c-cd72-42d0-a871-ccd4e3798a6c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("7697ef56-c854-4bec-8494-cfe454b417f2"),
         "logics::designer::signal::SignalState": (
@@ -10623,8 +10623,8 @@
           Pin("69c9bc6c-ccdd-4907-ab95-6e2af83fb3f2"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("e40d49c5-7ab2-4196-b685-0ff63923d6b1"),
         "logics::designer::signal::SignalState": (
@@ -10644,8 +10644,8 @@
           Pin("b5ca5ea3-4f94-45a2-abbc-9a36a56f5300"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("a58d8133-ffa0-4537-a887-ea68dc42bdfd"),
         "logics::designer::signal::SignalState": (
@@ -10663,8 +10663,8 @@
           Pin("96e4aa87-9000-4665-8fb5-7b392dced9db"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("35ddd68e-76c2-4733-901c-721357b2c49a"),
         "logics::designer::signal::SignalState": (
@@ -10682,8 +10682,8 @@
           Pin("fd3ae4af-73a6-4193-803c-de5d7eb7ad42"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("1cfbd034-2ec1-48c3-bf5d-eb1c43014d7d"),
         "logics::designer::signal::SignalState": (
@@ -10701,8 +10701,8 @@
           Pin("3f01664e-d3a8-46d4-be6f-12cb00bc8a1c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("99cc8a92-a40b-41dc-90f1-cee31d603130"),
         "logics::designer::signal::SignalState": (
@@ -10720,8 +10720,8 @@
           Pin("87de540e-d098-4592-bd99-6be2dba4614a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("de4691bf-13eb-4264-bc21-de29497fc84a"),
         "logics::designer::signal::SignalState": (
@@ -10739,8 +10739,8 @@
           Pin("10fb1b9d-c8b4-473d-875f-47666c1a1e7f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("fe47c8a0-0f63-4b59-9087-edeb7536bb71"),
         "logics::designer::signal::SignalState": (
@@ -10758,8 +10758,8 @@
           Pin("633e09b7-95b7-4186-8d89-5470607d9336"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("71952c6a-2e70-408c-bc56-5aa990759ba9"),
         "logics::designer::signal::SignalState": (
@@ -10779,8 +10779,8 @@
           Pin("58ae9dca-b5b4-4bc6-b88e-3a817de6bfa4"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("6b78316a-9b28-40f8-81ef-2d06501196d6"),
         "logics::designer::signal::SignalState": (
@@ -10798,8 +10798,8 @@
           Pin("cb089f19-8234-4241-be51-582f43a8d839"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("d7fa1a72-f8da-482f-a2fd-b36715c779d2"),
         "logics::designer::signal::SignalState": (
@@ -10817,8 +10817,8 @@
           Pin("52581c55-19b4-4060-a983-2d70d94d9c75"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("7a655ee7-0e8a-4d8e-9444-1c90fe3e7ac6"),
         "logics::designer::signal::SignalState": (
@@ -10836,8 +10836,8 @@
           Pin("f0ae3658-79e9-4e04-946c-85c9aa5827eb"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("a0ae97ab-55f5-4bf3-a7b2-aa1ddbfc93b5"),
         "logics::designer::signal::SignalState": (
@@ -10855,8 +10855,8 @@
           Pin("2fe59d08-311b-4824-bafb-1cace83c5942"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("e1beaf01-3eb8-4ddc-a47a-2e525fe8b382"),
         "logics::designer::signal::SignalState": (
@@ -10874,8 +10874,8 @@
           Pin("6888052a-2e78-4ce4-a509-50c42ff43b31"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("ec710db9-9b36-4c23-a39b-cdfc286cf8e0"),
         "logics::designer::signal::SignalState": (
@@ -10893,8 +10893,8 @@
           Pin("84e6820c-4365-40bb-8dce-7a171277eb3e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("8076f526-2403-4063-9f4b-6637ec2a9a37"),
         "logics::designer::signal::SignalState": (
@@ -10912,8 +10912,8 @@
           Pin("34870b1b-65dc-4f5c-ae8e-99037af3aca2"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("14ad5715-f156-442d-ba7f-21f07a670e75"),
         "logics::designer::signal::SignalState": (
@@ -10931,8 +10931,8 @@
           Pin("136cdbc8-a57b-4636-9e0a-b10d702d14c9"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("4a24134d-9c81-4f85-bdb5-a62bee78c0e0"),
         "logics::designer::signal::SignalState": (
@@ -10950,8 +10950,8 @@
           Pin("46e14db5-0792-47fe-b23a-66ef096e287c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("816640d9-cd66-40b5-b5e4-ab21250965a0"),
         "logics::designer::signal::SignalState": (
@@ -10969,8 +10969,8 @@
           Pin("b1287c49-11b0-40cb-9bd1-1870f73d0707"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("cead0d98-c0d6-4511-b63d-1c9fddc1d486"),
         "logics::designer::signal::SignalState": (
@@ -10988,8 +10988,8 @@
           Pin("5a0994ab-738f-495e-81f7-1c9c67ed0dd3"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("5b2a73a5-1f3a-4aa1-8f33-8e8405e0761f"),
         "logics::designer::signal::SignalState": (
@@ -11007,8 +11007,8 @@
           Pin("86a2c529-d226-438a-8982-882663e6eda6"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("6faa4076-c60f-41ef-bcd2-c0b7e91cde75"),
         "logics::designer::signal::SignalState": (
@@ -11028,8 +11028,8 @@
           Pin("1742bcdc-c6d1-4513-8c21-8603496acf10"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("8e04480c-0884-4a45-87e9-5aa9ec3e4654"),
         "logics::designer::signal::SignalState": (
@@ -11047,8 +11047,8 @@
           Pin("58f0601d-3f07-46f7-aa91-3c8459e8f2a4"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("a42374a3-a797-4a0f-bdf0-6bfdaf88b797"),
         "logics::designer::signal::SignalState": (
@@ -11066,8 +11066,8 @@
           Pin("321e8cc1-6513-4f5e-9b8a-a1304a860d3c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("ea432c67-be0f-49ac-bd98-834d543ac2af"),
         "logics::designer::signal::SignalState": (
@@ -11085,8 +11085,8 @@
           Pin("85b0a0fe-c70d-4200-b585-e448efc83745"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("e6641d46-ca3a-4acd-a949-e59ce3e1cd68"),
         "logics::designer::signal::SignalState": (
@@ -11106,8 +11106,8 @@
           Pin("e2047164-383b-4779-a048-22912a38c960"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("d5fabb0f-c386-472e-83d1-a9bffd1b4364"),
         "logics::designer::signal::SignalState": (
@@ -11125,8 +11125,8 @@
           Pin("3b5b8789-86e5-48b6-b279-e32ec62e3815"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("b2cac831-44c4-427e-a407-8a811f95de50"),
         "logics::designer::signal::SignalState": (
@@ -11146,8 +11146,8 @@
           Pin("dc3e4d56-a084-4a8f-bca0-34fac930d040"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("27fbcd19-3f52-437c-a0c4-2f3f9bbd661f"),
         "logics::designer::signal::SignalState": (
@@ -11165,8 +11165,8 @@
           Pin("8b6a4530-9a89-4e46-98c6-7664198c756f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("24595639-9136-4dc6-a943-6f583bcb9f8d"),
         "logics::designer::signal::SignalState": (
@@ -11184,8 +11184,8 @@
           Pin("929783a2-d60f-42df-a3f8-9814d0720876"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("72b5ece7-6e0e-4d01-a9ad-216bb2c0383f"),
         "logics::designer::signal::SignalState": (
@@ -11205,8 +11205,8 @@
           Pin("6af94eb4-17b7-42f1-a408-f1e1fbd76631"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("4bd66866-a18d-46b4-98a6-2228306a389e"),
         "logics::designer::signal::SignalState": (
@@ -11224,8 +11224,8 @@
           Pin("708fa776-ddeb-4961-b8ac-12980ae3ec6b"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("948ba5ab-49d2-4c31-b386-a809205ab4dc"),
         "logics::designer::signal::SignalState": (
@@ -11245,8 +11245,8 @@
           Pin("f8d7946e-6cd6-4bee-b89e-c19e6de65163"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("45942f2d-cebd-439a-bba9-9f7cda08ff87"),
         "logics::designer::signal::SignalState": (
@@ -11264,8 +11264,8 @@
           Pin("87047001-e540-4846-92a3-11d958de5505"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("c39f11b9-81c6-4343-8607-fdcd208fb46d"),
         "logics::designer::signal::SignalState": (
@@ -11283,8 +11283,8 @@
           Pin("dd1bb46d-f7c6-4808-adb6-db2662193dd1"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("da57214a-c168-4194-9e91-122e0b1ae6a5"),
         "logics::designer::signal::SignalState": (
@@ -11302,8 +11302,8 @@
           Pin("5d4c02c3-85ef-44f9-a7ef-3483d6294c5a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("201ffde6-866e-45ce-8588-9ed7d0326b45"),
         "logics::designer::signal::SignalState": (
@@ -11321,8 +11321,8 @@
           Pin("91d861f8-7eea-4272-86e6-547a015d5af5"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("436c638a-b73e-40ba-971f-053b5dde0974"),
         "logics::designer::signal::SignalState": (
@@ -11342,8 +11342,8 @@
           Pin("70c47b6a-abd5-4f37-894b-6dcc91a84ac1"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("f9fe2b23-7f51-4635-90f9-b239ff269835"),
         "logics::designer::signal::SignalState": (
@@ -11361,8 +11361,8 @@
           Pin("1de46872-d322-48d1-84af-be9c47f64675"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("36f511d4-831c-49f8-89c0-b1b19e373e4e"),
         "logics::designer::signal::SignalState": (
@@ -11382,8 +11382,8 @@
           Pin("64f13274-e244-4034-9c0b-68c6bfe0b6d0"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("4db73979-8b7f-40d0-ad8c-e72c01020ca5"),
         "logics::designer::signal::SignalState": (
@@ -11401,8 +11401,8 @@
           Pin("fe213bfa-48a6-451b-b824-9e162684449d"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("6acb02f2-fcb8-420c-a696-3ff849cd987d"),
         "logics::designer::signal::SignalState": (
@@ -11420,8 +11420,8 @@
           Pin("09d2473b-463f-456a-aeb6-7f916f0e4e9a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("1c2527b4-8fbf-4dc2-9d27-9ff754a4cf6d"),
         "logics::designer::signal::SignalState": (
@@ -11439,8 +11439,8 @@
           Pin("d877ded0-adce-4c53-8888-4b9ae5e88a34"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("7f24163f-d126-4a27-815d-8037acd7779a"),
         "logics::designer::signal::SignalState": (
@@ -11458,8 +11458,8 @@
           Pin("991de6f4-705a-4e0f-97d8-83579df6aa24"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("12849972-1b8c-40d8-aa67-481deee5e09b"),
         "logics::designer::signal::SignalState": (
@@ -11477,8 +11477,8 @@
           Pin("3a5f71f8-8570-4e48-bd0b-6e12a74613f8"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("574f5d18-ef9a-45e9-9031-f0a1028ec8de"),
         "logics::designer::signal::SignalState": (
@@ -11496,8 +11496,8 @@
           Pin("05ef7102-4ef8-48e3-a878-278b4e8d3f0b"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("98ff8222-c8c6-47a4-a92d-66e99b3423ea"),
         "logics::designer::signal::SignalState": (
@@ -11515,8 +11515,8 @@
           Pin("70e265c3-4f29-4e6d-b847-5f6df1053c40"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("7157a99f-1a25-41a4-9b8a-649a8cb7086f"),
         "logics::designer::signal::SignalState": (
@@ -11534,8 +11534,8 @@
           Pin("23c252c6-af7c-45a2-838a-7598c2eafa85"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("bcda4a92-67af-4621-a3d3-b9c5bc3574d4"),
         "logics::designer::signal::SignalState": (
@@ -11553,8 +11553,8 @@
           Pin("647ec8e6-3060-495b-a52f-bd37eefa6fbf"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("ad848ab4-bfa6-49b8-8d3a-2d544458e1b6"),
         "logics::designer::signal::SignalState": (
@@ -11572,8 +11572,8 @@
           Pin("3ed6de1b-3a4b-4733-8a0f-b0c17b89809e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("5e5d49ba-4a9c-4d56-9f15-d9b021ce0d68"),
         "logics::designer::signal::SignalState": (
@@ -11591,8 +11591,8 @@
           Pin("61f99808-fdca-4aae-a3b1-ab54f1a1c026"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("39b592b4-454c-419a-8df6-a0bb4ae86083"),
         "logics::designer::signal::SignalState": (
@@ -11610,8 +11610,8 @@
           Pin("4e49fb43-952f-48bd-9c5d-0a44c72e1e0f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("da64c811-beb6-424f-942a-4720112c41f8"),
         "logics::designer::signal::SignalState": (
@@ -11631,8 +11631,8 @@
           Pin("85a0484a-1242-4cdb-9ee8-c3d69057931f"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("0f70ec7a-d486-4526-ae20-a2cf930b1c92"),
         "logics::designer::signal::SignalState": (
@@ -11650,8 +11650,8 @@
           Pin("ebcc4f0a-17e2-4ffe-adff-325776dc3616"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("89079756-3390-4398-b530-ae271cf18ef8"),
         "logics::designer::signal::SignalState": (
@@ -11669,8 +11669,8 @@
           Pin("8f9ca759-8f68-4ee1-8a98-621179192676"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("14121da9-e6f7-4045-8b7f-4617a92abe6c"),
         "logics::designer::signal::SignalState": (
@@ -11688,8 +11688,8 @@
           Pin("921bd9d2-4828-421d-9af4-8dcf4a509a24"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("d8f399b2-b4db-4d9c-b62f-604e59a9ea67"),
         "logics::designer::signal::SignalState": (
@@ -11709,8 +11709,8 @@
           Pin("404a6a3d-b0a6-405b-a0aa-43ac6fdc5cdb"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("bc94197d-3d23-45d9-b59c-f2a78125d4e1"),
         "logics::designer::signal::SignalState": (
@@ -11728,8 +11728,8 @@
           Pin("3eb66479-ad13-449d-b1d4-2afbe8a73fd3"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("f33c3f53-86d2-471a-b617-a351d7eddde6"),
         "logics::designer::signal::SignalState": (
@@ -11747,8 +11747,8 @@
           Pin("76e0abee-c88a-45e5-8b54-d9cec52284d9"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("db5f083d-c7a2-45d7-989d-336bfc876a9b"),
         "logics::designer::signal::SignalState": (
@@ -11768,8 +11768,8 @@
           Pin("0a3e0313-6c71-45bc-be71-07a49f67226c"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("b024be9a-6a46-43fd-a679-e6e0de4637f8"),
         "logics::designer::signal::SignalState": (
@@ -11787,8 +11787,8 @@
           Pin("6f6a3b3d-5e52-471f-b36b-b6177e1fd69a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("5092b093-f7de-47c1-99db-2ea35af5a164"),
         "logics::designer::signal::SignalState": (
@@ -11808,8 +11808,8 @@
           Pin("7155250d-4a5e-4e54-9d2f-5e89c48edb5e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("d183e68c-6ee9-4d53-8fb4-6bbf69980fa5"),
         "logics::designer::signal::SignalState": (
@@ -11829,8 +11829,8 @@
           Pin("d2c95493-9ba0-44da-9626-e97455174d75"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("496116a7-e74b-46d0-b190-3486f0ffe926"),
         "logics::designer::signal::SignalState": (
@@ -11848,8 +11848,8 @@
           Pin("cc5d8f78-59b4-4e2d-ae0a-83591f198528"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("aabc629d-55f7-484b-be44-53a5c919eba8"),
         "logics::designer::signal::SignalState": (
@@ -11867,8 +11867,8 @@
           Pin("3ca6cd52-4299-4714-ad43-cd939637c6fa"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("1e8b843f-e397-4910-a05a-a7164ded078d"),
         "logics::designer::signal::SignalState": (
@@ -11888,8 +11888,8 @@
           Pin("9e60578c-278b-49db-9e41-a0a5f97c00c1"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("b7b08b1b-99ea-495d-9d7c-fe0e0d78f609"),
         "logics::designer::signal::SignalState": (
@@ -11907,8 +11907,8 @@
           Pin("501cbc5a-ba78-4892-bdf9-c3ae4ce463f3"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("89de3f00-ec53-470a-b958-126665554fc0"),
         "logics::designer::signal::SignalState": (
@@ -11926,8 +11926,8 @@
           Pin("17e840da-a644-4e4f-ad43-67107849a172"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("a1d93264-c770-4648-9f5f-4c199d01c097"),
         "logics::designer::signal::SignalState": (
@@ -11945,8 +11945,8 @@
           Pin("bff3b5cb-8477-4c7c-94f6-6b9908ef054e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("708ab399-2232-40b0-98d1-3b37c9b2ed36"),
         "logics::designer::signal::SignalState": (
@@ -11964,8 +11964,8 @@
           Pin("fe4dd7c8-755a-4c62-8b81-12ee1b3233cc"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("e125d2a2-2e5f-44ab-9451-07e9d441edfd"),
         "logics::designer::signal::SignalState": (
@@ -11983,8 +11983,8 @@
           Pin("959b873f-9b0a-4d71-abde-ce0a12726f3a"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("c106ce4b-fde2-42ab-b5fa-a9e7bf2bb391"),
         "logics::designer::signal::SignalState": (
@@ -12002,8 +12002,8 @@
           Pin("175a1278-53d0-4f52-a256-ba8a07adbe82"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("2f898f8b-eeae-49b0-8bec-63a63710930b"),
         "logics::designer::signal::SignalState": (
@@ -12021,8 +12021,8 @@
           Pin("355b0c14-ddb4-46d5-9499-8a54163cbaa3"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("210a7efc-80d1-4312-8fbe-b7b0c0f73518"),
         "logics::designer::signal::SignalState": (
@@ -12040,8 +12040,8 @@
           Pin("b6a4dcf3-6f50-4a61-a4cf-61a7d8d5e403"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("d1a4ffd4-1298-42cd-adac-f6602cf4a0a9"),
         "logics::designer::signal::SignalState": (
@@ -12059,8 +12059,8 @@
           Pin("4721201e-9035-4fd8-93ec-c81e1dbbce6e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("e6f7258e-8712-4372-ab1d-bf3dde1cad06"),
         "logics::designer::signal::SignalState": (
@@ -12078,8 +12078,8 @@
           Pin("fef127ea-b235-47eb-816e-e17c72748bde"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("91b8bbaa-5df4-45b5-a229-2127ab5a6b8e"),
         "logics::designer::signal::SignalState": (
@@ -12097,8 +12097,8 @@
           Pin("d1076b82-9678-423a-a583-d9fd7da54f9b"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("8090d394-b69c-499c-8463-a1395a36e15d"),
         "logics::designer::signal::SignalState": (
@@ -12116,8 +12116,8 @@
           Pin("aec296f1-7400-49e8-808c-fd870d0fe21e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -216.55157,
-          y: 756.3614,
+          -216.55157,
+          756.3614,
         )),
         "logics::designer::model::ModelId": ("f0cd00c7-44c9-4ea4-8efc-bf954ad20c9a"),
         "logics::designer::signal::SignalState": (
@@ -12166,8 +12166,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 34.00003,
-          y: 95.999985,
+          34.00003,
+          95.999985,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -12189,8 +12189,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -423.0,
-          y: 229.99997,
+          -423.0,
+          229.99997,
         )),
         "logics::designer::model::ModelId": ("5dacfe46-da6c-4fb4-aba5-3667bf4d4fc7"),
       },
@@ -12203,8 +12203,8 @@
           Pin("4860d362-98dc-4aa8-9a20-92aa6ad23920"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("538d4047-42dd-4ad9-9ce4-50babc8a98c9"),
         "logics::designer::signal::SignalState": (
@@ -12231,8 +12231,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 86.0,
-          y: 226.99994,
+          86.0,
+          226.99994,
         )),
         "logics::designer::model::ModelId": ("ce24b157-240e-488b-9a3a-8499e8c4e468"),
       },
@@ -12245,8 +12245,8 @@
           Pin("75d20cf3-1205-47e5-90ef-13bedcf05eb9"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("afcba355-bd1a-4a8f-b8db-af6c91b2be17"),
         "logics::designer::signal::SignalState": (
@@ -12264,8 +12264,8 @@
           Pin("d75c7350-ef55-4ec7-a7e1-d347820703fb"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("418f3953-c1ba-4db4-b692-d59682222b36"),
         "logics::designer::signal::SignalState": (
@@ -12283,8 +12283,8 @@
           Pin("f9ca7288-600a-4669-90e4-629673b34565"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("7e3a7a3b-ec1b-4359-94e5-3596a50f1eb5"),
         "logics::designer::signal::SignalState": (
@@ -12333,8 +12333,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -279.0,
-          y: 231.99997,
+          -279.0,
+          231.99997,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -12347,8 +12347,8 @@
           Pin("1b16914b-1028-4fbe-b8b6-1e0171c1b679"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("0a674263-85a3-4647-be70-e3b04a0412ab"),
         "logics::designer::signal::SignalState": (
@@ -12366,8 +12366,8 @@
           Pin("472b9f24-b581-473f-ae38-4b7294215711"),
         ]),
         "logics::designer::position::Position": ((
-          x: -165.0,
-          y: 192.99997,
+          -165.0,
+          192.99997,
         )),
         "logics::designer::model::ModelId": ("a78a984a-95cd-4c18-804e-51669a49d58c"),
         "logics::designer::signal::SignalState": (
@@ -12416,8 +12416,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 373.57843,
-          y: 203.96896,
+          373.57843,
+          203.96896,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -12461,8 +12461,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -739.2756,
-          y: -406.88354,
+          -739.2756,
+          -406.88354,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },
@@ -12506,8 +12506,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 608.1434,
-          y: 315.95514,
+          608.1434,
+          315.95514,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -12529,8 +12529,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -372.0,
-          y: 96.99998,
+          -372.0,
+          96.99998,
         )),
         "logics::designer::model::ModelId": ("9879da2f-8a8b-44fc-b14a-846a4064ab53"),
       },
@@ -12574,8 +12574,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 28.00003,
-          y: -5.9999924,
+          28.00003,
+          -5.9999924,
         )),
         "logics::designer::model::ModelId": ("a9c8f43f-9b60-436b-9e42-1f5a6513ea35"),
       },
@@ -12619,8 +12619,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -184.88351,
-          y: -124.37529,
+          -184.88351,
+          -124.37529,
         )),
         "logics::designer::model::ModelId": ("c3d915a1-45d3-41d0-ae59-85a4ea88d16a"),
       },

@@ -4,8 +4,8 @@
     4294967326: (
       components: {
         "logics::designer::position::Position": ((
-          x: -145.0,
-          y: -3.7798615,
+          -145.0,
+          -3.7798615,
         )),
         "logics::designer::model::ModelId": ("4a3e686f-ff24-4ac2-a690-0bdffec8f266"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -33,8 +33,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -285.61002,
-          y: -106.14002,
+          -285.61002,
+          -106.14002,
         )),
         "logics::designer::model::ModelId": ("d020d8b8-b3cf-4438-8738-cc2ca7f47d21"),
       },
@@ -56,8 +56,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -286.17508,
-          y: -137.14001,
+          -286.17508,
+          -137.14001,
         )),
         "logics::designer::model::ModelId": ("235449a5-8e4c-4f8e-bcd5-df9be9f4f91d"),
       },
@@ -101,8 +101,8 @@
           name: "XOR-2",
         ),
         "logics::designer::position::Position": ((
-          x: -55.61002,
-          y: -121.14003,
+          -55.61002,
+          -121.14003,
         )),
         "logics::designer::model::ModelId": ("a1d8a1fb-a113-4295-955d-0b82c253cfac"),
       },
@@ -110,8 +110,8 @@
     4294967330: (
       components: {
         "logics::designer::position::Position": ((
-          x: -129.61002,
-          y: -106.14002,
+          -129.61002,
+          -106.14002,
         )),
         "logics::designer::model::ModelId": ("8416e558-9b2b-4cea-99ba-1dc41b47d02e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -125,8 +125,8 @@
     4294967331: (
       components: {
         "logics::designer::position::Position": ((
-          x: -129.61002,
-          y: -186.91988,
+          -129.61002,
+          -186.91988,
         )),
         "logics::designer::model::ModelId": ("71650c48-41f1-416b-b943-a07c2f21bb1d"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -140,8 +140,8 @@
     4294967332: (
       components: {
         "logics::designer::position::Position": ((
-          x: -144.61002,
-          y: -137.14001,
+          -144.61002,
+          -137.14001,
         )),
         "logics::designer::model::ModelId": ("7bd359af-f0f1-4542-9080-cd956dd02f44"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -155,8 +155,8 @@
     4294967333: (
       components: {
         "logics::designer::position::Position": ((
-          x: -144.61002,
-          y: -215.91988,
+          -144.61002,
+          -215.91988,
         )),
         "logics::designer::model::ModelId": ("2642a03b-eb15-4967-8aea-3c5785b0805c"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -177,8 +177,8 @@
           Pin("8de7689c-2c59-4f3f-b094-55113fb2d024"),
         ]),
         "logics::designer::position::Position": ((
-          x: -49.610027,
-          y: -162.14001,
+          -49.610027,
+          -162.14001,
         )),
         "logics::designer::model::ModelId": ("fe41b27a-fdd5-42f1-a0e1-eef87d43d777"),
         "logics::designer::signal::SignalState": (
@@ -198,8 +198,8 @@
           Pin("a8620267-b4fe-4875-9c8d-8f02fbb21960"),
         ]),
         "logics::designer::position::Position": ((
-          x: -49.610027,
-          y: -162.14001,
+          -49.610027,
+          -162.14001,
         )),
         "logics::designer::model::ModelId": ("030ef306-4db4-4e5b-8e08-a5d4bce05235"),
         "logics::designer::signal::SignalState": (
@@ -217,8 +217,8 @@
           Pin("c9e8b6d0-81c2-47e0-a8db-52bcf4575159"),
         ]),
         "logics::designer::position::Position": ((
-          x: -49.610027,
-          y: -162.14001,
+          -49.610027,
+          -162.14001,
         )),
         "logics::designer::model::ModelId": ("0f8396c3-0b4b-4096-83a5-6b2fc1266062"),
         "logics::designer::signal::SignalState": (
@@ -236,8 +236,8 @@
           Pin("6d752830-61bf-41bf-aa3e-fc6efad4d5dc"),
         ]),
         "logics::designer::position::Position": ((
-          x: -49.610027,
-          y: -162.14001,
+          -49.610027,
+          -162.14001,
         )),
         "logics::designer::model::ModelId": ("b314732c-7bdf-45db-8d07-14c38f642009"),
         "logics::designer::signal::SignalState": (
@@ -264,8 +264,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -286.0,
-          y: 75.0,
+          -286.0,
+          75.0,
         )),
         "logics::designer::model::ModelId": ("235449a5-8e4c-4f8e-bcd5-df9be9f4f91d"),
       },
@@ -280,8 +280,8 @@
           Pin("6179db71-8649-484a-950d-1b364270fc76"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("7a8f7053-ddd4-4360-8420-f209a32a87c8"),
         "logics::designer::signal::SignalState": (
@@ -299,8 +299,8 @@
           Pin("5b117ecd-6567-4dba-8752-a160e522ef02"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("6521ab11-8103-44fd-8174-127c00c5321d"),
         "logics::designer::signal::SignalState": (
@@ -320,8 +320,8 @@
           Pin("5994f286-9d88-4ae2-a7ed-89e10d7bb4d4"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("b019f51e-bc8e-4f26-9dc1-03fb0a43fac2"),
         "logics::designer::signal::SignalState": (
@@ -339,8 +339,8 @@
           Pin("cc06e71c-a37f-4ceb-8352-43a51d4e67bb"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("341e3f59-faf7-4c0f-b869-569c4496dac5"),
         "logics::designer::signal::SignalState": (
@@ -353,8 +353,8 @@
     4294967359: (
       components: {
         "logics::designer::position::Position": ((
-          x: 3.560608,
-          y: -220.9077,
+          3.560608,
+          -220.9077,
         )),
         "logics::designer::model::ModelId": ("acddb5e4-ffdb-4969-9107-35b12dfeff43"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -368,8 +368,8 @@
     4294967360: (
       components: {
         "logics::designer::position::Position": ((
-          x: 62.560593,
-          y: -121.14003,
+          62.560593,
+          -121.14003,
         )),
         "logics::designer::model::ModelId": ("742537e9-d868-4ae1-827f-c143d49ca1e1"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -383,8 +383,8 @@
     4294967361: (
       components: {
         "logics::designer::position::Position": ((
-          x: 201.56061,
-          y: -229.90771,
+          201.56061,
+          -229.90771,
         )),
         "logics::designer::model::ModelId": ("eea7c339-44e1-4c6f-a6f4-1a0ce01f04cb"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -398,8 +398,8 @@
     4294967362: (
       components: {
         "logics::designer::position::Position": ((
-          x: 201.56061,
-          y: -200.95001,
+          201.56061,
+          -200.95001,
         )),
         "logics::designer::model::ModelId": ("f765c1ea-3a90-4287-b6af-f441f83385ec"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -449,8 +449,8 @@
           name: "OR-2",
         ),
         "logics::designer::position::Position": ((
-          x: 274.09564,
-          y: -241.72012,
+          274.09564,
+          -241.72012,
         )),
         "logics::designer::model::ModelId": ("e1748241-c085-44f3-91fd-d510b82acce8"),
       },
@@ -458,8 +458,8 @@
     4294967364: (
       components: {
         "logics::designer::position::Position": ((
-          x: 62.560593,
-          y: -189.90771,
+          62.560593,
+          -189.90771,
         )),
         "logics::designer::model::ModelId": ("1ed3cb82-0c1b-430c-9faf-240e75ed0794"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -509,8 +509,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -55.610065,
-          y: -198.14001,
+          -55.610065,
+          -198.14001,
         )),
         "logics::designer::model::ModelId": ("a486894b-c738-438c-bb9e-5d94cb8dcee0"),
       },
@@ -518,8 +518,8 @@
     4294967366: (
       components: {
         "logics::designer::position::Position": ((
-          x: 19.560608,
-          y: -256.9077,
+          19.560608,
+          -256.9077,
         )),
         "logics::designer::model::ModelId": ("7700f6d5-c30e-4895-a91b-55b396013dfe"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -540,8 +540,8 @@
           Pin("1e0ba5d1-39ac-4a9c-bbf8-4379e7e4833d"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("3fed491f-a499-40bf-adf4-aa0096d284d7"),
         "logics::designer::signal::SignalState": (
@@ -554,8 +554,8 @@
     4294967370: (
       components: {
         "logics::designer::position::Position": ((
-          x: 19.560608,
-          y: -198.14001,
+          19.560608,
+          -198.14001,
         )),
         "logics::designer::model::ModelId": ("4849709d-5095-4d8a-a0d8-98a9983586e4"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -605,8 +605,8 @@
           name: "XOR-2",
         ),
         "logics::designer::position::Position": ((
-          x: 128.70001,
-          y: -123.95003,
+          128.70001,
+          -123.95003,
         )),
         "logics::designer::model::ModelId": ("a1d8a1fb-a113-4295-955d-0b82c253cfac"),
       },
@@ -650,8 +650,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 128.69997,
-          y: -200.95001,
+          128.69997,
+          -200.95001,
         )),
         "logics::designer::model::ModelId": ("a486894b-c738-438c-bb9e-5d94cb8dcee0"),
       },
@@ -666,8 +666,8 @@
           Pin("19778857-b853-4f2a-a1b6-e52afae1cbe3"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("b42f2005-4cba-443e-8f46-84d559f9debe"),
         "logics::designer::signal::SignalState": (
@@ -685,8 +685,8 @@
           Pin("4bba98eb-71bd-47b9-b021-661a76eb38b0"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("eda6c95a-629e-47c0-86f5-003ca6947c21"),
         "logics::designer::signal::SignalState": (
@@ -706,8 +706,8 @@
           Pin("653178bd-b49b-420d-bf19-5d74215d340a"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("9abe7764-3556-47d6-8bc8-56dfcb80bdce"),
         "logics::designer::signal::SignalState": (
@@ -720,8 +720,8 @@
     4294967382: (
       components: {
         "logics::designer::position::Position": ((
-          x: 3.560608,
-          y: 13.99999,
+          3.560608,
+          13.99999,
         )),
         "logics::designer::model::ModelId": ("4ba203e8-0b50-48f3-87a1-7751f636652a"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -735,8 +735,8 @@
     4294967383: (
       components: {
         "logics::designer::position::Position": ((
-          x: 29.560608,
-          y: 13.99999,
+          29.560608,
+          13.99999,
         )),
         "logics::designer::model::ModelId": ("57ced49a-0f0d-4ddb-8ca8-9cad96ce3740"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -750,8 +750,8 @@
     4294967384: (
       components: {
         "logics::designer::position::Position": ((
-          x: 29.560608,
-          y: -135.90773,
+          29.560608,
+          -135.90773,
         )),
         "logics::designer::model::ModelId": ("6d661c15-0ef5-41cd-bd19-88a630a9ece7"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -772,8 +772,8 @@
           Pin("823a0069-21b0-4bdd-be88-894b9dadd63c"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("0d10c221-8e0c-4ecb-9d07-c3bc99e64069"),
         "logics::designer::signal::SignalState": (
@@ -822,8 +822,8 @@
           name: "XOR-2",
         ),
         "logics::designer::position::Position": ((
-          x: -55.999992,
-          y: 90.999985,
+          -55.999992,
+          90.999985,
         )),
         "logics::designer::model::ModelId": ("a1d8a1fb-a113-4295-955d-0b82c253cfac"),
       },
@@ -845,8 +845,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -286.0,
-          y: 105.99999,
+          -286.0,
+          105.99999,
         )),
         "logics::designer::model::ModelId": ("d020d8b8-b3cf-4438-8738-cc2ca7f47d21"),
       },
@@ -861,8 +861,8 @@
           Pin("8d5e63a7-8d00-4524-b697-234b605c93d8"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("2400b1cc-7c7c-42b1-946f-cb591d44e28e"),
         "logics::designer::signal::SignalState": (
@@ -911,8 +911,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -56.00004,
-          y: 13.99999,
+          -56.00004,
+          13.99999,
         )),
         "logics::designer::model::ModelId": ("a486894b-c738-438c-bb9e-5d94cb8dcee0"),
       },
@@ -934,8 +934,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -288.61005,
-          y: -357.14,
+          -288.61005,
+          -357.14,
         )),
         "logics::designer::model::ModelId": ("235449a5-8e4c-4f8e-bcd5-df9be9f4f91d"),
       },
@@ -979,8 +979,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -58.610096,
-          y: -418.14,
+          -58.610096,
+          -418.14,
         )),
         "logics::designer::model::ModelId": ("a486894b-c738-438c-bb9e-5d94cb8dcee0"),
       },
@@ -1024,8 +1024,8 @@
           name: "XOR-2",
         ),
         "logics::designer::position::Position": ((
-          x: -58.61005,
-          y: -341.14,
+          -58.61005,
+          -341.14,
         )),
         "logics::designer::model::ModelId": ("a1d8a1fb-a113-4295-955d-0b82c253cfac"),
       },
@@ -1033,8 +1033,8 @@
     4294967397: (
       components: {
         "logics::designer::position::Position": ((
-          x: -132.61005,
-          y: -326.14,
+          -132.61005,
+          -326.14,
         )),
         "logics::designer::model::ModelId": ("f0eb959b-5703-4097-a5af-5f93a5288aeb"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1048,8 +1048,8 @@
     4294967398: (
       components: {
         "logics::designer::position::Position": ((
-          x: -132.61005,
-          y: -406.91986,
+          -132.61005,
+          -406.91986,
         )),
         "logics::designer::model::ModelId": ("6e4b4b28-14ad-45d2-89de-50b1a132bbc4"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1063,8 +1063,8 @@
     4294967399: (
       components: {
         "logics::designer::position::Position": ((
-          x: -147.61005,
-          y: -357.14,
+          -147.61005,
+          -357.14,
         )),
         "logics::designer::model::ModelId": ("ba9ec8f0-8dc1-4254-9e7c-f4a5001e5482"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1078,8 +1078,8 @@
     4294967400: (
       components: {
         "logics::designer::position::Position": ((
-          x: -147.61005,
-          y: -435.91986,
+          -147.61005,
+          -435.91986,
         )),
         "logics::designer::model::ModelId": ("111d949c-6a78-4ccc-b0f9-8f42a39af58c"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1100,8 +1100,8 @@
           Pin("19528066-1b10-4cae-91c0-5c5d3f92e2b3"),
         ]),
         "logics::designer::position::Position": ((
-          x: -53.00003,
-          y: -170.0,
+          -53.00003,
+          -170.0,
         )),
         "logics::designer::model::ModelId": ("b706f245-82fe-4eb8-82c9-9a2819b41b8e"),
         "logics::designer::signal::SignalState": (
@@ -1119,8 +1119,8 @@
           Pin("85c023f2-e118-4953-90a1-20121419ff34"),
         ]),
         "logics::designer::position::Position": ((
-          x: -53.00003,
-          y: -170.0,
+          -53.00003,
+          -170.0,
         )),
         "logics::designer::model::ModelId": ("9ff69f28-818f-412b-a4b4-694fa15bb3e9"),
         "logics::designer::signal::SignalState": (
@@ -1140,8 +1140,8 @@
           Pin("379af5b2-d896-4ef6-ad02-2ce52528c35e"),
         ]),
         "logics::designer::position::Position": ((
-          x: -53.00003,
-          y: -170.0,
+          -53.00003,
+          -170.0,
         )),
         "logics::designer::model::ModelId": ("b8d37b45-c4a2-4061-86a9-638b0fd70b61"),
         "logics::designer::signal::SignalState": (
@@ -1159,8 +1159,8 @@
           Pin("e1cbaf85-e8b9-4d64-834e-52959d0d4996"),
         ]),
         "logics::designer::position::Position": ((
-          x: -53.00003,
-          y: -170.0,
+          -53.00003,
+          -170.0,
         )),
         "logics::designer::model::ModelId": ("ac92286a-d0f4-4f6e-b36b-eebfd5027ffc"),
         "logics::designer::signal::SignalState": (
@@ -1187,8 +1187,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -290.64005,
-          y: -533.44006,
+          -290.64005,
+          -533.44006,
         )),
         "logics::designer::model::ModelId": ("d020d8b8-b3cf-4438-8738-cc2ca7f47d21"),
       },
@@ -1232,8 +1232,8 @@
           name: "OR-2",
         ),
         "logics::designer::position::Position": ((
-          x: 269.06558,
-          y: -662.02014,
+          269.06558,
+          -662.02014,
         )),
         "logics::designer::model::ModelId": ("e1748241-c085-44f3-91fd-d510b82acce8"),
       },
@@ -1277,8 +1277,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 127.66999,
-          y: -626.25,
+          127.66999,
+          -626.25,
         )),
         "logics::designer::model::ModelId": ("a486894b-c738-438c-bb9e-5d94cb8dcee0"),
       },
@@ -1322,8 +1322,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: -60.640083,
-          y: -625.44006,
+          -60.640083,
+          -625.44006,
         )),
         "logics::designer::model::ModelId": ("a486894b-c738-438c-bb9e-5d94cb8dcee0"),
       },
@@ -1367,8 +1367,8 @@
           name: "XOR-2",
         ),
         "logics::designer::position::Position": ((
-          x: -60.640038,
-          y: -548.44006,
+          -60.640038,
+          -548.44006,
         )),
         "logics::designer::model::ModelId": ("a1d8a1fb-a113-4295-955d-0b82c253cfac"),
       },
@@ -1412,8 +1412,8 @@
           name: "XOR-2",
         ),
         "logics::designer::position::Position": ((
-          x: 127.67004,
-          y: -549.25,
+          127.67004,
+          -549.25,
         )),
         "logics::designer::model::ModelId": ("a1d8a1fb-a113-4295-955d-0b82c253cfac"),
       },
@@ -1421,8 +1421,8 @@
     4294967419: (
       components: {
         "logics::designer::position::Position": ((
-          x: -134.64005,
-          y: -533.44006,
+          -134.64005,
+          -533.44006,
         )),
         "logics::designer::model::ModelId": ("6ceb2975-3037-4bfb-9fcd-bb476251991b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1436,8 +1436,8 @@
     4294967420: (
       components: {
         "logics::designer::position::Position": ((
-          x: -134.64005,
-          y: -614.21985,
+          -134.64005,
+          -614.21985,
         )),
         "logics::designer::model::ModelId": ("ffd12d96-bfba-49e6-abb0-326d4ad48406"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1451,8 +1451,8 @@
     4294967421: (
       components: {
         "logics::designer::position::Position": ((
-          x: -149.64005,
-          y: -564.44006,
+          -149.64005,
+          -564.44006,
         )),
         "logics::designer::model::ModelId": ("c47b3526-098d-4d76-a229-e3f721e7c0aa"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1466,8 +1466,8 @@
     4294967422: (
       components: {
         "logics::designer::position::Position": ((
-          x: -149.64005,
-          y: -643.21985,
+          -149.64005,
+          -643.21985,
         )),
         "logics::designer::model::ModelId": ("6b035d14-e74c-4217-9ba4-2c371a9e9bd1"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1488,8 +1488,8 @@
           Pin("5d0b1274-df44-4d64-84f4-af50ad8c7e86"),
         ]),
         "logics::designer::position::Position": ((
-          x: -52.02999,
-          y: -157.30002,
+          -52.02999,
+          -157.30002,
         )),
         "logics::designer::model::ModelId": ("d7362c1b-728a-40cd-a935-f84d419aba65"),
         "logics::designer::signal::SignalState": (
@@ -1509,8 +1509,8 @@
           Pin("54a571e7-f5d8-4c59-9b21-13445947c813"),
         ]),
         "logics::designer::position::Position": ((
-          x: -52.02999,
-          y: -157.30002,
+          -52.02999,
+          -157.30002,
         )),
         "logics::designer::model::ModelId": ("d019185d-00a5-4f6a-a487-1f3cb88d8047"),
         "logics::designer::signal::SignalState": (
@@ -1528,8 +1528,8 @@
           Pin("4a549863-6922-40a1-b14d-cd5a94bb1cf1"),
         ]),
         "logics::designer::position::Position": ((
-          x: -52.02999,
-          y: -157.30002,
+          -52.02999,
+          -157.30002,
         )),
         "logics::designer::model::ModelId": ("de8f1e5d-8c42-4d47-b0f0-0df5e9248e6c"),
         "logics::designer::signal::SignalState": (
@@ -1547,8 +1547,8 @@
           Pin("9686be24-6223-47df-8666-b1fcd13969db"),
         ]),
         "logics::designer::position::Position": ((
-          x: -52.02999,
-          y: -157.30002,
+          -52.02999,
+          -157.30002,
         )),
         "logics::designer::model::ModelId": ("f9e349ed-23f5-45f0-a417-4d3d715b80de"),
         "logics::designer::signal::SignalState": (
@@ -1561,8 +1561,8 @@
     4294967435: (
       components: {
         "logics::designer::position::Position": ((
-          x: 54.306007,
-          y: -548.44006,
+          54.306007,
+          -548.44006,
         )),
         "logics::designer::model::ModelId": ("500317ac-d9c6-48c9-8f35-c55c4acae0c0"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1576,8 +1576,8 @@
     4294967436: (
       components: {
         "logics::designer::position::Position": ((
-          x: 54.306007,
-          y: -614.9351,
+          54.306007,
+          -614.9351,
         )),
         "logics::designer::model::ModelId": ("7c0ea9a7-3645-42a6-a046-6e9e241e7d4e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1591,8 +1591,8 @@
     4294967437: (
       components: {
         "logics::designer::position::Position": ((
-          x: 20.305992,
-          y: -625.44006,
+          20.305992,
+          -625.44006,
         )),
         "logics::designer::model::ModelId": ("639bb6ad-51fa-449c-bfe7-638151d8729d"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1606,8 +1606,8 @@
     4294967438: (
       components: {
         "logics::designer::position::Position": ((
-          x: 20.305992,
-          y: -675.9351,
+          20.305992,
+          -675.9351,
         )),
         "logics::designer::model::ModelId": ("0d26c61b-c36d-40ee-92a3-5ef29f7a1c64"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1621,8 +1621,8 @@
     4294967439: (
       components: {
         "logics::designer::position::Position": ((
-          x: 17.306,
-          y: -418.14,
+          17.306,
+          -418.14,
         )),
         "logics::designer::model::ModelId": ("57702386-490b-4c0c-bbc4-616638457946"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1636,8 +1636,8 @@
     4294967440: (
       components: {
         "logics::designer::position::Position": ((
-          x: 17.306,
-          y: -466.93512,
+          17.306,
+          -466.93512,
         )),
         "logics::designer::model::ModelId": ("db92bf00-9493-49c5-9877-2edf9b91042a"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1665,8 +1665,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 530.1502,
-          y: -259.72537,
+          530.1502,
+          -259.72537,
         )),
         "logics::designer::model::ModelId": ("bb98d37a-a550-44d6-9b39-350c9f0a7fe1"),
       },
@@ -1688,8 +1688,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 530.3102,
-          y: -299.00537,
+          530.3102,
+          -299.00537,
         )),
         "logics::designer::model::ModelId": ("c6fbb229-4d60-4c6e-a7b6-cc7d0a5182d4"),
       },
@@ -1697,8 +1697,8 @@
     4294967443: (
       components: {
         "logics::designer::position::Position": ((
-          x: 438.77567,
-          y: -224.51093,
+          438.77567,
+          -224.51093,
         )),
         "logics::designer::model::ModelId": ("582fe761-1735-4985-b9dd-cfa26078390b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1712,8 +1712,8 @@
     4294967444: (
       components: {
         "logics::designer::position::Position": ((
-          x: -130.0,
-          y: 105.99999,
+          -130.0,
+          105.99999,
         )),
         "logics::designer::model::ModelId": ("a6452a10-b4e7-42d9-9084-bad5f7e0a197"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1741,8 +1741,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -288.61005,
-          y: -326.14,
+          -288.61005,
+          -326.14,
         )),
         "logics::designer::model::ModelId": ("d020d8b8-b3cf-4438-8738-cc2ca7f47d21"),
       },
@@ -1786,8 +1786,8 @@
           name: "AND-2",
         ),
         "logics::designer::position::Position": ((
-          x: 129.69998,
-          y: -418.95,
+          129.69998,
+          -418.95,
         )),
         "logics::designer::model::ModelId": ("a486894b-c738-438c-bb9e-5d94cb8dcee0"),
       },
@@ -1795,8 +1795,8 @@
     4294967447: (
       components: {
         "logics::designer::position::Position": ((
-          x: 62.306,
-          y: -407.93512,
+          62.306,
+          -407.93512,
         )),
         "logics::designer::model::ModelId": ("08d6d430-afff-4924-afd1-3baae129ee88"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1810,8 +1810,8 @@
     4294967448: (
       components: {
         "logics::designer::position::Position": ((
-          x: 62.306,
-          y: -341.14,
+          62.306,
+          -341.14,
         )),
         "logics::designer::model::ModelId": ("85918752-1857-4cac-9219-58bc6c5c3c95"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1830,8 +1830,8 @@
           Pin("f6e5f4cc-2916-4ae6-87d2-2d9674c5debe"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("19860d2c-ff7f-4629-a343-e588a089f53c"),
         "logics::designer::signal::SignalState": (
@@ -1849,8 +1849,8 @@
           Pin("fb71c4fe-b32b-4706-995c-6bef5ffda800"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("1321f1e6-803e-4b5f-aed7-8880e817569e"),
         "logics::designer::signal::SignalState": (
@@ -1870,8 +1870,8 @@
           Pin("d167ab9f-0777-416d-a338-aff975c120f3"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("6483bceb-cf60-4f4b-87b6-4df19f61fcdd"),
         "logics::designer::signal::SignalState": (
@@ -1891,8 +1891,8 @@
           Pin("ea5b07bb-040e-4305-81a6-e15bc60e1618"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("7f79357d-a396-4cfb-97ef-f64e165f2981"),
         "logics::designer::signal::SignalState": (
@@ -1912,8 +1912,8 @@
           Pin("7cd77ad9-9630-4cad-9d5f-2a96f9b1726b"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("d273de84-7c5f-4f73-b4d8-202c60eb1983"),
         "logics::designer::signal::SignalState": (
@@ -1926,8 +1926,8 @@
     4294967464: (
       components: {
         "logics::designer::position::Position": ((
-          x: 438.77567,
-          y: 90.999985,
+          438.77567,
+          90.999985,
         )),
         "logics::designer::model::ModelId": ("165ef240-953a-49f1-8e0c-57312c480114"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -1977,8 +1977,8 @@
           name: "XOR-2",
         ),
         "logics::designer::position::Position": ((
-          x: 129.70003,
-          y: -341.95,
+          129.70003,
+          -341.95,
         )),
         "logics::designer::model::ModelId": ("a1d8a1fb-a113-4295-955d-0b82c253cfac"),
       },
@@ -2022,8 +2022,8 @@
           name: "OR-2",
         ),
         "logics::designer::position::Position": ((
-          x: 271.09558,
-          y: -454.7201,
+          271.09558,
+          -454.7201,
         )),
         "logics::designer::model::ModelId": ("e1748241-c085-44f3-91fd-d510b82acce8"),
       },
@@ -2045,8 +2045,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinarySwitch": (),
         "logics::designer::position::Position": ((
-          x: -290.64005,
-          y: -565.875,
+          -290.64005,
+          -565.875,
         )),
         "logics::designer::model::ModelId": ("235449a5-8e4c-4f8e-bcd5-df9be9f4f91d"),
       },
@@ -2061,8 +2061,8 @@
           Pin("4ff90cf8-b6ac-43a8-b397-150d7db34840"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("f425c614-6430-4cdf-83e4-25a445ba87fd"),
         "logics::designer::signal::SignalState": (
@@ -2089,8 +2089,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 530.31024,
-          y: -222.00537,
+          530.31024,
+          -222.00537,
         )),
         "logics::designer::model::ModelId": ("c6fbb229-4d60-4c6e-a7b6-cc7d0a5182d4"),
       },
@@ -2112,8 +2112,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 530.15015,
-          y: -336.72537,
+          530.15015,
+          -336.72537,
         )),
         "logics::designer::model::ModelId": ("bb98d37a-a550-44d6-9b39-350c9f0a7fe1"),
       },
@@ -2128,8 +2128,8 @@
           Pin("05143c97-1ea0-4fa7-bca2-9e1e91a3b66f"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("afb6b28e-15d2-4657-aa86-8e16f5eeede9"),
         "logics::designer::signal::SignalState": (
@@ -2151,8 +2151,8 @@
           Pin("fc7a97c1-c7dd-4ff8-bf29-80662c01786f"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("bccf4af2-ef04-453c-9801-5b218ea68271"),
         "logics::designer::signal::SignalState": (
@@ -2165,8 +2165,8 @@
     4294967479: (
       components: {
         "logics::designer::position::Position": ((
-          x: 347.754,
-          y: -241.72012,
+          347.754,
+          -241.72012,
         )),
         "logics::designer::model::ModelId": ("11f783a7-a727-4a3a-894c-9a8685a48629"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2180,8 +2180,8 @@
     4294967480: (
       components: {
         "logics::designer::position::Position": ((
-          x: 347.754,
-          y: -290.06818,
+          347.754,
+          -290.06818,
         )),
         "logics::designer::model::ModelId": ("52d1f15f-d4fa-4fb5-b37e-a451a9f0ecf4"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2195,8 +2195,8 @@
     4294967481: (
       components: {
         "logics::designer::position::Position": ((
-          x: 72.23707,
-          y: -290.06818,
+          72.23707,
+          -290.06818,
         )),
         "logics::designer::model::ModelId": ("797fd1fc-5806-4163-9e41-cb01054dbf1e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2210,8 +2210,8 @@
     4294967482: (
       components: {
         "logics::designer::position::Position": ((
-          x: 72.23707,
-          y: -356.49716,
+          72.23707,
+          -356.49716,
         )),
         "logics::designer::model::ModelId": ("81278027-57a7-4cae-9b45-4c3f4c7bf9ae"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2225,8 +2225,8 @@
     4294967483: (
       components: {
         "logics::designer::position::Position": ((
-          x: -130.0,
-          y: 25.220135,
+          -130.0,
+          25.220135,
         )),
         "logics::designer::model::ModelId": ("8efbd555-534c-4c82-b60b-61e4930c5fa1"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2249,8 +2249,8 @@
           Pin("2221c8dd-5cc2-4d69-b8c0-7c588d3b286a"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("f0898429-02d2-48e5-9f01-3c080ff86950"),
         "logics::designer::signal::SignalState": (
@@ -2263,8 +2263,8 @@
     4294967756: (
       components: {
         "logics::designer::position::Position": ((
-          x: 332.55743,
-          y: -241.72012,
+          332.55743,
+          -241.72012,
         )),
         "logics::designer::model::ModelId": ("4e6f0385-630a-413f-be99-5b3abf8db0e7"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2278,8 +2278,8 @@
     4294967757: (
       components: {
         "logics::designer::position::Position": ((
-          x: 332.55743,
-          y: -282.06818,
+          332.55743,
+          -282.06818,
         )),
         "logics::designer::model::ModelId": ("85a770d3-ca3c-4733-aa5b-6fa236d6f583"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2293,8 +2293,8 @@
     4294967758: (
       components: {
         "logics::designer::position::Position": ((
-          x: 64.53932,
-          y: -282.06818,
+          64.53932,
+          -282.06818,
         )),
         "logics::designer::model::ModelId": ("210de1c9-fd51-4ae3-b937-1793d3d42d90"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2308,8 +2308,8 @@
     4294967759: (
       components: {
         "logics::designer::position::Position": ((
-          x: 64.53932,
-          y: -432.6801,
+          64.53932,
+          -432.6801,
         )),
         "logics::designer::model::ModelId": ("3964ab8c-c2a5-4a8e-9954-085752585571"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2323,8 +2323,8 @@
     4294967764: (
       components: {
         "logics::designer::position::Position": ((
-          x: 330.18555,
-          y: -454.7201,
+          330.18555,
+          -454.7201,
         )),
         "logics::designer::model::ModelId": ("453337bb-f488-4900-aaf8-467177bcc51f"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2338,8 +2338,8 @@
     4294967765: (
       components: {
         "logics::designer::position::Position": ((
-          x: 330.18555,
-          y: -494.3476,
+          330.18555,
+          -494.3476,
         )),
         "logics::designer::model::ModelId": ("f8cb19cc-bcb3-495e-b671-ad478be82124"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2353,8 +2353,8 @@
     4294967766: (
       components: {
         "logics::designer::position::Position": ((
-          x: 68.097046,
-          y: -494.3476,
+          68.097046,
+          -494.3476,
         )),
         "logics::designer::model::ModelId": ("47e34559-9b88-4f27-b956-5ed464503f7f"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2368,8 +2368,8 @@
     4294967767: (
       components: {
         "logics::designer::position::Position": ((
-          x: 68.097046,
-          y: -561.94507,
+          68.097046,
+          -561.94507,
         )),
         "logics::designer::model::ModelId": ("f3871834-59af-4ce3-9b0f-abb9daa24ffb"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2383,8 +2383,8 @@
     4294967772: (
       components: {
         "logics::designer::position::Position": ((
-          x: 343.23074,
-          y: -454.7201,
+          343.23074,
+          -454.7201,
         )),
         "logics::designer::model::ModelId": ("64f663ef-265f-4f21-b9c8-1dd483cbc0a6"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2398,8 +2398,8 @@
     4294967773: (
       components: {
         "logics::designer::position::Position": ((
-          x: 343.23074,
-          y: -502.64905,
+          343.23074,
+          -502.64905,
         )),
         "logics::designer::model::ModelId": ("477d018a-1db7-4c3d-a122-6f797dbc2973"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2413,8 +2413,8 @@
     4294967774: (
       components: {
         "logics::designer::position::Position": ((
-          x: 75.2126,
-          y: -502.64905,
+          75.2126,
+          -502.64905,
         )),
         "logics::designer::model::ModelId": ("1cef4d59-e775-44f1-9344-80afec2a0e2c"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2428,8 +2428,8 @@
     4294967775: (
       components: {
         "logics::designer::position::Position": ((
-          x: 75.2126,
-          y: -640.2159,
+          75.2126,
+          -640.2159,
         )),
         "logics::designer::model::ModelId": ("5f3b6927-8f75-46e4-8929-d42dcd286b9e"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2443,8 +2443,8 @@
     4294967780: (
       components: {
         "logics::designer::position::Position": ((
-          x: 407.1522,
-          y: -123.95003,
+          407.1522,
+          -123.95003,
         )),
         "logics::designer::model::ModelId": ("480ef57d-8065-43d0-b8ec-791baa3c1d99"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2458,8 +2458,8 @@
     4294967781: (
       components: {
         "logics::designer::position::Position": ((
-          x: 407.1522,
-          y: -258.1126,
+          407.1522,
+          -258.1126,
         )),
         "logics::designer::model::ModelId": ("ffb0e775-467e-4e45-9306-59c7f9ce2ef0"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2473,8 +2473,8 @@
     4294967786: (
       components: {
         "logics::designer::position::Position": ((
-          x: 418.89282,
-          y: -341.95,
+          418.89282,
+          -341.95,
         )),
         "logics::designer::model::ModelId": ("ef3169aa-aa87-43a3-b66a-575f9bcbd145"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2488,8 +2488,8 @@
     4294967787: (
       components: {
         "logics::designer::position::Position": ((
-          x: 418.89282,
-          y: -297.24805,
+          418.89282,
+          -297.24805,
         )),
         "logics::designer::model::ModelId": ("76d5646c-2be9-4b94-9d28-98418c8053c9"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2503,8 +2503,8 @@
     4294967792: (
       components: {
         "logics::designer::position::Position": ((
-          x: 468.46442,
-          y: -549.25,
+          468.46442,
+          -549.25,
         )),
         "logics::designer::model::ModelId": ("ecc1c1c7-9f54-4ef3-9918-8ed373cc80fc"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2518,8 +2518,8 @@
     4294967793: (
       components: {
         "logics::designer::position::Position": ((
-          x: 468.46442,
-          y: -336.3832,
+          468.46442,
+          -336.3832,
         )),
         "logics::designer::model::ModelId": ("bcdabc8c-e8b0-4f0f-85dc-81e771c12fa0"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2533,8 +2533,8 @@
     4294967804: (
       components: {
         "logics::designer::position::Position": ((
-          x: 494.5548,
-          y: -662.02014,
+          494.5548,
+          -662.02014,
         )),
         "logics::designer::model::ModelId": ("ae05c480-9762-4562-bb8a-db75ee5134b0"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2548,8 +2548,8 @@
     4294967805: (
       components: {
         "logics::designer::position::Position": ((
-          x: 494.5548,
-          y: -396.39075,
+          494.5548,
+          -396.39075,
         )),
         "logics::designer::model::ModelId": ("e9d6f16b-4bda-4111-af8b-229103ad165f"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2563,8 +2563,8 @@
     4294967810: (
       components: {
         "logics::designer::position::Position": ((
-          x: 200.38718,
-          y: -418.95,
+          200.38718,
+          -418.95,
         )),
         "logics::designer::model::ModelId": ("aea0c9b4-27c9-47f3-bc23-0dd950d5d747"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2578,8 +2578,8 @@
     4294967811: (
       components: {
         "logics::designer::position::Position": ((
-          x: 200.38718,
-          y: -444.4317,
+          200.38718,
+          -444.4317,
         )),
         "logics::designer::model::ModelId": ("4237dfd7-f882-46d3-a85a-76c009eb8674"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2593,8 +2593,8 @@
     4294967816: (
       components: {
         "logics::designer::position::Position": ((
-          x: 198.95222,
-          y: -626.25,
+          198.95222,
+          -626.25,
         )),
         "logics::designer::model::ModelId": ("448cf061-08c6-4a9f-8f11-ef37b922877a"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2608,8 +2608,8 @@
     4294967817: (
       components: {
         "logics::designer::position::Position": ((
-          x: 198.95222,
-          y: -652.5016,
+          198.95222,
+          -652.5016,
         )),
         "logics::designer::model::ModelId": ("5e9776ae-f7fd-494f-b6fb-ea8566fcbc8b"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2623,8 +2623,8 @@
     8589934621: (
       components: {
         "logics::designer::position::Position": ((
-          x: -145.0,
-          y: 75.0,
+          -145.0,
+          75.0,
         )),
         "logics::designer::model::ModelId": ("7fac3542-a9a1-4df6-b875-4343972a2db5"),
         "logics::designer::wire::wire_joint::WireJointModel": (),
@@ -2647,8 +2647,8 @@
           Pin("ed947c25-0d16-4673-92c9-4d055bcf8b4b"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("e4de574c-7d23-4a04-9e14-75f20d614420"),
         "logics::designer::signal::SignalState": (
@@ -2670,8 +2670,8 @@
           Pin("90866767-9246-4191-97d7-80bd05f54862"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("dbab5f4d-ff5b-4cf9-b16a-da42ab06879f"),
         "logics::designer::signal::SignalState": (
@@ -2691,8 +2691,8 @@
           Pin("79d404f3-ca8f-4d9f-a37d-bc37363cface"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("585e4e6e-6203-4122-ad45-bf999c2ef56f"),
         "logics::designer::signal::SignalState": (
@@ -2712,8 +2712,8 @@
           Pin("7b8ed188-37de-45a0-b4ef-622eb4dfe7c4"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("5b68448b-282e-4b7c-8940-99161d438854"),
         "logics::designer::signal::SignalState": (
@@ -2733,8 +2733,8 @@
           Pin("466e162e-388b-4fa3-8839-d16aa0102a6e"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("25ec570b-dcf7-4770-a37e-894642240934"),
         "logics::designer::signal::SignalState": (
@@ -2761,8 +2761,8 @@
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::binary_io::BinaryDisplay": (),
         "logics::designer::position::Position": ((
-          x: 531.0812,
-          y: -397.69528,
+          531.0812,
+          -397.69528,
         )),
         "logics::designer::model::ModelId": ("b26c3657-8c26-4456-9247-3ca31f38347d"),
       },
@@ -2777,8 +2777,8 @@
           Pin("7a0e6540-d785-48a3-8443-d932314fad9a"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("aec84a31-5015-4209-a3ec-650924e608ac"),
         "logics::designer::signal::SignalState": (
@@ -2798,8 +2798,8 @@
           Pin("5516aaf9-2916-4f09-adbe-5f60e044a0a7"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("09b233c0-8e9b-4a75-a213-fb0b161689f7"),
         "logics::designer::signal::SignalState": (
@@ -2819,8 +2819,8 @@
           Pin("77f1dc4c-3385-4805-b0ef-c6d98796520f"),
         ]),
         "logics::designer::position::Position": ((
-          x: 0.0,
-          y: 0.0,
+          0.0,
+          0.0,
         )),
         "logics::designer::model::ModelId": ("364a7576-ab46-4b92-983d-f3c39be31fcd"),
         "logics::designer::signal::SignalState": (
