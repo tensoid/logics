@@ -3,7 +3,7 @@ use std::{env::current_exe, path::PathBuf};
 use bevy::{prelude::*, tasks::AsyncComputeTaskPool, window::PrimaryWindow};
 use moonshine_save::{
     file_from_event,
-    load::load,
+    load::{load, unload},
     save::{save_default, Save},
 };
 use rfd::AsyncFileDialog;
@@ -45,7 +45,7 @@ impl Plugin for SaveManagementPlugin {
         app.init_resource::<ActiveSaveFile>();
 
         app.add_systems(
-            PreUpdate,
+            First,
             (
                 // Needs additional on_event condition because of the use of has_event in the moonshine_save crate.
                 // has_event doesnt consume the event and because of that it executes the pipeline multiple times per event which causes a crash.
@@ -82,7 +82,7 @@ pub fn new_file(
     mut commands: Commands,
 ) {
     for entity in q_entities.iter() {
-        commands.entity(entity).despawn_recursive(); //TODO: fix
+        commands.entity(entity).despawn_recursive(); //TODO: try insert unload instead
     }
 
     active_save_file.path = None;

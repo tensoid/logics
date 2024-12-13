@@ -3,6 +3,7 @@ use bevy::{
     prelude::*,
 };
 
+//TODO: settings plugin if this grows
 #[derive(Resource, Clone)]
 pub struct CircuitBoardRenderingSettings {
     pub background_color: Color,

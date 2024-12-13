@@ -7,6 +7,8 @@ use bevy::{
 use moonshine_save::save::Save;
 use uuid::Uuid;
 
+use crate::events::{LoadEvent, NewFileEvent};
+
 use super::position::Position;
 
 #[derive(Clone, Reflect)]
@@ -80,11 +82,19 @@ impl ModelRegistry {
             .unwrap_or_else(|| panic!("Invalid Registry. Entity not found for uuid: {}", uuid))
     }
 
+    pub fn try_get_model_entity(&self, uuid: &Uuid) -> Option<Entity> {
+        self.uuid_to_entity.get(uuid).cloned()
+    }
+
     pub fn get_model_uuid(&self, entity: &Entity) -> Uuid {
         *self
             .entity_to_uuid
             .get(entity)
             .unwrap_or_else(|| panic!("Invalid Registry. Uuid not found for entity: {}", entity))
+    }
+
+    pub fn try_get_model_uuid(&self, entity: &Entity) -> Option<Uuid> {
+        self.entity_to_uuid.get(entity).cloned()
     }
 
     pub fn remove_by_uuid(&mut self, uuid: &Uuid) {
@@ -102,5 +112,10 @@ impl ModelRegistry {
     pub fn add_mapping(&mut self, uuid: Uuid, entity: Entity) {
         self.uuid_to_entity.insert(uuid, entity);
         self.entity_to_uuid.insert(entity, uuid);
+    }
+
+    pub fn clear(&mut self) {
+        self.entity_to_uuid.clear();
+        self.uuid_to_entity.clear();
     }
 }

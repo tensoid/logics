@@ -24,13 +24,13 @@ use super::{
 };
 
 //BUG: load twice
+//BUG: select all doesnt select wires
 //TODO: look into shape border radii
 //TODO: look into font_smoothing
-//TODO: implement shift to drag straight
 //TODO: refactor highlight code (observers)
-//TODO: Only ever access model, view only accessed from model itself for syncing
 //TODO: fix line jank (LineList)
 //TODO: split into files
+//TODO: Only ever access model, view only accessed from model itself for syncing
 pub struct WirePlugin;
 
 impl Plugin for WirePlugin {
@@ -139,16 +139,15 @@ fn on_deselect_wire(
             continue;
         };
 
-        let joint_entity = model_registry.get_model_entity(joint);
-
-        commands.entity(joint_entity).remove::<Selected>();
+        if let Some(joint_entity) = model_registry.try_get_model_entity(joint) {
+            commands.entity(joint_entity).remove::<Selected>();
+        }
     }
 }
 
-/// Despawns the wire joints when a wire is removed
-/// BUG: currently causes duplicate despawns of wire joints when the wire is selected during its deletion.
-/// This is because when a wire is selected its joints are also selected causing it to despawn from the delete action as well as this observer.
-/// Should not be a problem once wires can survive without needing to be connected to a device.
+/// HACK:
+/// Failsafe for when a wire is being deleted but its wire joints arent.
+/// Should be obsolete once wires can survive without needing to be connected to a device.
 fn on_remove_wire(
     trigger: Trigger<OnRemove, WireNodes>,
     q_wires: Query<&WireNodes>,
@@ -164,11 +163,13 @@ fn on_remove_wire(
             continue;
         };
 
-        entities_to_delete.push(model_registry.get_model_entity(wire_joint));
+        if let Some(entity) = model_registry.try_get_model_entity(wire_joint) {
+            entities_to_delete.push(entity);
+        }
     }
 
     for entity in entities_to_delete {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).try_despawn();
     }
 }
 

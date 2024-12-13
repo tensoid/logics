@@ -42,7 +42,7 @@ impl Plugin for SelectionPlugin {
                     .after(create_wire)
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
-            .add_systems(PostUpdate, delete_selected)
+            .add_systems(PostUpdate, delete_selected.run_if(on_event::<DeleteEvent>))
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected_wires)
             .add_systems(PostUpdate, highlight_selected_devices); //TODO: observers?
@@ -116,8 +116,12 @@ impl WireSelectionOutlineBundle {
     }
 }
 
-pub fn select_all(mut commands: Commands, q_devices: Query<Entity, With<DeviceModel>>) {
-    for device in q_devices.iter() {
+//TODO: fix after bounding box on model by checking for either selectable bounding box or selectable component
+pub fn select_all(
+    mut commands: Commands,
+    q_entities: Query<Entity, Or<(With<DeviceModel>, With<WireModel>, With<WireJointModel>)>>,
+) {
+    for device in q_entities.iter() {
         commands.entity(device).insert(Selected);
     }
 }
@@ -387,15 +391,10 @@ pub fn update_dragged_entities_position(
     }
 }
 
-pub fn delete_selected(
-    mut commands: Commands,
-    q_selected_entities: Query<Entity, With<Selected>>,
-    mut delete_ev: EventReader<DeleteEvent>,
-) {
-    for _ in delete_ev.read() {
-        for selected_entity in q_selected_entities.iter() {
-            commands.entity(selected_entity).despawn_recursive();
-        }
+pub fn delete_selected(mut commands: Commands, q_selected_entities: Query<Entity, With<Selected>>) {
+    for selected_entity in q_selected_entities.iter() {
+        //HACK: try because of duplicate wire joints deletions
+        commands.entity(selected_entity).try_despawn_recursive();
     }
 }
 
