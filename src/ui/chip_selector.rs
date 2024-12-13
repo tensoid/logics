@@ -1,7 +1,8 @@
 use bevy::{color::palettes::css::GRAY, prelude::*, text::FontSmoothing};
 
 use crate::{
-    designer::{designer_assets::DesignerAssets, devices::device::DeviceIds, position::Position},
+    assets::common_assets::CommonAssets,
+    designer::{devices::device::DeviceIds, position::Position},
     events::SpawnDeviceEvent,
 };
 
@@ -13,7 +14,7 @@ pub struct ChipButton;
 
 pub fn spawn_chip_selector(
     mut commands: Commands,
-    designer_assets: Res<DesignerAssets>,
+    common_assets: Res<CommonAssets>,
     q_device_ids: Res<DeviceIds>,
 ) {
     commands
@@ -49,7 +50,7 @@ pub fn spawn_chip_selector(
                     b.spawn((
                         Text::new(device_id),
                         TextFont {
-                            font: designer_assets.font.clone(),
+                            font: common_assets.font.clone(),
                             font_size: 20.0,
                             font_smoothing: FontSmoothing::None,
                         },

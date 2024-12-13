@@ -1,7 +1,6 @@
 pub mod bounding_box;
 pub mod copy_paste;
 pub mod cursor;
-pub mod designer_assets;
 pub mod designer_state;
 pub mod devices;
 pub mod macros;
@@ -19,7 +18,6 @@ use bevy::prelude::*;
 use bevy::transform::TransformSystem;
 use copy_paste::CopyPastePlugin;
 use cursor::CursorPlugin;
-use designer_assets::load_assets;
 use devices::DevicePlugin;
 use model::{ModelId, ModelRegistry};
 use pin::PinPlugin;
@@ -57,7 +55,6 @@ impl Plugin for DesignerPlugin {
             .register_type::<SignalState>()
             .register_type::<ModelId>()
             .register_type::<ModelRegistry>()
-            .add_systems(PreStartup, load_assets)
             .add_systems(
                 PostUpdate,
                 update_bounding_boxes.after(TransformSystem::TransformPropagate),

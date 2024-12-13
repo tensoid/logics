@@ -2,6 +2,7 @@ use bevy::{asset::AssetMetaCheck, prelude::*};
 use bevy_pancam::PanCamPlugin;
 use bevy_prototype_lyon::prelude::*;
 
+mod assets;
 mod camera;
 mod debug;
 mod designer;
@@ -49,6 +50,7 @@ fn main() {
         .add_plugins(EventsPlugin)
         .add_plugins(InputPlugin)
         .add_plugins(SimulationPlugin)
+        .add_plugins(assets::AssetPlugin)
         .add_plugins(UIPlugin);
 
     app.run();

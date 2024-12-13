@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use moonshine_view::View;
 
-use crate::designer::{designer_assets::DesignerAssets, devices::device::DeviceViewKind};
+use crate::{assets::common_assets::CommonAssets, designer::devices::device::DeviceViewKind};
 
 use super::{debug_mode_settings::DebugModeSettings, debug_mode_state::DebugModeState};
 
@@ -14,7 +14,7 @@ pub struct EntityIdDebugText;
 pub fn draw_entity_ids(
     q_entities: Query<Entity, With<View<DeviceViewKind>>>,
     q_entity_id_debug_texts: Query<Entity, With<EntityIdDebugText>>,
-    designer_assets: Res<DesignerAssets>,
+    common_assets: Res<CommonAssets>,
     debug_mode_settings: Res<DebugModeSettings>,
     debug_mode_state: Res<State<DebugModeState>>,
     mut commands: Commands,
@@ -30,7 +30,7 @@ pub fn draw_entity_ids(
                     Text2d::new(entity.to_string()),
                     TextLayout::new_with_justify(JustifyText::Center),
                     TextFont {
-                        font: designer_assets.font.clone(),
+                        font: common_assets.font.clone(),
                         font_size: 20.0, // TODO: settings
                         ..default()
                     },

@@ -23,6 +23,7 @@ use super::{
     signal::{Signal, SignalState},
 };
 
+//BUG: load twice
 //TODO: look into shape border radii
 //TODO: look into font_smoothing
 //TODO: implement shift to drag straight

@@ -9,11 +9,13 @@ use moonshine_core::object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
-use crate::designer::{
-    designer_assets::DesignerAssets,
-    pin::{PinModel, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
-    position::Position,
-    render_settings::CircuitBoardRenderingSettings,
+use crate::{
+    assets::common_assets::CommonAssets,
+    designer::{
+        pin::{PinModel, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
+        position::Position,
+        render_settings::CircuitBoardRenderingSettings,
+    },
 };
 
 use super::device::{Device, DeviceModelBundle, DeviceViewBundle, DeviceViewKind};
@@ -115,16 +117,13 @@ pub struct ClockLabelBundle {
 }
 
 impl ClockLabelBundle {
-    fn new(
-        render_settings: &CircuitBoardRenderingSettings,
-        designer_assets: &DesignerAssets,
-    ) -> Self {
+    fn new(render_settings: &CircuitBoardRenderingSettings, common_assets: &CommonAssets) -> Self {
         Self {
             clock_label: ClockLabel,
             text_2d: Text2d::new("C"),
             text_color: TextColor(Color::BLACK),
             text_font: TextFont {
-                font: designer_assets.font.clone(),
+                font: common_assets.font.clone(),
                 font_size: render_settings.clock_label_font_size,
                 ..default()
             },
@@ -186,7 +185,7 @@ impl BuildView<DeviceViewKind> for Clock {
         mut view: ViewCommands<DeviceViewKind>,
     ) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
-        let designer_assets = world.resource::<DesignerAssets>();
+        let common_assets = world.resource::<CommonAssets>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
@@ -197,7 +196,7 @@ impl BuildView<DeviceViewKind> for Clock {
         ))
         .with_children(|device| {
             device.spawn(ClockBodyBundle::new(render_settings));
-            device.spawn(ClockLabelBundle::new(render_settings, designer_assets));
+            device.spawn(ClockLabelBundle::new(render_settings, common_assets));
 
             device
                 .spawn(ClockPinCollectionBundle::new())

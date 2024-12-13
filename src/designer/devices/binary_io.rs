@@ -5,10 +5,10 @@ use moonshine_view::prelude::*;
 use uuid::Uuid;
 
 use crate::{
+    assets::{common_assets::CommonAssets, designer_assets::DesignerAssets},
     designer::{
         bounding_box::BoundingBox,
         cursor::Cursor,
-        designer_assets::DesignerAssets,
         pin::{PinModel, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
         position::Position,
         render_settings::CircuitBoardRenderingSettings,
@@ -298,7 +298,7 @@ pub struct BoardBinaryDisplayBundle {
 impl BoardBinaryDisplayBundle {
     fn new(
         render_settings: &CircuitBoardRenderingSettings,
-        designer_assets: &DesignerAssets,
+        common_assets: &CommonAssets,
         is_input: bool,
     ) -> Self {
         let x_offset = match is_input {
@@ -312,7 +312,7 @@ impl BoardBinaryDisplayBundle {
             text_color: TextColor(Color::BLACK),
             text_font: TextFont {
                 font_size: render_settings.binary_display_font_size,
-                font: designer_assets.font.clone(),
+                font: common_assets.font.clone(),
                 ..default()
             },
             text_layout: TextLayout::new_with_justify(JustifyText::Center),
@@ -327,6 +327,7 @@ impl BuildView<DeviceViewKind> for BinarySwitch {
         object: Object<DeviceViewKind>,
         mut view: ViewCommands<DeviceViewKind>,
     ) {
+        let common_assets = world.resource::<CommonAssets>();
         let designer_assets = world.resource::<DesignerAssets>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
@@ -345,7 +346,7 @@ impl BuildView<DeviceViewKind> for BinarySwitch {
             device.spawn(BinarySwitchBodyBundle::new(render_settings));
             device.spawn(BoardBinaryDisplayBundle::new(
                 render_settings,
-                designer_assets,
+                common_assets,
                 true,
             ));
 
@@ -367,7 +368,7 @@ impl BuildView<DeviceViewKind> for BinaryDisplay {
         object: Object<DeviceViewKind>,
         mut view: ViewCommands<DeviceViewKind>,
     ) {
-        let designer_assets = world.resource::<DesignerAssets>();
+        let common_assets = world.resource::<CommonAssets>();
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
@@ -381,7 +382,7 @@ impl BuildView<DeviceViewKind> for BinaryDisplay {
             device.spawn(BinaryDisplayBodyBundle::new(render_settings));
             device.spawn(BoardBinaryDisplayBundle::new(
                 render_settings,
-                designer_assets,
+                common_assets,
                 false,
             ));
             device
