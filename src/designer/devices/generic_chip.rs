@@ -94,16 +94,6 @@ impl GenericChipBodyBundle {
             pin_model_collection.num_outputs(),
         );
 
-        let points = vec![
-            Vec2::new(-1.0, -1.0),
-            Vec2::new(-1.0, 1.0),
-            Vec2::new(1.0, 1.0),
-            Vec2::new(1.0, -1.0),
-        ]
-        .into_iter()
-        .map(|x| x * (chip_extents / 2.0))
-        .collect();
-
         Self {
             chip_body: GenericChipBody,
             fill: Fill::color(render_settings.chip_color),
@@ -112,10 +102,10 @@ impl GenericChipBodyBundle {
                 render_settings.device_stroke_width,
             ),
             shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
-                    points,
-                    radius: render_settings.device_edge_radius,
-                    closed: false,
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: chip_extents,
+                    radii: Some(BorderRadii::single(render_settings.device_border_radius)),
+                    ..default()
                 }),
                 ..default()
             },

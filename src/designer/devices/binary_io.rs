@@ -98,16 +98,6 @@ pub struct BinarySwitchBodyBundle {
 
 impl BinarySwitchBodyBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
-        let points = vec![
-            Vec2::new(-1.0, -1.0),
-            Vec2::new(-1.0, 1.0),
-            Vec2::new(1.0, 1.0),
-            Vec2::new(1.0, -1.0),
-        ]
-        .into_iter()
-        .map(|x| x * (render_settings.binary_switch_extents / 2.0))
-        .collect();
-
         Self {
             binary_switch_body: BinarySwitchBody,
             fill: Fill::color(render_settings.binary_io_color),
@@ -116,10 +106,10 @@ impl BinarySwitchBodyBundle {
                 render_settings.device_stroke_width,
             ),
             shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
-                    points,
-                    radius: render_settings.device_edge_radius,
-                    closed: false,
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: render_settings.binary_switch_extents,
+                    radii: Some(BorderRadii::single(render_settings.device_border_radius)),
+                    ..default()
                 }),
                 ..default()
             },
@@ -212,16 +202,6 @@ pub struct BinaryDisplayBodyBundle {
 
 impl BinaryDisplayBodyBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
-        let points = vec![
-            Vec2::new(-1.0, -1.0),
-            Vec2::new(-1.0, 1.0),
-            Vec2::new(1.0, 1.0),
-            Vec2::new(1.0, -1.0),
-        ]
-        .into_iter()
-        .map(|x| x * (render_settings.binary_display_extents / 2.0))
-        .collect();
-
         Self {
             binary_display_body: BinaryDisplayBody,
             fill: Fill::color(render_settings.binary_io_color),
@@ -230,10 +210,10 @@ impl BinaryDisplayBodyBundle {
                 render_settings.device_stroke_width,
             ),
             shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
-                    points,
-                    radius: render_settings.device_edge_radius,
-                    closed: false,
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: render_settings.binary_display_extents,
+                    radii: Some(BorderRadii::single(render_settings.device_border_radius)),
+                    ..default()
                 }),
                 ..default()
             },

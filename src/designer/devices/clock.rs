@@ -3,7 +3,7 @@ use bevy_prototype_lyon::{
     draw::{Fill, Stroke},
     entity::ShapeBundle,
     prelude::GeometryBuilder,
-    shapes,
+    shapes::{self, BorderRadii},
 };
 use moonshine_core::object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
@@ -74,28 +74,18 @@ pub struct ClockBodyBundle {
 
 impl ClockBodyBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
-        let points = vec![
-            Vec2::new(-1.0, -1.0),
-            Vec2::new(-1.0, 1.0),
-            Vec2::new(1.0, 1.0),
-            Vec2::new(1.0, -1.0),
-        ]
-        .into_iter()
-        .map(|x| x * (render_settings.clock_extents / 2.0)) // TODO: into settings
-        .collect();
-
         Self {
             clock_body: ClockBody,
-            fill: Fill::color(render_settings.clock_color), // TODO: into settings
+            fill: Fill::color(render_settings.clock_color),
             stroke: Stroke::new(
                 render_settings.device_stroke_color,
                 render_settings.device_stroke_width,
             ),
             shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
-                    points,
-                    radius: render_settings.device_edge_radius,
-                    closed: false,
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: render_settings.clock_extents,
+                    radii: Some(BorderRadii::single(render_settings.device_border_radius)),
+                    ..default()
                 }),
                 ..default()
             },
@@ -149,12 +139,8 @@ impl ClockPinBundle {
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
                 uuid,
-                render_settings.clock_pin_radius, // TODO: into settings
-                Vec3::new(
-                    render_settings.clock_extents.x / 2.0, // TODO: into settings
-                    0.0,
-                    0.02,
-                ),
+                render_settings.clock_pin_radius,
+                Vec3::new(render_settings.clock_extents.x / 2.0, 0.0, 0.02),
             ),
         }
     }
@@ -192,7 +178,7 @@ impl BuildView<DeviceViewKind> for Clock {
 
         view.insert(DeviceViewBundle::new(
             position.clone(),
-            render_settings.clock_extents, // TODO: into settings
+            render_settings.clock_extents,
         ))
         .with_children(|device| {
             device.spawn(ClockBodyBundle::new(render_settings));

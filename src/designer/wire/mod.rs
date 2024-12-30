@@ -23,10 +23,6 @@ use super::{
     signal::{Signal, SignalState},
 };
 
-//BUG: load twice
-//BUG: select all doesnt select wires
-//TODO: look into shape border radii
-//TODO: look into font_smoothing
 //TODO: refactor highlight code (observers)
 //TODO: fix line jank (LineList)
 //TODO: split into files

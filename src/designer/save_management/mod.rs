@@ -168,20 +168,22 @@ fn handle_load_request(sender: Res<AsyncSender<LoadFilePick>>) {
 
 /// Gets the "saves" folder that is relative to the executable.
 fn get_saves_folder() -> PathBuf {
-    let mut exe_path = current_exe().unwrap();
+    let mut exe_path = current_exe().expect("Failed to get current executable path");
     exe_path.pop();
     exe_path.push("saves");
     exe_path
 }
 
-// Update window title to current file
 fn update_window_title(
     active_save_file: Res<ActiveSaveFile>,
     mut q_window: Query<&mut Window, With<PrimaryWindow>>,
 ) {
-    let mut window = q_window.get_single_mut().unwrap();
-    window.title = match &active_save_file.path {
-        Some(path) => path.file_name().unwrap().to_str().unwrap().to_string(),
-        None => "New File".into(),
+    if let Ok(mut window) = q_window.get_single_mut() {
+        window.title = match &active_save_file.path {
+            Some(path) => path.file_name().unwrap().to_str().unwrap().to_string(),
+            None => "New File".into(),
+        };
+    } else {
+        eprintln!("Failed to get primary window");
     }
 }
