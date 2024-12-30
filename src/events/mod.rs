@@ -14,6 +14,7 @@ impl Plugin for EventsPlugin {
             .add_event::<ToggleDebugModeEvent>()
             .add_event::<CopyEvent>()
             .add_event::<PasteEvent>()
+            .add_event::<RotateEvent>()
             .add_event::<SelectAllEvent>()
             .add_event::<SaveEvent>()
             .add_event::<LoadEvent>()
@@ -37,6 +38,9 @@ pub struct ToggleDebugModeEvent;
 
 #[derive(Event, Clone)]
 pub struct DeleteEvent;
+
+#[derive(Event, Clone)]
+pub struct RotateEvent;
 
 #[derive(Event, Clone)]
 pub struct CopyEvent;

@@ -3,7 +3,7 @@ use std::{env::current_exe, path::PathBuf};
 use bevy::{prelude::*, tasks::AsyncComputeTaskPool, window::PrimaryWindow};
 use moonshine_save::{
     file_from_event,
-    load::{load, unload},
+    load::load,
     save::{save_default, Save},
 };
 use rfd::AsyncFileDialog;

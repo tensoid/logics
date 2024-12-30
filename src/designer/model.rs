@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, f32::consts::FRAC_PI_4};
 
 use bevy::{
     ecs::component::{ComponentHooks, StorageType},
@@ -7,9 +7,7 @@ use bevy::{
 use moonshine_save::save::Save;
 use uuid::Uuid;
 
-use crate::events::{LoadEvent, NewFileEvent};
-
-use super::position::Position;
+use super::{position::Position, rotation::Rotation};
 
 #[derive(Clone, Reflect)]
 #[reflect(Component)]
@@ -21,29 +19,31 @@ impl ModelId {
     }
 }
 
+impl Default for ModelId {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 // common stuff for all models
-#[derive(Bundle, Clone)]
+#[derive(Bundle, Clone, Default)]
 pub struct Model {
     //TODO: naming? is technically a bundle
     pub position: Position, //TODO: leave out? e.g. wires dont use position
+    pub rotation: Rotation,
     pub save: Save,
     pub id: ModelId,
 }
 
 impl Model {
     pub fn new() -> Self {
-        Self {
-            id: ModelId::new(),
-            save: Save,
-            position: Position::ZERO,
-        }
+        Self { ..default() }
     }
 
     pub fn from_position(position: Position) -> Self {
         Self {
             position,
-            id: ModelId::new(),
-            save: Save,
+            ..default()
         }
     }
 }

@@ -8,6 +8,7 @@ pub mod model;
 pub mod pin;
 pub mod position;
 pub mod render_settings;
+pub mod rotation;
 pub mod save_management;
 pub mod selection;
 pub mod signal;

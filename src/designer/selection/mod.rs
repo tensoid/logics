@@ -1,3 +1,5 @@
+use std::f32::consts::FRAC_PI_4;
+
 use bevy::{
     math::bounding::{Aabb2d, BoundingVolume},
     prelude::*,
@@ -12,7 +14,7 @@ use bevy_prototype_lyon::{
 use moonshine_view::{View, Viewable};
 
 use crate::{
-    events::{DeleteEvent, SelectAllEvent},
+    events::{DeleteEvent, RotateEvent, SelectAllEvent},
     find_descendant, get_cursor, get_cursor_mut, get_model,
     ui::cursor_captured::IsCursorCaptured,
 };
@@ -25,6 +27,7 @@ use super::{
     pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
+    rotation::Rotation,
     wire::{create_wire, wire_joint::WireJointModel, WireModel, WireNode, WireNodes, WireView},
 };
 
@@ -43,6 +46,10 @@ impl Plugin for SelectionPlugin {
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
             .add_systems(PostUpdate, delete_selected.run_if(on_event::<DeleteEvent>))
+            .add_systems(
+                PostUpdate,
+                rotate_selected_devices.run_if(on_event::<RotateEvent>),
+            )
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected_wires)
             .add_systems(PostUpdate, highlight_selected_devices); //TODO: observers?
@@ -117,6 +124,7 @@ impl WireSelectionOutlineBundle {
 }
 
 //TODO: fix after bounding box on model by checking for either selectable bounding box or selectable component
+#[allow(clippy::type_complexity)]
 pub fn select_all(
     mut commands: Commands,
     q_entities: Query<Entity, Or<(With<DeviceModel>, With<WireModel>, With<WireJointModel>)>>,
@@ -395,6 +403,15 @@ pub fn delete_selected(mut commands: Commands, q_selected_entities: Query<Entity
     for selected_entity in q_selected_entities.iter() {
         //HACK: try because of duplicate wire joints deletions
         commands.entity(selected_entity).try_despawn_recursive();
+    }
+}
+
+pub fn rotate_selected_devices(mut q_selected_devices: Query<&mut Rotation, With<Selected>>) {
+    for mut rotation in q_selected_devices.iter_mut() {
+        rotation.0 -= FRAC_PI_4;
+        if rotation.0 < 0.0 {
+            rotation.0 = FRAC_PI_4 * 7.0;
+        }
     }
 }
 

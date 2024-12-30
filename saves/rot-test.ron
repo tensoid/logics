@@ -1,0 +1,48 @@
+(
+  resources: {},
+  entities: {
+    12884903275: (
+      components: {
+        "logics::designer::devices::device::DeviceModel": (),
+        "logics::designer::devices::generic_chip::GenericChip": (
+          name: "AND-2",
+        ),
+        "logics::designer::model::ModelId": ("f5bbca16-9651-401f-8ed4-6085a0185d54"),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            signal_state: (
+              previous_signal: Low,
+              signal: Low,
+              next_signals: [],
+            ),
+            pin_type: Input,
+            label: "B",
+            uuid: "6980b35a-d4bd-4d28-a45f-89a9c6df8227",
+          ),
+          (
+            signal_state: (
+              previous_signal: Low,
+              signal: Low,
+              next_signals: [],
+            ),
+            pin_type: Input,
+            label: "A",
+            uuid: "9efdf82e-b323-4778-be35-10d00866f51f",
+          ),
+          (
+            signal_state: (
+              previous_signal: Low,
+              signal: Low,
+              next_signals: [],
+            ),
+            pin_type: Output,
+            label: "Q",
+            uuid: "cd490671-7f2b-4a07-afb1-8a050352b700",
+          ),
+        ]),
+        "logics::designer::position::Position": ((-155.99998, 27.000011)),
+        "logics::designer::rotation::Rotation": (1.0),
+      },
+    ),
+  },
+)
