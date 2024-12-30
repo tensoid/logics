@@ -26,9 +26,9 @@ use or_2::Or2;
 use t_flipflop::TFlipFlop;
 use xor_2::Xor2;
 
-use crate::simulation::simulation::update_signals;
+use crate::simulation::simulation::propagate_signals;
 
-use super::{pin::PinModelCollection, position::Position, signal_state::SignalState, wire::Wire};
+use super::{pin::PinModelCollection, position::Position};
 
 pub struct DevicePlugin;
 
@@ -40,15 +40,12 @@ impl Plugin for DevicePlugin {
             .register_type::<BinaryDisplay>()
             .register_type::<GenericChip>()
             .register_type::<PinModelCollection>()
-            .register_type::<Wire>()
-            .register_type::<SignalState>()
-            .register_type::<Clock>()
-            //TODO: move register view into register device or smth
-            .register_view::<DeviceViewKind, BinarySwitch>()
-            .register_view::<DeviceViewKind, BinaryDisplay>()
-            .register_view::<DeviceViewKind, GenericChip>()
-            .register_view::<DeviceViewKind, Clock>()
-            .register_viewable::<Wire>();
+            .register_type::<Clock>();
+
+        app.add_view::<DeviceViewKind, BinarySwitch>()
+            .add_view::<DeviceViewKind, BinaryDisplay>()
+            .add_view::<DeviceViewKind, GenericChip>()
+            .add_view::<DeviceViewKind, Clock>();
 
         app.register_device::<And2>()
             .register_device::<Nand2>()
@@ -63,12 +60,14 @@ impl Plugin for DevicePlugin {
             .register_device::<BinarySwitch>();
 
         app.add_systems(Update, tick_clocks)
-            .add_systems(Update, toggle_binary_switch)
             .add_systems(
                 Update,
-                update_board_binary_displays
-                    .after(toggle_binary_switch) //TODO: observers?
-                    .after(update_signals),
+                (
+                    toggle_binary_switch,
+                    update_board_binary_displays
+                        .chain()
+                        .after(propagate_signals),
+                ), //TODO: observers?
             )
             .add_systems(Update, update_device_positions);
     }

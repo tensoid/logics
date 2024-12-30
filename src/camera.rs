@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_pancam::PanCam;
+use bevy_pancam::{DirectionKeys, PanCam};
 
 pub struct CameraPlugin;
 
@@ -10,12 +10,13 @@ impl Plugin for CameraPlugin {
 }
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default()).insert(PanCam {
+    commands.spawn(Camera2d).insert(PanCam {
         grab_buttons: vec![MouseButton::Middle],
         enabled: true,
         zoom_to_cursor: false,
         min_scale: 1.,
         max_scale: 40.0,
+        move_keys: DirectionKeys::arrows(),
         ..default()
     });
 }

@@ -1,11 +1,10 @@
 use bevy::prelude::*;
 
-use std::ops::{Deref, DerefMut};
-
 #[derive(Component, Clone, Reflect)]
 #[reflect(Component)]
 pub struct Position(pub Vec2);
 
+//TODO: get rid of position? useless abstraction over vec2
 #[allow(dead_code)]
 impl Position {
     pub const ZERO: Self = Position(Vec2::ZERO);
@@ -13,18 +12,12 @@ impl Position {
     pub fn new(x: f32, y: f32) -> Self {
         Self(Vec2::new(x, y))
     }
-}
 
-impl Deref for Position {
-    type Target = Vec2;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
+    pub fn from_translation(translation: Vec3) -> Self {
+        Self(translation.truncate())
     }
-}
 
-impl DerefMut for Position {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
+    pub fn to_translation(&self, z: f32) -> Vec3 {
+        self.0.extend(z)
     }
 }

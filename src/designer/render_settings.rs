@@ -1,13 +1,15 @@
 use bevy::{
-    color::palettes::css::{BLACK, BLUE, LIME, WHITE},
+    color::palettes::css::{BLACK, BLUE, LIME, RED, WHITE},
     prelude::*,
 };
 
+//TODO: settings plugin if this grows
 #[derive(Resource, Clone)]
 pub struct CircuitBoardRenderingSettings {
     pub background_color: Color,
     pub signal_high_color: Color,
     pub signal_low_color: Color,
+    pub signal_conflict_color: Color,
     pub chip_pin_gap: f32,
     pub chip_pin_radius: f32,
     pub chip_pin_label_font_size: f32,
@@ -16,7 +18,7 @@ pub struct CircuitBoardRenderingSettings {
     pub device_stroke_color: Color,
     pub device_stroke_color_selected: Color,
     pub device_stroke_width: f32,
-    pub device_edge_radius: f32,
+    pub device_border_radius: f32,
     pub device_io_pin_radius: f32,
     pub binary_io_color: Color,
     pub binary_switch_extents: Vec2,
@@ -40,6 +42,7 @@ pub fn init_render_settings(app: &mut App) {
         background_color: Color::srgb(0.42, 0.45, 0.63),
         signal_low_color: BLACK.into(),
         signal_high_color: LIME.into(),
+        signal_conflict_color: RED.into(),
         chip_pin_gap: 25.0,
         chip_pin_radius: 7.0,
         chip_pin_label_font_size: 10.0,
@@ -48,7 +51,7 @@ pub fn init_render_settings(app: &mut App) {
         device_stroke_color: BLACK.into(),
         device_stroke_color_selected: BLUE.into(),
         device_stroke_width: 2.0,
-        device_edge_radius: 5.0,
+        device_border_radius: 5.0,
         device_io_pin_radius: 7.0,
         binary_io_color: WHITE.into(),
         binary_switch_extents: Vec2::new(60.0, 30.0),
@@ -58,7 +61,7 @@ pub fn init_render_settings(app: &mut App) {
         clock_color: WHITE.into(),
         clock_label_font_size: 15.0,
         clock_pin_radius: 7.0,
-        wire_line_width: 2.0,
+        wire_line_width: 4.0,
         pin_color: BLACK.into(),
         hovered_pin_color: Color::srgb(0.4, 0.4, 0.4),
         selection_box_fill_color: Color::srgba(1.0, 1.0, 1.0, 0.1),

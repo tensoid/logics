@@ -1,6 +1,8 @@
 use super::{
-    bounding_box::BoundingBox, render_settings::CircuitBoardRenderingSettings,
-    signal_state::SignalState,
+    bounding_box::BoundingBox,
+    render_settings::CircuitBoardRenderingSettings,
+    signal::{Signal, SignalState},
+    wire::{WireNode, WireNodes},
 };
 use bevy::prelude::*;
 use bevy_prototype_lyon::{draw::Fill, entity::ShapeBundle, prelude::GeometryBuilder, shapes};
@@ -11,7 +13,7 @@ pub struct PinPlugin;
 
 impl Plugin for PinPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PostUpdate, commit_signal_updates); //TODO: observers?
+        app.add_observer(on_remove_pin_model_collection);
     }
 }
 
@@ -21,11 +23,10 @@ pub enum PinType {
     Output,
 }
 
+//TODO: maybe make pinmodel an entity. its weird having these inside a component.
 #[derive(Reflect, Clone)]
 pub struct PinModel {
-    pub previous_signal_state: SignalState,
     pub signal_state: SignalState,
-    pub next_signal_state: SignalState,
     pub pin_type: PinType,
     pub label: String,
     pub uuid: Uuid,
@@ -37,9 +38,7 @@ impl PinModel {
         Self {
             label,
             pin_type: PinType::Input,
-            previous_signal_state: SignalState::Low,
-            signal_state: SignalState::Low,
-            next_signal_state: SignalState::Low,
+            signal_state: SignalState::new(Signal::Low),
             uuid: Uuid::new_v4(),
         }
     }
@@ -49,9 +48,7 @@ impl PinModel {
         Self {
             label,
             pin_type: PinType::Output,
-            previous_signal_state: SignalState::Low,
-            signal_state: SignalState::Low,
-            next_signal_state: SignalState::Low,
+            signal_state: SignalState::new(Signal::Low),
             uuid: Uuid::new_v4(),
         }
     }
@@ -63,6 +60,36 @@ pub struct PinModelCollection(pub Vec<PinModel>);
 
 #[allow(dead_code)]
 impl PinModelCollection {
+    pub fn find_in_collections<'a>(
+        uuid: Uuid,
+        collections: impl Iterator<Item = &'a PinModelCollection>,
+    ) -> Option<&'a PinModel> {
+        for collection in collections {
+            if let Some(pin_model) = collection.get_model(uuid) {
+                return Some(pin_model);
+            }
+        }
+        None
+    }
+
+    // TODO: fix this jank, maybe panic if not found i dunno
+    pub fn pin_model_scope<'a, F, R>(
+        collections: impl Iterator<Item = Mut<'a, PinModelCollection>>,
+        uuid: Uuid,
+        f: F,
+    ) -> Option<R>
+    where
+        F: FnOnce(&mut PinModel) -> R,
+    {
+        for mut collection in collections {
+            if let Some(pin_model) = collection.get_model_mut(uuid) {
+                // Apply the closure to mutate the PinModel
+                return Some(f(pin_model));
+            }
+        }
+        None
+    }
+
     pub fn get_model(&self, uuid: Uuid) -> Option<&PinModel> {
         self.iter().find(|m| m.uuid.eq(&uuid))
     }
@@ -100,6 +127,37 @@ impl PinModelCollection {
     }
 }
 
+/// Despawns all wires connected to a device when it is despawned.
+fn on_remove_pin_model_collection(
+    trigger: Trigger<OnRemove, PinModelCollection>,
+    q_pin_model_collection: Query<&PinModelCollection>,
+    q_wire_nodes: Query<(Entity, &WireNodes)>,
+    mut commands: Commands,
+) {
+    let pin_model_collection = q_pin_model_collection.get(trigger.entity()).unwrap();
+    let uuids_in_pin_model_collection: Vec<Uuid> =
+        pin_model_collection.0.iter().map(|p| p.uuid).collect();
+
+    let mut entities_to_delete: Vec<Entity> = Vec::new();
+
+    for (wire_entity, wire_nodes) in q_wire_nodes.iter() {
+        for wire_node in wire_nodes.0.iter() {
+            let WireNode::Pin(pin_uuid) = wire_node else {
+                continue;
+            };
+
+            if uuids_in_pin_model_collection.contains(pin_uuid) {
+                entities_to_delete.push(wire_entity);
+                break;
+            }
+        }
+    }
+
+    for entity in entities_to_delete {
+        commands.entity(entity).despawn_recursive();
+    }
+}
+
 impl Deref for PinModelCollection {
     type Target = Vec<PinModel>;
 
@@ -129,19 +187,21 @@ impl IndexMut<&str> for PinModelCollection {
 }
 
 #[derive(Component)]
-pub struct PinCollection;
+pub struct PinViewCollection;
 
 #[derive(Bundle)]
-pub struct PinCollectionBundle {
-    pin_collection: PinCollection,
-    spatial_bundle: SpatialBundle,
+pub struct PinViewCollectionBundle {
+    pin_view_collection: PinViewCollection,
+    transform: Transform,
+    visibility: Visibility,
 }
 
-impl PinCollectionBundle {
+impl PinViewCollectionBundle {
     pub fn new() -> Self {
         Self {
-            pin_collection: PinCollection,
-            spatial_bundle: SpatialBundle::default(),
+            pin_view_collection: PinViewCollection,
+            transform: Transform::default(),
+            visibility: Visibility::default(),
         }
     }
 }
@@ -179,10 +239,7 @@ impl PinViewBundle {
                     radius,
                     ..default()
                 }),
-                spatial: SpatialBundle {
-                    transform: Transform::from_translation(translation),
-                    ..default()
-                },
+                transform: Transform::from_translation(translation),
                 ..default()
             },
             fill: Fill::color(render_settings.pin_color),
@@ -197,27 +254,27 @@ pub struct PinLabel;
 #[derive(Bundle)]
 pub struct PinLabelBundle {
     pin_label: PinLabel,
-    text_bundle: Text2dBundle,
+    text_2d: Text2d,
+    text_color: TextColor,
+    text_font: TextFont,
+    text_layout: TextLayout,
+    transform: Transform,
 }
 
 impl PinLabelBundle {
-    pub fn new(label: String, text_style: TextStyle, translation: Vec3) -> Self {
+    pub fn new(
+        label: String,
+        text_color: TextColor,
+        text_font: TextFont,
+        translation: Vec3,
+    ) -> Self {
         Self {
             pin_label: PinLabel,
-            text_bundle: Text2dBundle {
-                text: Text::from_section(label, text_style).with_justify(JustifyText::Center),
-                transform: Transform::from_translation(translation),
-                ..default()
-            },
+            text_2d: Text2d(label),
+            text_layout: TextLayout::new_with_justify(JustifyText::Center),
+            text_color,
+            text_font,
+            transform: Transform::from_translation(translation),
         }
-    }
-}
-
-pub fn commit_signal_updates(mut q_pin_model_collection: Query<&mut PinModelCollection>) {
-    for mut pin_model_collection in q_pin_model_collection.iter_mut() {
-        pin_model_collection.iter_mut().for_each(|c| {
-            c.previous_signal_state = c.signal_state;
-            c.signal_state = c.next_signal_state;
-        });
     }
 }

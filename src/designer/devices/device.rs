@@ -1,16 +1,16 @@
 use bevy::prelude::*;
 use moonshine_core::kind::Kind;
-use moonshine_save::save::Save;
 use moonshine_view::Viewable;
 
 use crate::{
     designer::{
         bounding_box::BoundingBox,
         cursor::{Cursor, CursorState},
+        model::Model,
         position::Position,
         selection::{Dragged, Selected},
     },
-    events::events::SpawnDeviceEvent,
+    events::SpawnDeviceEvent,
     get_cursor_mut,
 };
 
@@ -29,7 +29,7 @@ impl RegisterDevice for App {
         // register spawn func
         self.add_systems(
             Update,
-            spawn_device::<T>.run_if(on_event::<SpawnDeviceEvent>()),
+            spawn_device::<T>.run_if(on_event::<SpawnDeviceEvent>),
         );
 
         // store device_id in resource
@@ -83,7 +83,8 @@ pub struct DeviceView;
 pub struct DeviceViewBundle {
     device_view: DeviceView,
     bounding_box: BoundingBox,
-    spatial_bundle: SpatialBundle,
+    transform: Transform,
+    visibility: Visibility,
 }
 
 impl DeviceViewBundle {
@@ -95,14 +96,13 @@ impl DeviceViewBundle {
                 Vec2::ZERO,
                 true,
             ),
-            spatial_bundle: SpatialBundle {
-                transform: Transform::from_xyz(position.x, position.y, 0.0),
-                ..default()
-            },
+            transform: Transform::from_xyz(position.0.x, position.0.y, 0.0),
+            visibility: Visibility::default(),
         }
     }
 }
 
+/// Marker component for device models
 #[derive(Component, Reflect, Clone)]
 #[reflect(Component)]
 pub struct DeviceModel;
@@ -110,16 +110,14 @@ pub struct DeviceModel;
 #[derive(Bundle, Clone)]
 pub struct DeviceModelBundle {
     device_model: DeviceModel,
-    position: Position,
-    save: Save,
+    model: Model,
 }
 
 impl DeviceModelBundle {
     pub fn new(position: Position) -> Self {
         Self {
             device_model: DeviceModel,
-            position,
-            save: Save,
+            model: Model::from_position(position),
         }
     }
 }
@@ -137,6 +135,6 @@ pub fn update_device_positions(
     for (viewable, position) in devices.iter() {
         let view = viewable.view();
         let mut transform = transform.get_mut(view.entity()).unwrap();
-        *transform = Transform::from_translation(position.extend(transform.translation.z))
+        *transform = Transform::from_translation(position.0.extend(transform.translation.z))
     }
 }

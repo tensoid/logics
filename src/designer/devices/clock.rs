@@ -3,14 +3,19 @@ use bevy_prototype_lyon::{
     draw::{Fill, Stroke},
     entity::ShapeBundle,
     prelude::GeometryBuilder,
-    shapes,
+    shapes::{self, BorderRadii},
 };
 use moonshine_core::object::{Object, ObjectInstance};
 use moonshine_view::{BuildView, ViewCommands};
 use uuid::Uuid;
 
-use crate::designer::{
-    designer_assets::DesignerAssets, pin::{PinCollectionBundle, PinModel, PinModelCollection, PinViewBundle}, position::Position, render_settings::CircuitBoardRenderingSettings
+use crate::{
+    assets::common_assets::CommonAssets,
+    designer::{
+        pin::{PinModel, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
+        position::Position,
+        render_settings::CircuitBoardRenderingSettings,
+    },
 };
 
 use super::device::{Device, DeviceModelBundle, DeviceViewBundle, DeviceViewKind};
@@ -69,30 +74,19 @@ pub struct ClockBodyBundle {
 
 impl ClockBodyBundle {
     fn new(render_settings: &CircuitBoardRenderingSettings) -> Self {
-        let points = vec![
-            Vec2::new(-1.0, -1.0),
-            Vec2::new(-1.0, 1.0),
-            Vec2::new(1.0, 1.0),
-            Vec2::new(1.0, -1.0),
-        ]
-        .into_iter()
-        .map(|x| x * (render_settings.clock_extents / 2.0)) // TODO: into settings
-        .collect();
-
         Self {
             clock_body: ClockBody,
-            fill: Fill::color(render_settings.clock_color), // TODO: into settings
+            fill: Fill::color(render_settings.clock_color),
             stroke: Stroke::new(
                 render_settings.device_stroke_color,
                 render_settings.device_stroke_width,
             ),
             shape_bundle: ShapeBundle {
-                path: GeometryBuilder::build_as(&shapes::RoundedPolygon {
-                    points,
-                    radius: render_settings.device_edge_radius,
-                    closed: false,
+                path: GeometryBuilder::build_as(&shapes::Rectangle {
+                    extents: render_settings.clock_extents,
+                    radii: Some(BorderRadii::single(render_settings.device_border_radius)),
+                    ..default()
                 }),
-                spatial: SpatialBundle::default(),
                 ..default()
             },
         }
@@ -105,24 +99,26 @@ pub struct ClockLabel;
 #[derive(Bundle)]
 pub struct ClockLabelBundle {
     clock_label: ClockLabel,
-    text_bundle: Text2dBundle,
+    text_2d: Text2d,
+    text_font: TextFont,
+    text_color: TextColor,
+    text_layout: TextLayout,
+    transform: Transform,
 }
 
 impl ClockLabelBundle {
-    fn new(render_settings: &CircuitBoardRenderingSettings, designer_assets: &DesignerAssets) -> Self {
-        let text_style = TextStyle {
-            font_size: render_settings.clock_label_font_size, // TODO: settings
-            color: Color::BLACK,
-            font: designer_assets.font.clone(),
-        };
-
+    fn new(render_settings: &CircuitBoardRenderingSettings, common_assets: &CommonAssets) -> Self {
         Self {
             clock_label: ClockLabel,
-            text_bundle: Text2dBundle {
-                text: Text::from_section("C", text_style).with_justify(JustifyText::Center),
-                transform: Transform::from_xyz(0.0, 0.0, 0.01),
+            text_2d: Text2d::new("C"),
+            text_color: TextColor(Color::BLACK),
+            text_font: TextFont {
+                font: common_assets.font.clone(),
+                font_size: render_settings.clock_label_font_size,
                 ..default()
             },
+            text_layout: TextLayout::new_with_justify(JustifyText::Center),
+            transform: Transform::from_xyz(0.0, 0.0, 0.01),
         }
     }
 }
@@ -143,12 +139,8 @@ impl ClockPinBundle {
             pin_view_bundle: PinViewBundle::new(
                 render_settings,
                 uuid,
-                render_settings.clock_pin_radius, // TODO: into settings
-                Vec3::new(
-                    render_settings.clock_extents.x / 2.0, // TODO: into settings
-                    0.0,
-                    0.02,
-                ),
+                render_settings.clock_pin_radius,
+                Vec3::new(render_settings.clock_extents.x / 2.0, 0.0, 0.02),
             ),
         }
     }
@@ -160,14 +152,14 @@ struct ClockPinCollection;
 #[derive(Bundle)]
 struct ClockPinCollectionBundle {
     clock_pin_collection: ClockPinCollection,
-    pin_collection_bundle: PinCollectionBundle,
+    pin_collection_bundle: PinViewCollectionBundle,
 }
 
 impl ClockPinCollectionBundle {
     fn new() -> Self {
         Self {
             clock_pin_collection: ClockPinCollection,
-            pin_collection_bundle: PinCollectionBundle::new(),
+            pin_collection_bundle: PinViewCollectionBundle::new(),
         }
     }
 }
@@ -176,21 +168,21 @@ impl BuildView<DeviceViewKind> for Clock {
     fn build(
         world: &World,
         object: Object<DeviceViewKind>,
-        view: &mut ViewCommands<DeviceViewKind>,
+        mut view: ViewCommands<DeviceViewKind>,
     ) {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
-        let designer_assets = world.resource::<DesignerAssets>();
+        let common_assets = world.resource::<CommonAssets>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
         view.insert(DeviceViewBundle::new(
             position.clone(),
-            render_settings.clock_extents, // TODO: into settings
+            render_settings.clock_extents,
         ))
         .with_children(|device| {
             device.spawn(ClockBodyBundle::new(render_settings));
-            device.spawn(ClockLabelBundle::new(render_settings, designer_assets));
+            device.spawn(ClockLabelBundle::new(render_settings, common_assets));
 
             device
                 .spawn(ClockPinCollectionBundle::new())
@@ -209,7 +201,10 @@ pub fn tick_clocks(mut q_clocks: Query<(&mut Clock, &mut PinModelCollection)>, t
         clock.timer.tick(time.delta());
 
         if clock.timer.finished() {
-            pin_model_collection["Q"].next_signal_state = !pin_model_collection["Q"].signal_state;
+            let current_signal = pin_model_collection["Q"].signal_state.get_signal().clone();
+            pin_model_collection["Q"]
+                .signal_state
+                .set_signal(current_signal.negate());
         }
     }
 }

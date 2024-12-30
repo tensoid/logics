@@ -1,19 +1,26 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use bevy::prelude::*;
 use moonshine_save::save::Save;
 use uuid::Uuid;
 
-use crate::events::events::{CopyEvent, PasteEvent};
+use crate::events::{CopyEvent, PasteEvent};
 
 use super::{
     devices::device::DeviceModel,
+    model::ModelId,
     pin::PinModelCollection,
     position::Position,
     selection::Selected,
-    signal_state::SignalState,
-    wire::{Wire, WireBundle},
+    wire::{
+        wire_joint::{WireJointModel, WireJointModelBundle},
+        WireModelBundle, WireNode, WireNodes,
+    },
 };
+
+//TODO:
+// maybe refactor by only having one copy and one paste function
+// and a pipeline for update_position, update_model_uuids, init_drag etc... just passing the spawned entity ids
 
 pub struct CopyPastePlugin;
 
@@ -21,13 +28,15 @@ impl Plugin for CopyPastePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<DeviceClipboard>()
             .init_resource::<WireClipboard>()
+            .init_resource::<WireJointClipboard>()
             .add_systems(
                 Update,
-                (copy_devices, copy_wires).run_if(on_event::<CopyEvent>()),
+                (copy_devices, copy_wire_joints, copy_wires).run_if(on_event::<CopyEvent>),
             )
             .add_systems(
                 Update,
-                (paste_devices.pipe(paste_wires)).run_if(on_event::<PasteEvent>()),
+                (paste_devices.pipe(paste_wire_joints).pipe(paste_wires))
+                    .run_if(on_event::<PasteEvent>),
             );
     }
 }
@@ -35,7 +44,7 @@ impl Plugin for CopyPastePlugin {
 /// Stores all components from all devices after copying using reflect.
 #[derive(Resource, Default)]
 pub struct DeviceClipboard {
-    pub items: Vec<Vec<Box<dyn Reflect>>>,
+    pub items: Vec<Vec<Box<dyn PartialReflect>>>,
 }
 
 /// Copies all devices and stores them in the [`DeviceClipboard`].
@@ -43,17 +52,17 @@ pub struct DeviceClipboard {
 /// that are registered in the type registry and can be reflected.
 pub fn copy_devices(world: &mut World) {
     let entities: Vec<Entity> = world
-        .query_filtered::<Entity, With<Selected>>()
+        .query_filtered::<Entity, (With<Selected>, With<DeviceModel>)>()
         .iter(world)
         .collect();
 
-    let mut copied_devices: Vec<Vec<Box<dyn Reflect>>> = Vec::new();
+    let mut copied_devices: Vec<Vec<Box<dyn PartialReflect>>> = Vec::new();
 
     {
         let type_registry = world.resource::<AppTypeRegistry>().read();
         for &entity in entities.iter() {
             let entity_ref = world.entity(entity);
-            let device_components: Vec<Box<dyn Reflect>> = entity_ref
+            let device_components: Vec<Box<dyn PartialReflect>> = entity_ref
                 .archetype()
                 .components()
                 .filter_map(|component_id| {
@@ -97,7 +106,7 @@ pub fn paste_devices(world: &mut World) -> HashMap<Uuid, Uuid> {
 
     world.resource_scope(|world, clipboard: Mut<DeviceClipboard>| {
         for clipboard_item in clipboard.items.iter() {
-            let entity_mut = &mut world.spawn((Selected, Save)); // FIXME: manually insert save because it does not implement the reflect trait and is not copied
+            let entity_mut = &mut world.spawn((Selected, Save)); // HACK: manually insert save because it does not implement the reflect trait and is not copied
             spawned_entities.push(entity_mut.id());
             for component in clipboard_item.iter() {
                 let type_info = component.get_represented_type_info().unwrap();
@@ -152,61 +161,77 @@ pub fn paste_devices(world: &mut World) -> HashMap<Uuid, Uuid> {
 /// Stores all wires after copying.
 #[derive(Resource, Default)]
 pub struct WireClipboard {
-    pub items: Vec<(Wire, SignalState)>,
+    pub items: Vec<WireNodes>,
 }
 
 /// Copies all wires and stores them in the [`WireClipboard`].
 pub fn copy_wires(
-    q_wires: Query<(&Wire, &SignalState)>,
-    q_selected_devices: Query<&PinModelCollection, (With<Selected>, With<DeviceModel>)>,
+    q_wires: Query<&WireNodes, With<Selected>>,
     mut wire_clipboard: ResMut<WireClipboard>,
 ) {
     wire_clipboard.items.clear();
-
-    for (wire, signal_state) in q_wires.iter() {
-        // find wires connected to copied devices
-        let (Some(wire_src_pin_uuid), Some(wire_dest_pin_uuid)) =
-            (wire.src_pin_uuid, wire.dest_pin_uuid)
-        else {
-            continue;
-        };
-
-        let pin_uuids: HashSet<Uuid> = HashSet::from_iter(
-            q_selected_devices
-                .iter()
-                .flat_map(|pin_model_collection| pin_model_collection.0.clone())
-                .map(|pin_model| pin_model.uuid),
-        );
-
-        if !pin_uuids.contains(&wire_src_pin_uuid) || !pin_uuids.contains(&wire_dest_pin_uuid) {
-            continue;
-        }
-
-        // copy connected wires
-        wire_clipboard.items.push((wire.clone(), *signal_state));
-    }
+    wire_clipboard.items = q_wires.iter().cloned().collect();
 }
 
 /// Spawns all wires stored in the [`WireClipboard`]
 /// and updates the pin uuids to match the pasted devices.
 pub fn paste_wires(
-    In(pin_uuid_mapping): In<HashMap<Uuid, Uuid>>,
+    In(uuid_mapping): In<HashMap<Uuid, Uuid>>,
     mut commands: Commands,
     wire_clipboard: Res<WireClipboard>,
 ) {
-    for (wire, signal_state) in wire_clipboard.items.iter() {
-        let mut new_wire = wire.clone();
-        new_wire.src_pin_uuid = Some(
-            *pin_uuid_mapping
-                .get(&new_wire.src_pin_uuid.unwrap())
-                .unwrap(),
-        );
-        new_wire.dest_pin_uuid = Some(
-            *pin_uuid_mapping
-                .get(&new_wire.dest_pin_uuid.unwrap())
-                .unwrap(),
-        );
+    for wire_nodes in wire_clipboard.items.iter() {
+        // updates the uuids to the mapped ones or discards the wire if a mapping doesnt exist
+        let new_wire_nodes: Vec<WireNode> = wire_nodes
+            .0
+            .iter()
+            .filter_map(|wire_node| match wire_node {
+                WireNode::Joint(uuid) => uuid_mapping
+                    .get(uuid)
+                    .map(|&mapped_uuid| WireNode::Joint(mapped_uuid)),
+                WireNode::Pin(uuid) => uuid_mapping
+                    .get(uuid)
+                    .map(|&mapped_uuid| WireNode::Pin(mapped_uuid)),
+            })
+            .collect();
 
-        commands.spawn(WireBundle::new_with_signal(new_wire, *signal_state));
+        commands.spawn((WireModelBundle::new(new_wire_nodes), Selected));
     }
+}
+
+/// Stores all wire joints after copying.
+#[derive(Resource, Default)]
+pub struct WireJointClipboard {
+    pub items: Vec<(Position, Uuid)>,
+}
+
+/// Copies all wire joints and stores them in the [`WireJointClipboard`].
+#[allow(clippy::type_complexity)]
+pub fn copy_wire_joints(
+    q_wire_joints: Query<(&Position, &ModelId), (With<Selected>, With<WireJointModel>)>,
+    mut wire_joint_clipboard: ResMut<WireJointClipboard>,
+) {
+    wire_joint_clipboard.items.clear();
+    wire_joint_clipboard.items = q_wire_joints
+        .iter()
+        .map(|(position, model_id)| (position.clone(), model_id.0))
+        .collect();
+}
+
+/// Spawns all wire joints stored in the [`WireJointClipboard`]
+pub fn paste_wire_joints(
+    In(uuid_mapping): In<HashMap<Uuid, Uuid>>,
+    wire_joint_clipboard: Res<WireJointClipboard>,
+    mut commands: Commands,
+) -> HashMap<Uuid, Uuid> {
+    let mut uuid_mapping: HashMap<Uuid, Uuid> = uuid_mapping;
+
+    for (joint_position, joint_uuid) in wire_joint_clipboard.items.iter() {
+        let joint_position = Position(joint_position.0 + Vec2::new(50.0, -50.0));
+        let new_joint = WireJointModelBundle::new(joint_position);
+        uuid_mapping.insert(*joint_uuid, new_joint.model.id.0);
+        commands.spawn((new_joint, Selected));
+    }
+
+    uuid_mapping
 }
