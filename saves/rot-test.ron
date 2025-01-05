@@ -1,33 +1,36 @@
 (
   resources: {},
   entities: {
-    12884903275: (
+    4294967374: (
+      components: {
+        "logics::designer::model::ModelId": ("7f65b65a-f19b-4fbc-a50f-a37e4d9e9771"),
+        "logics::designer::position::Position": ((-70.999985, -129.0)),
+        "logics::designer::rotation::Rotation": (0.0),
+        "logics::designer::signal::SignalState": (
+          previous_signal: Low,
+          signal: Low,
+          next_signals: [],
+        ),
+        "logics::designer::wire::wire_joint::WireJointModel": (),
+      },
+    ),
+    8589934629: (
       components: {
         "logics::designer::devices::device::DeviceModel": (),
         "logics::designer::devices::generic_chip::GenericChip": (
-          name: "AND-2",
+          name: "NOT",
         ),
-        "logics::designer::model::ModelId": ("f5bbca16-9651-401f-8ed4-6085a0185d54"),
+        "logics::designer::model::ModelId": ("d480ffc1-d937-46a3-8cdf-e87d1cff93db"),
         "logics::designer::pin::PinModelCollection": ([
           (
             signal_state: (
-              previous_signal: Low,
-              signal: Low,
-              next_signals: [],
-            ),
-            pin_type: Input,
-            label: "B",
-            uuid: "6980b35a-d4bd-4d28-a45f-89a9c6df8227",
-          ),
-          (
-            signal_state: (
-              previous_signal: Low,
-              signal: Low,
+              previous_signal: High,
+              signal: High,
               next_signals: [],
             ),
             pin_type: Input,
             label: "A",
-            uuid: "9efdf82e-b323-4778-be35-10d00866f51f",
+            uuid: "ea4c8b5f-bf02-4cf5-9973-9cf82dc1627e",
           ),
           (
             signal_state: (
@@ -37,11 +40,138 @@
             ),
             pin_type: Output,
             label: "Q",
-            uuid: "cd490671-7f2b-4a07-afb1-8a050352b700",
+            uuid: "3ecbd0b5-0ca8-4c28-93d8-5680105570cf",
           ),
         ]),
-        "logics::designer::position::Position": ((-155.99998, 27.000011)),
-        "logics::designer::rotation::Rotation": (1.0),
+        "logics::designer::position::Position": ((-114.000015, -179.99997)),
+        "logics::designer::rotation::Rotation": (0.0),
+      },
+    ),
+    8589934662: (
+      components: {
+        "logics::designer::model::ModelId": ("77a6a039-7b69-4ef4-aa97-8f04c6c1ad94"),
+        "logics::designer::position::Position": ((0.0, 0.0)),
+        "logics::designer::rotation::Rotation": (0.0),
+        "logics::designer::signal::SignalState": (
+          previous_signal: High,
+          signal: High,
+          next_signals: [],
+        ),
+        "logics::designer::wire::WireModel": (),
+        "logics::designer::wire::WireNodes": ([
+          Pin("0517fdaf-10dd-4572-9c09-eb958b3bd254"),
+          Pin("ea4c8b5f-bf02-4cf5-9973-9cf82dc1627e"),
+        ]),
+      },
+    ),
+    12884901942: (
+      components: {
+        "logics::designer::devices::binary_io::BinaryDisplay": (),
+        "logics::designer::devices::device::DeviceModel": (),
+        "logics::designer::model::ModelId": ("b90fac44-d480-42f6-b911-99c7a69435d0"),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            signal_state: (
+              previous_signal: Low,
+              signal: Low,
+              next_signals: [],
+            ),
+            pin_type: Input,
+            label: "Q",
+            uuid: "e57a0647-a796-4836-a95b-38a887aca0a4",
+          ),
+        ]),
+        "logics::designer::position::Position": ((-39.99996, -74.0)),
+        "logics::designer::rotation::Rotation": (7.8539824),
+      },
+    ),
+    12884901963: (
+      components: {
+        "logics::designer::model::ModelId": ("b9a58e16-c4df-4bba-8ff3-88530e15c885"),
+        "logics::designer::position::Position": ((0.0, 0.0)),
+        "logics::designer::rotation::Rotation": (0.0),
+        "logics::designer::signal::SignalState": (
+          previous_signal: Low,
+          signal: Low,
+          next_signals: [],
+        ),
+        "logics::designer::wire::WireModel": (),
+        "logics::designer::wire::WireNodes": ([
+          Pin("3ecbd0b5-0ca8-4c28-93d8-5680105570cf"),
+          Joint("7f65b65a-f19b-4fbc-a50f-a37e4d9e9771"),
+          Pin("e57a0647-a796-4836-a95b-38a887aca0a4"),
+        ]),
+      },
+    ),
+    17179869241: (
+      components: {
+        "logics::designer::devices::binary_io::BinarySwitch": (),
+        "logics::designer::devices::device::DeviceModel": (),
+        "logics::designer::model::ModelId": ("6770052d-7244-4511-9a31-d1a42f45f6f6"),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            signal_state: (
+              previous_signal: Low,
+              signal: Low,
+              next_signals: [],
+            ),
+            pin_type: Output,
+            label: "Q",
+            uuid: "957eb0c0-7043-4569-808a-79597d8997db",
+          ),
+        ]),
+        "logics::designer::position::Position": ((-259.0, -41.99998)),
+        "logics::designer::rotation::Rotation": (0.0),
+      },
+    ),
+    17179869250: (
+      components: {
+        "logics::designer::model::ModelId": ("e43ce1fa-bba4-438d-8296-740b0b413040"),
+        "logics::designer::position::Position": ((0.0, 0.0)),
+        "logics::designer::rotation::Rotation": (0.0),
+        "logics::designer::signal::SignalState": (
+          previous_signal: Low,
+          signal: Low,
+          next_signals: [],
+        ),
+        "logics::designer::wire::WireModel": (),
+        "logics::designer::wire::WireNodes": ([
+          Pin("957eb0c0-7043-4569-808a-79597d8997db"),
+          Pin("1ef797a2-fefa-4116-b7fc-20d24da6325b"),
+        ]),
+      },
+    ),
+    30064771134: (
+      components: {
+        "logics::designer::devices::device::DeviceModel": (),
+        "logics::designer::devices::generic_chip::GenericChip": (
+          name: "NOT",
+        ),
+        "logics::designer::model::ModelId": ("c49bcf2c-427d-4297-b91f-6b934099b618"),
+        "logics::designer::pin::PinModelCollection": ([
+          (
+            signal_state: (
+              previous_signal: Low,
+              signal: Low,
+              next_signals: [],
+            ),
+            pin_type: Input,
+            label: "A",
+            uuid: "1ef797a2-fefa-4116-b7fc-20d24da6325b",
+          ),
+          (
+            signal_state: (
+              previous_signal: High,
+              signal: High,
+              next_signals: [],
+            ),
+            pin_type: Output,
+            label: "Q",
+            uuid: "0517fdaf-10dd-4572-9c09-eb958b3bd254",
+          ),
+        ]),
+        "logics::designer::position::Position": ((-182.00002, -109.999985)),
+        "logics::designer::rotation::Rotation": (10.995575),
       },
     ),
   },

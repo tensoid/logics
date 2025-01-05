@@ -1,4 +1,4 @@
-use std::f32::consts::FRAC_PI_4;
+use std::f32::consts::FRAC_PI_2;
 
 use bevy::{
     math::bounding::{Aabb2d, BoundingVolume},
@@ -408,9 +408,9 @@ pub fn delete_selected(mut commands: Commands, q_selected_entities: Query<Entity
 
 pub fn rotate_selected_devices(mut q_selected_devices: Query<&mut Rotation, With<Selected>>) {
     for mut rotation in q_selected_devices.iter_mut() {
-        rotation.0 -= FRAC_PI_4;
+        rotation.0 -= FRAC_PI_2;
         if rotation.0 < 0.0 {
-            rotation.0 = FRAC_PI_4 * 7.0;
+            rotation.0 = FRAC_PI_2 * 7.0;
         }
     }
 }
