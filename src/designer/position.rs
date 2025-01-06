@@ -18,7 +18,7 @@ impl Position {
         Self(translation.truncate())
     }
 
-    pub fn to_translation(&self, z: f32) -> Vec3 {
+    pub fn to_translation(self, z: f32) -> Vec3 {
         self.0.extend(z)
     }
 }
