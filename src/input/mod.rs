@@ -1,8 +1,7 @@
 use bevy::prelude::*;
 
 use crate::events::{
-    CopyEvent, DeleteEvent, LoadRequestEvent, NewFileEvent, PasteEvent, SaveRequestEvent,
-    SelectAllEvent, ToggleDebugModeEvent,
+    CopyEvent, DeleteEvent, LoadRequestEvent, NewFileEvent, PasteEvent, RotateEvent, SaveRequestEvent, SelectAllEvent, ToggleDebugModeEvent
 };
 
 pub struct InputPlugin;
@@ -11,6 +10,7 @@ impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
         app.register_keybinding(vec![KeyCode::KeyD], ToggleDebugModeEvent)
             .register_keybinding(vec![KeyCode::Delete], DeleteEvent)
+            .register_keybinding(vec![KeyCode::KeyR], RotateEvent)
             .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyC], CopyEvent)
             .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyV], PasteEvent)
             .register_keybinding(vec![KeyCode::ControlLeft, KeyCode::KeyS], SaveRequestEvent)

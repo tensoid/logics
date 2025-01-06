@@ -16,7 +16,9 @@ use bevy::prelude::*;
 use binary_io::{toggle_binary_switch, update_board_binary_displays, BinaryDisplay, BinarySwitch};
 use clock::{tick_clocks, Clock};
 use d_flipflop::DFlipFlop;
-use device::{update_device_positions, DeviceModel, DeviceViewKind, RegisterDevice};
+use device::{
+    update_device_positions, update_device_rotation, DeviceModel, DeviceViewKind, RegisterDevice,
+};
 use generic_chip::GenericChip;
 use jk_flipflop::JKFlipFlop;
 use moonshine_view::RegisterView;
@@ -28,7 +30,7 @@ use xor_2::Xor2;
 
 use crate::simulation::simulation::propagate_signals;
 
-use super::{pin::PinModelCollection, position::Position};
+use super::{pin::PinModelCollection, position::Position, rotation::Rotation};
 
 pub struct DevicePlugin;
 
@@ -36,6 +38,7 @@ impl Plugin for DevicePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<DeviceModel>()
             .register_type::<Position>()
+            .register_type::<Rotation>()
             .register_type::<BinarySwitch>()
             .register_type::<BinaryDisplay>()
             .register_type::<GenericChip>()
@@ -69,6 +72,7 @@ impl Plugin for DevicePlugin {
                         .after(propagate_signals),
                 ), //TODO: observers?
             )
-            .add_systems(Update, update_device_positions);
+            .add_systems(Update, update_device_positions)
+            .add_systems(Update, update_device_rotation);
     }
 }

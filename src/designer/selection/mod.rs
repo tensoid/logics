@@ -1,3 +1,5 @@
+use std::f32::consts::FRAC_PI_2;
+
 use bevy::{
     math::bounding::{Aabb2d, BoundingVolume},
     prelude::*,
@@ -12,7 +14,7 @@ use bevy_prototype_lyon::{
 use moonshine_view::{View, Viewable};
 
 use crate::{
-    events::{DeleteEvent, SelectAllEvent},
+    events::{DeleteEvent, RotateEvent, SelectAllEvent},
     find_descendant, get_cursor, get_cursor_mut, get_model,
     ui::cursor_captured::IsCursorCaptured,
 };
@@ -25,6 +27,7 @@ use super::{
     pin::PinView,
     position::Position,
     render_settings::CircuitBoardRenderingSettings,
+    rotation::Rotation,
     wire::{create_wire, wire_joint::WireJointModel, WireModel, WireNode, WireNodes, WireView},
 };
 
@@ -43,6 +46,10 @@ impl Plugin for SelectionPlugin {
                     .run_if(resource_equals(IsCursorCaptured(false))),
             )
             .add_systems(PostUpdate, delete_selected.run_if(on_event::<DeleteEvent>))
+            .add_systems(
+                PostUpdate,
+                rotate_selected_devices.run_if(on_event::<RotateEvent>),
+            )
             .add_systems(PostUpdate, update_dragged_entities_position)
             .add_systems(PostUpdate, highlight_selected_wires)
             .add_systems(PostUpdate, highlight_selected_devices); //TODO: observers?
@@ -71,7 +78,11 @@ pub struct DeviceSelectionOutlineBundle {
 }
 
 impl DeviceSelectionOutlineBundle {
-    pub fn new(render_settings: &CircuitBoardRenderingSettings, extents: Vec2) -> Self {
+    pub fn new(
+        render_settings: &CircuitBoardRenderingSettings,
+        extents: Vec2,
+        device_transform: Transform,
+    ) -> Self {
         Self {
             selection_outline: DeviceSelectionOutline,
             stroke: Stroke::new(
@@ -83,7 +94,8 @@ impl DeviceSelectionOutlineBundle {
                     extents,
                     ..default()
                 }),
-                transform: Transform::from_xyz(0.0, 0.0, 1.0),
+                transform: Transform::from_xyz(0.0, 0.0, 1.0)
+                    .with_rotation(device_transform.rotation),
                 ..default()
             },
         }
@@ -117,6 +129,7 @@ impl WireSelectionOutlineBundle {
 }
 
 //TODO: fix after bounding box on model by checking for either selectable bounding box or selectable component
+#[allow(clippy::type_complexity)]
 pub fn select_all(
     mut commands: Commands,
     q_entities: Query<Entity, Or<(With<DeviceModel>, With<WireModel>, With<WireJointModel>)>>,
@@ -398,7 +411,32 @@ pub fn delete_selected(mut commands: Commands, q_selected_entities: Query<Entity
     }
 }
 
+pub fn rotate_selected_devices(
+    mut q_selected_devices: Query<(&mut Rotation, &Viewable<DeviceViewKind>), With<Selected>>,
+    mut q_bboxes: Query<&mut BoundingBox>,
+) {
+    for (mut rotation, viewable) in q_selected_devices.iter_mut() {
+        rotation.0 -= FRAC_PI_2;
+        if rotation.0 < -0.01 {
+            // account for floating point error
+            rotation.0 = FRAC_PI_2 * 3.0;
+        }
+
+        // rotate bbox
+        let view_entity = viewable.view().entity();
+        let mut bbox = q_bboxes.get_mut(view_entity).unwrap();
+
+        match bbox.bounding_shape {
+            BoundingShape::Aabb(ref mut aabb) => {
+                aabb.rotate_by(FRAC_PI_2);
+            }
+            _ => panic!("invalid bounding shape on device"),
+        }
+    }
+}
+
 #[allow(clippy::type_complexity)]
+#[allow(clippy::too_many_arguments)]
 pub fn highlight_selected_devices(
     q_selected_entities: Query<
         &Viewable<DeviceViewKind>,
@@ -410,6 +448,7 @@ pub fn highlight_selected_devices(
     q_entities: Query<&Viewable<DeviceViewKind>>,
     mut q_deselected: RemovedComponents<Selected>,
     q_bounding_boxes: Query<&BoundingBox>,
+    q_transforms: Query<&Transform>,
     q_selection_outlines: Query<(Entity, &Parent), With<DeviceSelectionOutline>>,
     mut commands: Commands,
     render_settings: Res<CircuitBoardRenderingSettings>,
@@ -417,13 +456,18 @@ pub fn highlight_selected_devices(
     for viewable in q_selected_entities.iter() {
         let view_entity = viewable.view().entity();
         let bbox = q_bounding_boxes.get(view_entity).unwrap();
+        let transform = q_transforms.get(view_entity).unwrap();
         commands.entity(view_entity).with_children(|cb| {
             let extents = match bbox.bounding_shape {
                 BoundingShape::Aabb(aabb) => aabb.half_size() * Vec2::splat(2.0),
                 _ => panic!("invalid bounding shape on device"),
             };
 
-            cb.spawn(DeviceSelectionOutlineBundle::new(&render_settings, extents));
+            cb.spawn(DeviceSelectionOutlineBundle::new(
+                &render_settings,
+                extents,
+                *transform,
+            ));
         });
     }
 

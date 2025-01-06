@@ -8,6 +8,7 @@ use crate::{
         cursor::{Cursor, CursorState},
         model::Model,
         position::Position,
+        rotation::Rotation,
         selection::{Dragged, Selected},
     },
     events::SpawnDeviceEvent,
@@ -88,7 +89,7 @@ pub struct DeviceViewBundle {
 }
 
 impl DeviceViewBundle {
-    pub fn new(position: Position, extents: Vec2) -> Self {
+    pub fn new(position: Position, rotation: Rotation, extents: Vec2) -> Self {
         Self {
             device_view: DeviceView,
             bounding_box: BoundingBox::rect_with_offset(
@@ -96,7 +97,11 @@ impl DeviceViewBundle {
                 Vec2::ZERO,
                 true,
             ),
-            transform: Transform::from_xyz(position.0.x, position.0.y, 0.0),
+            transform: Transform {
+                translation: position.to_translation(0.0),
+                rotation: Quat::from_rotation_z(rotation.0),
+                ..default()
+            },
             visibility: Visibility::default(),
         }
     }
@@ -135,6 +140,17 @@ pub fn update_device_positions(
     for (viewable, position) in devices.iter() {
         let view = viewable.view();
         let mut transform = transform.get_mut(view.entity()).unwrap();
-        *transform = Transform::from_translation(position.0.extend(transform.translation.z))
+        transform.translation = position.to_translation(transform.translation.z);
+    }
+}
+
+pub fn update_device_rotation(
+    devices: Query<(&Viewable<DeviceViewKind>, &Rotation), Changed<Rotation>>,
+    mut transform: Query<&mut Transform>,
+) {
+    for (viewable, rotation) in devices.iter() {
+        let view = viewable.view();
+        let mut transform = transform.get_mut(view.entity()).unwrap();
+        transform.rotation = Quat::from_rotation_z(rotation.0);
     }
 }

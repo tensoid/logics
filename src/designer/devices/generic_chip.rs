@@ -10,6 +10,7 @@ use crate::{
         pin::{PinLabelBundle, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
         position::Position,
         render_settings::CircuitBoardRenderingSettings,
+        rotation::Rotation,
     },
 };
 
@@ -243,6 +244,7 @@ impl BuildView<DeviceViewKind> for GenericChip {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
+        let rotation = world.get::<Rotation>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
         let generic_chip = world.get::<GenericChip>(object.entity()).unwrap();
 
@@ -252,7 +254,7 @@ impl BuildView<DeviceViewKind> for GenericChip {
             pin_model_collection.num_outputs(),
         );
 
-        view.insert(DeviceViewBundle::new(position.clone(), chip_extents))
+        view.insert(DeviceViewBundle::new(*position, *rotation, chip_extents))
             .with_children(|device| {
                 device.spawn(GenericChipLabelBundle::new(
                     generic_chip.name.clone(),

@@ -12,6 +12,7 @@ use crate::{
         pin::{PinModel, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
         position::Position,
         render_settings::CircuitBoardRenderingSettings,
+        rotation::{self, Rotation},
         signal::Signal,
     },
     find_descendant, get_cursor, get_model_mut,
@@ -312,10 +313,12 @@ impl BuildView<DeviceViewKind> for BinarySwitch {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
+        let rotation = world.get::<Rotation>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
         view.insert(DeviceViewBundle::new(
-            position.clone(),
+            *position,
+            *rotation,
             render_settings.binary_switch_extents,
         ))
         .with_children(|device| {
@@ -352,10 +355,12 @@ impl BuildView<DeviceViewKind> for BinaryDisplay {
         let render_settings = world.resource::<CircuitBoardRenderingSettings>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
+        let rotation = world.get::<Rotation>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
         view.insert(DeviceViewBundle::new(
-            position.clone(),
+            *position,
+            *rotation,
             render_settings.binary_display_extents,
         ))
         .with_children(|device| {

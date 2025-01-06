@@ -15,6 +15,7 @@ use crate::{
         pin::{PinModel, PinModelCollection, PinViewBundle, PinViewCollectionBundle},
         position::Position,
         render_settings::CircuitBoardRenderingSettings,
+        rotation::{self, Rotation},
     },
 };
 
@@ -174,10 +175,12 @@ impl BuildView<DeviceViewKind> for Clock {
         let common_assets = world.resource::<CommonAssets>();
 
         let position = world.get::<Position>(object.entity()).unwrap();
+        let rotation = world.get::<Rotation>(object.entity()).unwrap();
         let pin_model_collection = world.get::<PinModelCollection>(object.entity()).unwrap();
 
         view.insert(DeviceViewBundle::new(
-            position.clone(),
+            *position,
+            *rotation,
             render_settings.clock_extents,
         ))
         .with_children(|device| {
